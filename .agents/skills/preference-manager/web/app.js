@@ -8,13 +8,13 @@
 // ============================================================================
 
 const DAYS = [
-  { id: 'monday', label: 'Monday' },
-  { id: 'tuesday', label: 'Tuesday' },
-  { id: 'wednesday', label: 'Wednesday' },
-  { id: 'thursday', label: 'Thursday' },
-  { id: 'friday', label: 'Friday' },
-  { id: 'saturday', label: 'Saturday' },
-  { id: 'sunday', label: 'Sunday' }
+  { id: 'monday', label: 'Mon', fullLabel: 'Monday' },
+  { id: 'tuesday', label: 'Tue', fullLabel: 'Tuesday' },
+  { id: 'wednesday', label: 'Wed', fullLabel: 'Wednesday' },
+  { id: 'thursday', label: 'Thu', fullLabel: 'Thursday' },
+  { id: 'friday', label: 'Fri', fullLabel: 'Friday' },
+  { id: 'saturday', label: 'Sat', fullLabel: 'Saturday' },
+  { id: 'sunday', label: 'Sun', fullLabel: 'Sunday' }
 ];
 
 // 30-minute time slots spanning 06:00 to 22:00 (32 slots per day, 0.5 hours each)
@@ -94,6 +94,7 @@ function isValidUrl(url) {
 // ============================================================================
 
 let currentBrush = 'available'; // 'available' | 'classes' | 'busy'
+let dragAction = 'available';
 let isMouseDown = false;
 let auditData = null;
 let currentAuditTab = 'matches';
@@ -255,10 +256,17 @@ document.addEventListener('DOMContentLoaded', () => {
         const dayId = target.dataset.day;
         const slotId = target.dataset.slot;
         if (dayId && slotId) {
-          paintSlot(target, dayId, slotId);
+          paintSlot(target, dayId, slotId, dragAction);
         }
       }
     }, { passive: true });
+
+    calendarWrapper.addEventListener('mouseleave', () => {
+      const bar = document.getElementById('calendar-hover-info');
+      if (bar) {
+        bar.textContent = "Click and drag across time slots to paint availability (When2meet style)";
+      }
+    });
   }
 
   // Brush toolbar buttons
@@ -294,16 +302,35 @@ document.addEventListener('DOMContentLoaded', () => {
 // Weekly Availability Grid Rendering & Interactions
 // ============================================================================
 
+function formatHourLabel(slotId) {
+  const h = parseInt(slotId.slice(0, 2), 10);
+  const period = h >= 12 ? 'PM' : 'AM';
+  const displayHour = h % 12 === 0 ? 12 : h % 12;
+  return `${displayHour}:00 ${period}`;
+}
+
+function updateHoverBar(dayName, timeLabel, status) {
+  const bar = document.getElementById('calendar-hover-info');
+  if (!bar) return;
+  let statusBadge = '<span style="color: #cbd5e1; font-weight: 600;">Busy / Personal</span>';
+  if (status === 'available') {
+    statusBadge = '<span style="color: #2ecc71; font-weight: 600;">Available for Work</span>';
+  } else if (status === 'classes') {
+    statusBadge = '<span style="color: #3498db; font-weight: 600;">University Classes</span>';
+  }
+  bar.innerHTML = `<strong>${escapeHtml(dayName)}</strong>, ${escapeHtml(timeLabel)} &nbsp;&bull;&nbsp; Status: ${statusBadge}`;
+}
+
 function renderAvailabilityGrid() {
   const container = document.getElementById('availability-grid');
   container.innerHTML = '';
 
   const grid = state.availability_calendar.weekly_grid || {};
 
-  // Top-left corner header
+  // Top-left corner header (When2meet style empty cell)
   const cornerHeader = document.createElement('div');
   cornerHeader.className = 'grid-header-cell time-col-header';
-  cornerHeader.textContent = 'Time Slot';
+  cornerHeader.textContent = '';
   container.appendChild(cornerHeader);
 
   // Day columns headers
@@ -320,7 +347,7 @@ function renderAvailabilityGrid() {
     const timeCell = document.createElement('div');
     const isHour = slot.id.endsWith('_00');
     timeCell.className = `grid-time-cell ${isHour ? 'hour-start' : 'half-hour'}`;
-    timeCell.innerHTML = `<div class="time-main">${escapeHtml(slot.label)}</div><div class="hours-label">30m</div>`;
+    timeCell.innerHTML = isHour ? `<span class="time-main">${formatHourLabel(slot.id)}</span>` : '';
     container.appendChild(timeCell);
 
     // 7 day slot cells
@@ -329,28 +356,36 @@ function renderAvailabilityGrid() {
       slotCell.className = `grid-slot-cell ${isHour ? 'hour-start' : 'half-hour'}`;
       slotCell.dataset.day = day.id;
       slotCell.dataset.slot = slot.id;
-      slotCell.title = `${day.label} ${slot.label}`;
+      slotCell.title = `${day.fullLabel} ${slot.label}`;
 
       const currentStatus = (grid[day.id] && grid[day.id][slot.id]) ? grid[day.id][slot.id] : 'busy';
       applySlotStyle(slotCell, currentStatus);
 
-      // Mouse drag-and-click events
+      // Mouse drag-and-click events (When2meet style click-to-toggle & drag)
       slotCell.addEventListener('mousedown', (e) => {
         e.preventDefault();
         isMouseDown = true;
-        paintSlot(slotCell, day.id, slot.id);
+        const currentVal = (state.availability_calendar.weekly_grid && state.availability_calendar.weekly_grid[day.id] && state.availability_calendar.weekly_grid[day.id][slot.id]) ? state.availability_calendar.weekly_grid[day.id][slot.id] : 'busy';
+        dragAction = (currentVal === currentBrush) ? 'busy' : currentBrush;
+        paintSlot(slotCell, day.id, slot.id, dragAction);
+        updateHoverBar(day.fullLabel, slot.label, dragAction);
       });
 
       slotCell.addEventListener('mouseenter', () => {
         if (isMouseDown) {
-          paintSlot(slotCell, day.id, slot.id);
+          paintSlot(slotCell, day.id, slot.id, dragAction);
         }
+        const activeVal = (state.availability_calendar.weekly_grid && state.availability_calendar.weekly_grid[day.id] && state.availability_calendar.weekly_grid[day.id][slot.id]) ? state.availability_calendar.weekly_grid[day.id][slot.id] : 'busy';
+        updateHoverBar(day.fullLabel, slot.label, isMouseDown ? dragAction : activeVal);
       });
 
       // Touch events
       slotCell.addEventListener('touchstart', (e) => {
         isMouseDown = true;
-        paintSlot(slotCell, day.id, slot.id);
+        const currentVal = (state.availability_calendar.weekly_grid && state.availability_calendar.weekly_grid[day.id] && state.availability_calendar.weekly_grid[day.id][slot.id]) ? state.availability_calendar.weekly_grid[day.id][slot.id] : 'busy';
+        dragAction = (currentVal === currentBrush) ? 'busy' : currentBrush;
+        paintSlot(slotCell, day.id, slot.id, dragAction);
+        updateHoverBar(day.fullLabel, slot.label, dragAction);
       }, { passive: true });
 
       container.appendChild(slotCell);
@@ -371,7 +406,7 @@ function applySlotStyle(element, status) {
   }
 }
 
-function paintSlot(element, dayId, slotId) {
+function paintSlot(element, dayId, slotId, action = currentBrush) {
   if (!state.availability_calendar.weekly_grid) {
     state.availability_calendar.weekly_grid = {};
   }
@@ -379,8 +414,8 @@ function paintSlot(element, dayId, slotId) {
     state.availability_calendar.weekly_grid[dayId] = {};
   }
 
-  state.availability_calendar.weekly_grid[dayId][slotId] = currentBrush;
-  applySlotStyle(element, currentBrush);
+  state.availability_calendar.weekly_grid[dayId][slotId] = action;
+  applySlotStyle(element, action);
   updateKPICalculations();
 }
 

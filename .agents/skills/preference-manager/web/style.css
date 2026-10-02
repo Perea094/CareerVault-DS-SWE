@@ -501,158 +501,154 @@ body {
   color: var(--purple-accent);
 }
 
-/* Weekly Availability Grid */
+/* When2meet Style Live Hover Info Bar */
+.calendar-hover-bar {
+  background: var(--bg-card);
+  border: 1.5px solid var(--border-strong);
+  border-bottom: none;
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+  padding: 0.45rem 1rem;
+  font-family: var(--font-family-mono);
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 30px;
+  box-sizing: border-box;
+}
+
+/* When2meet Weekly Availability Grid (Fits 100% in space, NO slide bar) */
 .calendar-wrapper {
   overflow-x: auto;
-  overflow-y: auto;
-  max-height: 640px;
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-md);
-  background: var(--bg-card);
+  overflow-y: hidden;
+  max-height: none;
+  border: 1.5px solid var(--border-strong);
+  border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+  background: #23232c;
   user-select: none;
   -webkit-user-select: none;
-  position: relative;
+  box-shadow: var(--shadow-sm);
+  width: 100%;
 }
 
 .availability-grid {
   display: grid;
-  grid-template-columns: 125px repeat(7, minmax(115px, 1fr));
-  min-width: 935px;
+  grid-template-columns: 85px repeat(7, 1fr);
+  width: 100%;
 }
 
 .grid-header-cell {
-  background: #191920;
-  padding: 0.65rem 0.5rem;
-  font-weight: 600;
-  font-size: 0.82rem;
+  background: #1e1e26;
+  padding: 0.45rem 0.25rem;
+  font-weight: 700;
+  font-size: 0.88rem;
   text-align: center;
   border-bottom: 2px solid var(--border-strong);
-  border-right: 1px solid var(--border-subtle);
-  color: var(--text-secondary);
-  text-transform: capitalize;
-  position: sticky;
-  top: 0;
-  z-index: 10;
+  border-right: 1.5px solid var(--border-strong);
+  color: #fff;
+  letter-spacing: -0.01em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.grid-header-cell:last-child {
+  border-right: none;
 }
 
 .grid-header-cell.time-col-header {
-  font-size: 0.72rem;
+  font-size: 0.7rem;
+  font-weight: 600;
   text-transform: uppercase;
   color: var(--text-muted);
-  left: 0;
-  z-index: 15;
+  background: #181820;
 }
 
 .grid-time-cell {
-  background: #18181f;
-  padding: 0.2rem 0.45rem;
+  background: #181820;
+  padding: 0 0.5rem;
   font-family: var(--font-family-mono);
-  font-size: 0.7rem;
+  font-size: 0.68rem;
   color: var(--text-secondary);
-  text-align: center;
+  text-align: right;
   display: flex;
-  flex-direction: row;
   align-items: center;
-  justify-content: space-between;
-  border-bottom: 1px solid var(--border-subtle);
-  border-right: 1.5px solid var(--border-subtle);
-  height: 32px;
-  min-height: 32px;
+  justify-content: flex-end;
+  border-right: 1.5px solid var(--border-strong);
+  height: 15px;
+  min-height: 15px;
   box-sizing: border-box;
-  position: sticky;
-  left: 0;
-  z-index: 5;
+  user-select: none;
 }
 
 .grid-time-cell.hour-start {
-  border-top: 1.5px solid rgba(255, 255, 255, 0.12);
-  font-weight: 600;
+  border-top: 1.5px solid var(--border-strong);
   color: var(--text-primary);
+  font-weight: 600;
   background: #1b1b24;
 }
 
 .grid-time-cell.half-hour {
-  border-top: 1px dashed rgba(255, 255, 255, 0.04);
+  border-top: 1px dotted rgba(255, 255, 255, 0.12);
+  color: transparent;
+}
+
+.grid-time-cell.half-hour:hover {
   color: var(--text-muted);
 }
 
 .grid-time-cell .time-main {
-  font-size: 0.68rem;
+  font-size: 0.66rem;
   white-space: nowrap;
 }
 
-.grid-time-cell .hours-label {
-  font-size: 0.62rem;
-  color: var(--text-muted);
-  background: rgba(255, 255, 255, 0.05);
-  padding: 1px 3px;
-  border-radius: 3px;
-  margin-left: 4px;
+.grid-slot-cell {
+  background-color: #555562; /* When2meet unselected neutral gray */
+  height: 15px;
+  min-height: 15px;
+  box-sizing: border-box;
+  border-right: 1.5px solid var(--border-strong);
+  cursor: pointer;
+  position: relative;
+  transition: filter 0.08s ease;
 }
 
-.grid-slot-cell {
-  background: var(--bg-slot);
-  padding: 0.15rem 0.25rem;
-  height: 32px;
-  min-height: 32px;
-  box-sizing: border-box;
-  border-bottom: 1px solid var(--border-subtle);
-  border-right: 1px solid var(--border-subtle);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  font-size: 0.68rem;
-  font-weight: 500;
-  transition: transform var(--transition-fast), background var(--transition-fast), border-color var(--transition-fast);
-  position: relative;
+.grid-slot-cell:last-child {
+  border-right: none;
 }
 
 .grid-slot-cell.hour-start {
-  border-top: 1.5px solid rgba(255, 255, 255, 0.12);
+  border-top: 1.5px solid var(--border-strong);
 }
 
 .grid-slot-cell.half-hour {
-  border-top: 1px dashed rgba(255, 255, 255, 0.04);
+  border-top: 1px dotted rgba(255, 255, 255, 0.14);
 }
 
 .grid-slot-cell:hover {
-  filter: brightness(1.2);
-  box-shadow: inset 0 0 0 1px var(--purple-accent);
+  filter: brightness(1.35);
+  outline: 1.5px solid #fff;
+  z-index: 5;
 }
 
-/* Grid Slot State Themes */
+/* When2meet Slot State Colors (Clean solid colors, no pseudo-element text clutter) */
 .grid-slot-cell.slot-available {
-  background: rgba(46, 204, 113, 0.2);
-  border-color: rgba(46, 204, 113, 0.35);
-  color: #4cd98b;
-  font-weight: 600;
-}
-
-.grid-slot-cell.slot-available::after {
-  content: "Work";
+  background-color: #2ecc71 !important; /* When2meet vibrant green */
 }
 
 .grid-slot-cell.slot-classes {
-  background: rgba(52, 152, 219, 0.2);
-  border-color: rgba(52, 152, 219, 0.35);
-  color: #5dade2;
-  font-weight: 600;
-}
-
-.grid-slot-cell.slot-classes::after {
-  content: "Class";
+  background-color: #3498db !important; /* When2meet clean blue */
 }
 
 .grid-slot-cell.slot-busy {
-  background: #16161c;
-  color: #3b3b4a;
-  border-color: #202028;
+  background-color: #555562 !important; /* When2meet neutral gray */
 }
 
-.grid-slot-cell.slot-busy::after {
-  content: "";
+.grid-slot-cell::after {
+  content: none !important;
 }
 
 .grid-footer-notes {
