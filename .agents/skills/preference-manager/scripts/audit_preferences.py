@@ -9,20 +9,18 @@ import argparse
 import copy
 import json
 import os
+import re
 import sys
 from datetime import datetime
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional, Tuple, Union
 
-# Try importing from local preference_models if available
-try:
-    from preference_models import PreferenceModel, load_preferences_json
-except ImportError:
-    # Fallback if imported from another context
-    try:
-        from .preference_models import PreferenceModel, load_preferences_json
-    except (ImportError, ValueError):
-        PreferenceModel = None
-        load_preferences_json = None
+
+def _parse_hours_range(hours_str: str) -> Tuple[Optional[float], Optional[float]]:
+    """Extract minimum and maximum hours from hours_per_week string."""
+    nums = [float(x) for x in re.findall(r"\b\d+(?:\.\d+)?\b", hours_str)]
+    if not nums:
+        return None, None
+    return min(nums), max(nums)
 
 
 def audit_opportunities_against_preferences(
@@ -33,9 +31,9 @@ def audit_opportunities_against_preferences(
 
     Evaluates:
     - Exclusions & deal-breakers: Avoid industries (e.g., Crypto), US citizenship/security
-      clearance requirements, and mandatory 5-day onsite roles.
+      clearance requirements, and mandatory 5-day onsite roles during semester.
     - Location & Schedule alignment: Mexico (Querétaro, CDMX, etc.) or Remote with
-      20-30 hrs/week -> Direct match.
+      hours within candidate's target_weekly_hours_max -> Direct match.
     - Full-time schedule or international relocation: 40 hrs/week (Summer/Break) or
       US/Canadian/International roles requiring visa sponsorship -> Caution / Summer match.
 
@@ -140,6 +138,12 @@ def _evaluate_single_opportunity(
 
     searchable_text = f"{company} {role} {location} {hours_str} {tier} {work_arr} {sponsorship_notes} {kc_text} {cons_text} {pros_text}".lower()
 
+    hrs_l = hours_str.lower()
+    arr_l = work_arr.lower()
+    role_l = role.lower()
+
+    is_summer = "summer" in hrs_l or "summer" in arr_l or "summer" in role_l or "break" in hrs_l
+
     # --- 1. Exclusions & Disqualifications ---
     disq_reasons: List[str] = []
 
@@ -166,48 +170,58 @@ def _evaluate_single_opportunity(
             if avoid_l in company.lower() or avoid_l in role.lower() or f" {avoid_l} " in f" {searchable_text} ":
                 disq_reasons.append(f"Industry to avoid: {avoid}")
 
-    # Check US citizenship / security clearance requirements
-    citizenship_phrases = [
-        "us citizenship required",
-        "u.s. citizenship required",
-        "citizenship required",
-        "must be a u.s. citizen",
-        "must be a us citizen",
-        "us citizens only",
-        "security clearance required",
-        "active security clearance",
-        "ts/sci",
-        "u.s. person required",
+    # Check US citizenship / security clearance requirements with negation guard
+    negation_pattern = re.compile(
+        r"\b(?:no|not|non-?)\s+(?:u\.?s\.?\s+)?citizenship\s+required\b|"
+        r"\bcitizenship\s+not\s+required\b|"
+        r"\bopen\s+to\s+non-?citizens\b|"
+        r"\bnot\s+require\s+(?:u\.?s\.?\s+)?citizenship\b",
+        re.IGNORECASE,
+    )
+
+    cit_req_patterns = [
+        re.compile(r"\b(?:u\.?s\.?\s+)?citizenship\s+required\b", re.IGNORECASE),
+        re.compile(r"\bmust\s+be\s+an?\s+(?:u\.?s\.?\s+)?citizen\b", re.IGNORECASE),
+        re.compile(r"\b(?:u\.?s\.?\s+)?citizens?\s+only\b", re.IGNORECASE),
+        re.compile(r"\bsecurity\s+clearance\s+required\b", re.IGNORECASE),
+        re.compile(r"\bactive\s+security\s+clearance\b", re.IGNORECASE),
+        re.compile(r"\bts/sci\b", re.IGNORECASE),
+        re.compile(r"\bu\.?s\.?\s+person\s+required\b", re.IGNORECASE),
     ]
 
-    has_cit_req = any(phrase in sponsorship_notes.lower() or phrase in searchable_text for phrase in citizenship_phrases)
+    has_cit_negation = bool(negation_pattern.search(searchable_text))
+    has_cit_req = (not has_cit_negation) and any(p.search(searchable_text) for p in cit_req_patterns)
 
     if not has_us_auth:
         if has_cit_req:
             disq_reasons.append("US citizenship or security clearance required (no US work authorization)")
         else:
-            # Check if auto_disqualifiers specifically mentions citizenship
+            # Check if auto_disqualifiers specifically mentions citizenship and matches affirmative patterns
             for ad in auto_disqualifiers:
                 ad_l = ad.lower()
-                if "citizen" in ad_l and ("citizen" in sponsorship_notes.lower() or "citizen" in searchable_text):
-                    disq_reasons.append(f"Automatic disqualifier: {ad}")
-                    break
+                if "citizen" in ad_l or "clearance" in ad_l:
+                    if (not has_cit_negation) and any(p.search(sponsorship_notes) or p.search(kc_text) for p in cit_req_patterns):
+                        disq_reasons.append(f"Automatic disqualifier: {ad}")
+                        break
 
-    # Check 5-day onsite hard constraint
+    # Check 5-day onsite hard constraint (with Summer Onsite Guard)
+    onsite_phrases = [
+        "5 days/week onsite",
+        "5 days onsite",
+        "onsite 5 days",
+        "full-time onsite",
+        "100% onsite",
+    ]
+    has_5day_onsite = any(p in searchable_text for p in onsite_phrases)
+
     no_5day_onsite = any(
         "onsite 5 days" in c.lower() or "5 days/week" in c.lower() or "5-day onsite" in c.lower()
         for c in hard_constraints
     )
-    if no_5day_onsite:
-        onsite_phrases = [
-            "5 days/week onsite",
-            "5 days onsite",
-            "onsite 5 days",
-            "full-time onsite",
-            "100% onsite",
-        ]
-        if any(p in searchable_text for p in onsite_phrases):
-            disq_reasons.append("Mandatory 5 days/week onsite violates semester availability constraint")
+
+    # Summer Onsite Guard: If it's a summer role, do not disqualify; route to caution_or_summer
+    if no_5day_onsite and has_5day_onsite and not is_summer:
+        disq_reasons.append("Mandatory 5 days/week onsite violates semester availability constraint")
 
     if disq_reasons:
         opp_copy["audit_status"] = "disqualified"
@@ -231,63 +245,63 @@ def _evaluate_single_opportunity(
         "nuevo leon",
     ]
     is_mexico = any(cue in loc_l for cue in mexico_cues)
-    is_remote = "remote" in loc_l or "teletrabajo" in loc_l
 
-    hrs_l = hours_str.lower()
-    arr_l = work_arr.lower()
-    role_l = role.lower()
-
-    is_summer = "summer" in hrs_l or "summer" in arr_l or "summer" in role_l or "break" in hrs_l
-    is_40h = (
-        ("40" in hrs_l and "20-40" not in hrs_l and "20 - 40" not in hrs_l)
-        or "37.5" in hrs_l
-        or "35-40" in hrs_l
+    # Check remote across both location and work_arrangement
+    is_remote = (
+        "remote" in loc_l
+        or "teletrabajo" in loc_l
+        or "remote" in arr_l
+        or "teletrabajo" in arr_l
+        or "virtual" in arr_l
+        or "work from home" in arr_l
     )
 
-    intl_locations = [
-        "united states",
-        "usa",
-        "san francisco",
-        "new york",
-        "san jose",
-        "boston",
-        "washington",
-        "bala cynwyd",
-        "miami",
-        "canada",
-        "toronto",
-        "ottawa",
-        "france",
-        "paris",
-        "london",
-        "uk",
-    ]
-    is_intl = any(loc_cue in loc_l for loc_cue in intl_locations) and not is_mexico
+    # Dynamic Hours Evaluation against candidate's max_weekly_hours
+    min_h, max_h = _parse_hours_range(hours_str)
+    is_excess_hours = False
+    if min_h is not None and max_h is not None:
+        if min_h > max_weekly_hours:
+            is_excess_hours = True
+        elif max_h > max_weekly_hours:
+            if not ("flexible" in hrs_l and min_h <= max_weekly_hours):
+                is_excess_hours = True
+    elif "40" in hrs_l or "37.5" in hrs_l or "35-40" in hrs_l:
+        is_excess_hours = 40 > max_weekly_hours
+
     is_tier3_or_tier4 = "tier 3" in tier.lower() or "tier 4" in tier.lower()
 
-    # Relocation visa sponsorship is required for onsite/hybrid roles abroad or Tier 3/4
-    # Purely remote roles do not require relocation visa sponsorship
+    # General International Sponsor Fallback:
+    # If not Mexico and not Remote, it's an onsite/hybrid role abroad requiring relocation sponsorship
     is_abroad_relocation = (
         is_tier3_or_tier4
-        or (is_intl and not is_remote)
-        or (is_intl and any(h in loc_l for h in ["hybrid", "onsite", "office", "hub"]))
+        or (not is_mexico and not is_remote)
+        or (not is_mexico and any(h in loc_l for h in ["hybrid", "onsite", "office", "hub"]))
     )
     requires_sponsorship = is_abroad_relocation and not has_us_auth
-    is_caution_or_summer = requires_sponsorship or is_40h or is_summer
+    is_caution_or_summer = requires_sponsorship or is_excess_hours or is_summer or has_5day_onsite
 
     if (is_mexico or is_remote) and not is_caution_or_summer:
         opp_copy["audit_status"] = "direct_match"
-        opp_copy["match_reason"] = "Direct match: Semester-compatible hours (20-30 hrs/week) with Mexico local entity or Remote arrangement."
+        opp_copy["match_reason"] = (
+            f"Direct match: Semester-compatible hours ({hours_str} hrs/week <= {max_weekly_hours}h max) "
+            "with Mexico local entity or Remote arrangement."
+        )
         return {"category": "matches", "data": opp_copy}
     else:
         opp_copy["audit_status"] = "caution_or_summer"
         caution_notes: List[str] = []
-        if is_40h or is_summer:
-            caution_notes.append("40 hrs/week or Summer break timeline (conflicts with ongoing morning lectures; ideal for Summer 2027 or break)")
+        if is_summer:
+            caution_notes.append("Summer break timeline (ideal for Summer 2027)")
+        if is_excess_hours:
+            caution_notes.append(
+                f"Schedule ({hours_str} hrs/wk) exceeds current semester target max of {max_weekly_hours} hrs/wk"
+            )
+        if has_5day_onsite and is_summer:
+            caution_notes.append("Requires 5 days/week onsite during Summer (requires relocation or local presence)")
         if requires_sponsorship:
             caution_notes.append("International role requiring visa sponsorship (US J-1, Canadian co-op work permit, or relocation sponsorship)")
-        if is_remote and is_intl and not is_mexico:
-            caution_notes.append("US/International Remote: verify if entity supports Mexican contractors (W-8BEN) or requires US domestic payroll")
+        if is_remote and not is_mexico:
+            caution_notes.append("International Remote: verify if entity supports Mexican contractors (W-8BEN) or requires US domestic payroll")
         opp_copy["caution_reasons"] = caution_notes
         return {"category": "caution", "data": opp_copy}
 
@@ -299,7 +313,7 @@ def generate_markdown_audit_report(
     """Generate Obsidian-compliant markdown report from audit results.
 
     Adheres strictly to Obsidian flat YAML frontmatter guidelines,
-    providing structured executive summary and tabular breakdown.
+    providing structured executive summary, tabular breakdown, and dynamic action plan.
     """
     if output_path is None:
         project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "..", ".."))
@@ -401,6 +415,40 @@ us_work_authorization: "None"
     else:
         disq_table = "_No opportunities currently disqualified under active preferences and constraints._"
 
+    # Dynamic Strategic Action Plan
+    action_plan_lines = ["## Strategic Action Plan\n"]
+
+    action_plan_lines.append("1. **Immediate Execution (This Week)**:")
+    if matches:
+        top_matches = matches[:3]
+        action_plan_lines.append("   - Prioritize applications for top immediate semester matches:")
+        for m in top_matches:
+            co = m.get("company", "Unknown")
+            role = m.get("role", "N/A")
+            loc = m.get("location", "N/A")
+            hrs = m.get("hours_per_week", "20-30")
+            action_plan_lines.append(f"     - **{co}** (`{role}`) — {loc} ({hrs} hrs/wk)")
+    else:
+        action_plan_lines.append("   - _No direct semester matches currently active. Monitor upcoming requisitions._")
+
+    action_plan_lines.append("\n2. **Summer & International Pipeline Preparation**:")
+    if caution:
+        top_caution = caution[:3]
+        action_plan_lines.append("   - Prepare materials and verify sponsorship/schedules for key caution/summer targets:")
+        for c in top_caution:
+            co = c.get("company", "Unknown")
+            role = c.get("role", "N/A")
+            loc = c.get("location", "N/A")
+            hrs = c.get("hours_per_week", "40")
+            action_plan_lines.append(f"     - **{co}** (`{role}`) — {loc} ({hrs} hrs/wk)")
+    else:
+        action_plan_lines.append("   - _No summer or international caution opportunities currently tracked._")
+
+    action_plan_lines.append("\n3. **Continuous Maintenance**:")
+    action_plan_lines.append("   - Re-run `audit_preferences.py` whenever new opportunities are scouted or candidate preferences in `001-background/preferences.json` change.")
+
+    action_plan_str = "\n".join(action_plan_lines)
+
     content = f"""{frontmatter}
 
 # Opportunity Audit Report: Career Preferences Alignment
@@ -453,20 +501,7 @@ Requisitions that breach active deal-breakers (e.g., Crypto/Web3 industries, man
 
 ---
 
-## Strategic Action Plan
-
-1. **Immediate Execution (This Week)**:
-   - Tailor and submit CVs for **Salesforce** (`AI Builder Intern [Mexico]`) and **Thomson Reuters** (`AI Training & Claude Implementation Intern`).
-   - Prioritize Mexican entity roles with flexible part-time hours (**Oracle MDC**, **ABB Mexico**).
-   - Review fully remote part-time requisitions (**Healthesystems**, **Cotiviti**, **American Heart Association**).
-
-2. **Summer 2027 Pipeline Preparation**:
-   - Track closing dates for Tier 3 US programs (**Figma**, **Adobe**, **Citadel**, **Jane Street**, **Amgen**, **WEX**).
-   - Verify J-1 exchange visa sponsorship eligibility with hiring portals.
-   - Coordinate university *Convenio de Prácticas Profesionales* with Tec de Monterrey for 6-month commitments (**Shift Technology**).
-
-3. **Continuous Maintenance**:
-   - Re-run `audit_preferences.py` whenever new opportunities are ingested or candidate constraints in `001-background/preferences.json` are modified.
+{action_plan_str}
 """
 
     with open(output_path, "w", encoding="utf-8") as f:
