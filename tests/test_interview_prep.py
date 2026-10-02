@@ -45,5 +45,28 @@ class TestInterviewPrep(unittest.TestCase):
         self.assertIn("## 3. Technical Question Bank & Architectural Drills", markdown)
         self.assertIn("## 2. Behavioral STAR Grid (Grounded in Verified Background)", markdown)
 
+    def test_generate_interview_dossier_with_candidate_name(self):
+        role_info = {
+            "company": "OpenAI",
+            "role": "Research Engineer",
+            "tech_stack": ["PyTorch"],
+        }
+        markdown = generate_dossier.build_dossier_markdown(
+            role_info, [], candidate_name="Jane Doe"
+        )
+        self.assertIn('candidate: "Jane Doe"', markdown)
+        self.assertIn("- **Candidate:** Jane Doe", markdown)
+
+    def test_generate_interview_dossier_default_candidate(self):
+        role_info = {
+            "company": "OpenAI",
+            "role": "Research Engineer",
+            "tech_stack": ["PyTorch"],
+        }
+        markdown = generate_dossier.build_dossier_markdown(role_info, [])
+        self.assertIn("- **Candidate:**", markdown)
+        self.assertIn("candidate:", markdown)
+
+
 if __name__ == "__main__":
     unittest.main()

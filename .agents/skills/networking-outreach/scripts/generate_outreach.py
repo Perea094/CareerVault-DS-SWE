@@ -10,12 +10,39 @@ import argparse
 import json
 import os
 import sys
+from pathlib import Path
 from typing import Any, Dict, Optional
+
+# Add 001-background to path to import candidate_profile
+BACKGROUND_DIR = Path(__file__).resolve().parent.parent.parent.parent / "001-background"
+if str(BACKGROUND_DIR) not in sys.path:
+    sys.path.insert(0, str(BACKGROUND_DIR))
+
+try:
+    import candidate_profile
+except ImportError:
+    candidate_profile = None
+
+
+def get_default_candidate_info() -> Dict[str, Any]:
+    """Retrieve default candidate profile info from candidate_profile if available."""
+    if candidate_profile:
+        prof = candidate_profile.load_profile()
+        return {
+            "name": prof.get("name", "Candidate"),
+            "school": prof.get("school", "University"),
+            "highlight": "delivered high-throughput distributed systems & ML pipelines",
+        }
+    return {
+        "name": "Candidate",
+        "school": "University",
+        "highlight": "delivered high-throughput distributed systems & ML pipelines",
+    }
 
 
 def build_outreach_templates(
     role_info: Dict[str, Any],
-    candidate_info: Dict[str, Any],
+    candidate_info: Optional[Dict[str, Any]] = None,
     alumni_name: Optional[str] = None,
     recruiter_name: Optional[str] = None,
     hm_name: Optional[str] = None,
@@ -32,6 +59,21 @@ def build_outreach_templates(
     Returns:
         Dictionary with keys 'alumni', 'recruiter', and 'hiring_manager'.
     """
+    if not candidate_info:
+        if candidate_profile:
+            prof = candidate_profile.load_profile()
+            candidate_info = {
+                "name": prof.get("name", "Candidate"),
+                "school": prof.get("school", "University"),
+                "highlight": "delivered high-throughput distributed systems & ML pipelines",
+            }
+        else:
+            candidate_info = {
+                "name": "Candidate",
+                "school": "University",
+                "highlight": "delivered high-throughput distributed systems & ML pipelines",
+            }
+
     company = role_info.get("company", "[Company]")
     role = role_info.get("role", "[Role]")
     key_skill = role_info.get("key_skill", "Distributed Systems & Machine Learning")
@@ -93,12 +135,15 @@ Best regards,
 
 def format_outreach_markdown(
     role_info: Dict[str, Any],
-    candidate_info: Dict[str, Any],
+    candidate_info: Optional[Dict[str, Any]] = None,
     alumni_name: Optional[str] = None,
     recruiter_name: Optional[str] = None,
     hm_name: Optional[str] = None,
 ) -> str:
     """Format outreach templates into a structured Markdown document."""
+    if not candidate_info:
+        candidate_info = get_default_candidate_info()
+
     company = role_info.get("company", "[Company]")
     role = role_info.get("role", "[Role]")
     templates = build_outreach_templates(
@@ -157,14 +202,14 @@ def main() -> int:
     parser.add_argument("--role", required=True, help="Target role title")
     parser.add_argument("--key-skill", default="Distributed Systems & ML", help="Target skill")
     parser.add_argument(
-        "--candidate-name", default="Diego Perea León", help="Candidate full name"
+        "--candidate-name", default=None, help="Candidate full name"
     )
     parser.add_argument(
-        "--school", default="Tecnológico de Monterrey", help="Candidate alma mater"
+        "--school", default=None, help="Candidate alma mater"
     )
     parser.add_argument(
         "--highlight",
-        default="Achieved 3,700 FPS distributed RL training pipeline",
+        default=None,
         help="Top technical achievement or metric",
     )
     parser.add_argument("--alumni-name", help="Specific alumni name")
@@ -182,11 +227,18 @@ def main() -> int:
         "role": args.role,
         "key_skill": args.key_skill,
     }
-    candidate_info = {
-        "name": args.candidate_name,
-        "school": args.school,
-        "highlight": args.highlight,
-    }
+    candidate_info = None
+    if args.candidate_name or args.school or args.highlight:
+        default_info = get_default_candidate_info()
+        candidate_info = {
+            "name": args.candidate_name or default_info.get("name", "Candidate"),
+            "school": args.school or default_info.get("school", "University"),
+            "highlight": args.highlight
+            or default_info.get(
+                "highlight",
+                "delivered high-throughput distributed systems & ML pipelines",
+            ),
+        }
 
     if args.json:
         templates = build_outreach_templates(
