@@ -1,104 +1,112 @@
-\documentclass[11pt]{article}
-\usepackage{graphicx} % Required for inserting images
-\setlength{\parindent}{0pt}
-\usepackage{hyperref}
-\usepackage{enumitem}
-\usepackage[utf8]{inputenc} 
+\documentclass[10pt,letterpaper]{article}
+\usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
-\usepackage[brazil]{babel}
-\usepackage{lipsum}
-\usepackage[left=1.06cm,top=1.7cm,right=1.06cm,bottom=0.49cm]{geometry}
+\usepackage[english]{babel}
+\usepackage{mathptmx} % Standard Times New Roman font for ATS compliance & compact density
+\usepackage{geometry}
+\geometry{letterpaper, left=0.4in, right=0.4in, top=0.35in, bottom=0.35in, nohead, nofoot}
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=black,
+    urlcolor=blue,
+}
+\usepackage{enumitem}
+\setlist[itemize]{leftmargin=11pt, label={\small$\bullet$}, itemsep=0.5pt, topsep=1pt, parsep=0pt, partopsep=0pt}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0pt}
+\pagestyle{empty} % Strictly no headers or footers / no page numbers
 
-
-
-
-%by: Aline R. Antunes
+% Clean, compact section macro with thin divider
+\newcommand{\cvsection}[1]{%
+  \vspace{3.5pt}%
+  {\small\textbf{\MakeUppercase{#1}}}\\[-3.5pt]%
+  \rule{\textwidth}{0.4pt}\par\vspace{2pt}%
+}
 
 \begin{document}
+
+% --- HEADER (No text boxes / no tables) ---
 \begin{center}
-    \textbf{Firstname Lastname}\\ 
-    \hrulefill
+    {\LARGE \textbf{<<NAME>>}}\\[2pt]
+    \small <<LOCATION>> \textbullet\ \href{mailto:<<EMAIL>>}{<<EMAIL>>} \textbullet\ <<PHONE>> \textbullet\ \href{<<LINKEDIN>>}{LinkedIn} \textbullet\ \href{<<GITHUB>>}{GitHub}
 \end{center}
+\vspace{-6pt}
 
-\begin{center}
-    Home or Campus Street Address \textbullet \ City, State Zip \textbullet \ youremail@college.harvard.edu \textbullet \ phone number
-\end{center}
+% --- EDUCATION ---
+\cvsection{Education}
+\textbf{<<SCHOOL>>} \hfill <<LOCATION>>\\
+\textit{<<DEGREE>>} \textbullet\ \textbf{GPA: 94/100} \hfill <<GRADUATION>>\\
+\textbf{Distinctions:} TELMEX Foundation Scholarship, Tec Academic Excellence Scholarship, High Academic Performance (PARA)\\
+\textbf{Selected Coursework:} Generative AI \& LLMs (PEFT, LoRA, RAG), Reasoning \& Uncertainty (Bayesian Inference, HMMs), Multivariate Data Analysis (PCA, ANOVA), Stochastic Optimization, Machine Learning, Applied Cryptography, Multivariable Calculus, Linear Algebra
 
-\vspace{0.5pt}
+% --- EXPERIENCE ---
+\cvsection{Experience \& Corporate Challenges}
 
-\begin{center}
-    \textbf{Education}
-\end{center}
-\textbf{Harvard University} \hfill Cambridge, MA
-
-Degree, Concentration. GPA [Note: GPA is Optional] \hfill Graduation Date Thesis [Note: Optional]
-
-Relevant Coursework: [Note: Optional. Awards and honors can also be listed here.]
-
-\vspace{12pt}
-
-\textbf{Study Abroad} [Note: If Applicable] \hfill City, Country
-
-Study abroad coursework in   . \hfill	Month Year – Month Year
-
-\vspace{12pt}
-
-\textbf{High School Name} \hfill	City, State
-
-[Note: May include GPA, SAT/ACT scores, or academic honors an employer may want to know] \hfill Graduation Date
-
-\vspace{12pt}
-
-\begin{center}
-    \textbf{Experience}
-\end{center}
-\textbf{Organization} \hfill City, State (or Remote)
-
-\textbf{Position Title} \hfill Month Year – Month Year
-\begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, parsep=0pt]
-    \item Beginning with your most recent position, describe your experience, skills, and resulting outcomes in bullet or paragraph form.
-    \item Begin each line with an action verb and include details that will help the reader understand your accomplishments, skills, knowledge, abilities, or achievements.
-    \item Quantify where possible.
-    \item Do not use personal pronouns; each line should be a phrase rather than a full sentence.
+\textbf{Databricks Corporate Challenge — "From the Kitchen to the Cloud"} \hfill Querétaro, Mexico\\
+\textit{Data Science \& Machine Learning Fellow} (Sun Holdings \& Databricks, Inc.) \hfill Sep 2026 – Dec 2026
+\begin{itemize}
+    \item Selected for an intensive 13-week corporate challenge building Lakehouse pipelines and AI agent workflows over real multi-branch restaurant transactions (Applebee's / Taco Bueno).
+    \item Developing automated fraud detection algorithms and menu cannibalization models while completing official Databricks certification tracks prior to executive pitch presentation.
 \end{itemize}
 
-\vspace{12pt}
-
-\textbf{Organization} \hfill City, State (or Remote)
-
-\textbf{Position Title} \hfill Month Year – Month Year
-\begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, parsep=0pt]
-    \item With your next-most recent position, describe your experience, skills, and resulting outcomes in bullet or paragraph form.
-    \item Begin each line with an action verb and include details that will help the reader understand your accomplishments, skills, knowledge, abilities, or achievements.
-    \item Quantify where possible.
-    \item Do not use personal pronouns; each line should be a phrase rather than a full sentence.
+\vspace{2pt}
+\textbf{Aristor Consultoría} \hfill Querétaro, Mexico\\
+\textit{Data Analyst Intern (Prácticas Profesionales)} \hfill May 2025 – Sep 2025
+\begin{itemize}
+    \item Engineered an automated spatial analysis engine processing INEGI microdata to evaluate commercial expansion viability for restaurant and service franchises across Querétaro.
+    \item Built geospatial heatmaps and scoring pipelines integrating demographic density and competitor proximity, delivering actionable retail site selection to executive stakeholders.
 \end{itemize}
 
-\begin{center}
-    \textbf{Leadership \& Activities}
-\end{center}
-
-\textbf{Organization}	\hfill City, State
-
-\textbf{Role} \hfill Month Year – Month Year
-\begin{itemize}[noitemsep, topsep=0pt, partopsep=0pt, parsep=0pt]
-    \item This section can be formatted similarly to the Experience section, or you can omit descriptions for activities.
-    \item If this section is more relevant to the opportunity you are applying for, consider moving this above your Experience section.
+\vspace{2pt}
+\textbf{LEIA (Laboratorio Estudiantil de Inteligencia Artificial)} \hfill Querétaro, Mexico\\
+\textit{Co-Founder \& Technical Lead} \hfill 2024 – Present
+\begin{itemize}
+    \item Co-founded university AI research lab; spearheaded 2 hands-on workshops covering reinforcement learning fundamentals (Q-learning, PPO) and neural network architectures for 30+ engineering students per session.
+    \item Directed student research initiatives across distributed RL and edge AI, leading the capstone team to win 1st Place at Expo Ingenierías.
 \end{itemize}
 
-\begin{center}
-    \textbf{Skills \& Interests [Note: Optional]}
-\end{center}
+\vspace{2pt}
+\textbf{AB-Tec} \hfill Querétaro, Mexico\\
+\textit{CEO \& Co-Founder} \hfill 2024 – 2025
+\begin{itemize}
+    \item Co-founded a 5-member student startup; formulated proprietary antibacterial solutions, managed batch manufacturing, cost allocation, and direct campus distribution.
+\end{itemize}
 
-\textbf{Technical:} List computer software and programming languages
+% --- PROJECTS ---
+\cvsection{Projects}
 
-\textbf{Language:} List foreign languages and your level of fluency
+\textbf{Street Fighter II Distributed RL Agent} \textbar\ \textit{PyTorch, Ape-X DQN, Tailscale, stable-retro} \hfill \href{https://github.com/LEIA-qro/street_fighter}{\small GitHub} \textbullet\ 2025 – 2026
+\begin{itemize}
+    \item Architected a distributed \textbf{Ape-X DQN} agent with \textbf{Dueling QR-DQN} across 72 discrete actions, reaching policy convergence with \textbf{$\sim$50x less compute} than prior PPO baselines.
+    \item Decoupled 1 GPU Replay Learner from distributed actors over HTTP via Tailscale; built dual headless (\texttt{stable-retro} at \textbf{$\sim$3,700 FPS}) and BizHawk TCP backends validated by a 630-test \texttt{pytest} parity suite.
+    \item Solved the environment with \textbf{100\% win rate} on difficulties 1–4, \textbf{97.9\%} on difficulty 7, \textbf{93.8\%} on difficulty 8 ($n=768$), and \textbf{$\sim$90\% win rate} across best-of-3 series against all 12 characters at maximum difficulty 8 ($n=360$).
+\end{itemize}
 
-\textbf{Laboratory:} List scientific / research lab techniques or tools [If Applicable]
+\vspace{2pt}
+\textbf{DAVE — Driver Attention \& Vigilance Engine} \textbar\ \textit{Hailo-8 NPU, Raspberry Pi 5, MediaPipe, YOLOv8} \hfill \href{https://github.com/LEIA-qro/Attention-Algorithm}{\small GitHub} \textbullet\ 2024 – 2026
+\begin{itemize}
+    \item Won \textbf{1st Place at Expo Ingenierías} for architecting an automotive Driver Monitoring System (DMS) deployed on edge hardware.
+    \item Designed multi-stage vision pipeline with \textbf{MediaPipe Face Landmarker v2} (478 3D landmarks for real-time EAR, MAR, head pose, and iris gaze) and \textbf{YOLOv8n} for in-cabin phone distraction detection.
+    \item Accelerated models on \textbf{Hailo-8 NPU (26 TOPS) + Raspberry Pi 5} sustaining native execution at \textbf{$\sim$30 FPS} with in-memory ring-buffer clip capture, containerized FastAPI backend, and React/Tailwind telemetry dashboard.
+\end{itemize}
 
-\textbf{Interests:} List activities you enjoy that may spark interview conversation
+\vspace{2pt}
+\textbf{Local LLMs, Model Quantization \& GenAI Engineering} \textbar\ \textit{Ollama, Hugging Face, PEFT/LoRA, LangChain} \hfill 2026
+\begin{itemize}
+    \item Deployed and benchmarked large open-weight LLMs locally on consumer GPU hardware via Ollama and Open WebUI, profiling latency (tokens/sec) and VRAM efficiency across quantized \textbf{Qwen 3.8 27B} and \textbf{Gemma 4 12B/26B}.
+    \item Built Supervised Fine-Tuning (SFT) pipelines using Hugging Face (Transformers, PEFT, TRL) leveraging LoRA/QLoRA on instruction datasets, and developed RAG pipelines with dense vector retrieval using LangChain.
+\end{itemize}
 
+% --- LEADERSHIP & ACTIVITIES ---
+\cvsection{Leadership \& Activities}
+\textbf{Chess Club, Tec de Monterrey:} Co-founder and Board Member; coordinate campus tournaments and compete in the Jaque MaTec Arena.\\
+\textbf{Academic Student Mentorship Program:} Peer Mentor providing weekly academic tutoring in multivariable calculus, linear algebra, and Python.
 
-
+% --- SKILLS & TOOLS ---
+\cvsection{Technical Skills}
+\textbf{Programming Languages:} Python (Advanced), C\# (.NET), C++, SQL, R, MATLAB, Lua, TypeScript, \LaTeX\\
+\textbf{Machine Learning \& GenAI:} PyTorch, Hugging Face (Transformers, PEFT, TRL), LoRA/QLoRA, LangChain, LlamaIndex, Ape-X DQN, QR-DQN, Gymnasium, stable-retro, MediaPipe, YOLOv8, ONNX, Optuna\\
+\textbf{Edge AI, Cloud \& Tools:} Hailo-8 NPU (26 TOPS), Raspberry Pi 5, Databricks Lakehouse, FastAPI, Docker, Linux/WSL2, Tailscale, Git, pytest, React, Tailwind CSS, Ollama, Open WebUI \textbullet\ \textbf{Languages:} Spanish (Native), English (C1 / Full Professional Proficiency), German (A2)
 
 \end{document}
