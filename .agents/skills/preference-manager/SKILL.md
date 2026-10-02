@@ -66,10 +66,12 @@ The web UI guides Diego through structured configuration cards:
 1. **Work Modality Ranking:**
    - Drag-and-drop or use up/down reorder buttons to rank `Remote`, `Hybrid`, and `Onsite`.
 2. **Weekly Availability & Schedule Grid:**
-   - 7 days (Monday–Sunday) across 6 time blocks (Morning 8-11, Midday 11-14, Afternoon 14-17, Late Afternoon 17-20, Evening 20-23, Night 23-02).
-   - Click or drag-select cells to toggle availability (`available` vs `busy/committed`).
-   - Tag busy blocks (e.g. "Tec Classes", "Research", "Gym").
-   - Real-time weekly available hours calculator.
+   - 7 days (Monday–Sunday) across 7 two-hour blocks (08:00–10:00, 10:00–12:00, 12:00–14:00, 14:00–16:00, 16:00–18:00, 18:00–20:00, 20:00–22:00).
+   - Click or drag-select cells to cycle through 3 slot states:
+     - `available` (open for work/projects, adds 2 hrs to weekly tally)
+     - `classes` (academic coursework / Tec commitments)
+     - `busy` (personal blocks, study, or other commitments)
+   - Real-time weekly available hours calculator (summing active `available` slots).
 3. **Weekly Hours & Flexibility:**
    - Target range (e.g., `20-30` hours/week during semester, `40` max manageable).
    - Timezone overlap preferences and async/sync communication balance.
@@ -81,7 +83,7 @@ The web UI guides Diego through structured configuration cards:
    - Equity preference and prioritized benefits (Health insurance, PTO, Hardware stipend, Learning budget).
 6. **Domains of Interest & Industry Dealbreakers:**
    - Target domains (GenAI/LLMs, RL, Computer Vision, Systems, MLOps, NLP).
-   - Disallowed industries / toxic patterns (e.g. Crypto, unpaid overtime, 5 days/week onsite).
+   - Disallowed industries / toxic patterns (e.g. Crypto, unpaid overtime, 5 days/week onsite during semester).
 
 ### Step 3: Save & Bi-Directional Vault Sync
 
@@ -110,20 +112,41 @@ Click the **"Save & Run AI Opportunity Audit"** button in the UI header. This tr
 .\.venv\Scripts\python.exe .agents/skills/preference-manager/scripts/audit_preferences.py
 ```
 
-#### What the Audit Engine Does:
-1. Loads [`001-background/preferences.json`](file:///c:/Users/Diego%20Perea/Desktop/Curriculum/001-background/preferences.json) and [`004-work-opportunities/database/opportunities.json`](file:///c:/Users/Diego%20Perea/Desktop/Curriculum/004-work-opportunities/database/opportunities.json).
-2. Evaluates each posting against 5 scoring pillars:
-   - **Modality Fit (25 pts):** Match with top-ranked modality (Remote > Hybrid > Onsite).
-   - **Hours Compatibility (25 pts):** Compatibility with semester course schedule (part-time 20-30h vs inflexible 40h).
-   - **Compensation Threshold (20 pts):** Above or meeting minimum hourly floor ($20/hr).
-   - **Domain Alignment (20 pts):** Match with GenAI, RL, Vision, Systems, ML keywords.
-   - **Dealbreaker Detection (10 pts):** Zero tolerance for Crypto, rigid 5-day onsite, or strict US citizenship requirements.
-3. Groups postings into:
-   - **Tier 1: High Alignment (Score >= 80)** — Priority applications.
-   - **Tier 2: Conditional Alignment (Score 60-79)** — Requires schedule negotiation or visa inquiry.
-   - **Excluded / Dealbreakers (Score < 60 or hard filter flagged)** — Blocked.
-4. Generates comprehensive audit note:
-   [`004-work-opportunities/opportunities-preference-audit.md`](file:///c:/Users/Diego%20Perea/Desktop/Curriculum/004-work-opportunities/opportunities-preference-audit.md) with Obsidian frontmatter and markdown tables.
+##### Audit CLI Flags:
+- `--preferences` / `-p`: Path to preferences JSON file (default: `001-background/preferences.json`).
+- `--opportunities` / `-o`: Path to opportunities database JSON (default: `004-work-opportunities/database/opportunities.json`).
+- `--output` / `-out`: Path to output markdown report (default: `004-work-opportunities/opportunities-preference-audit.md`).
+
+Example custom run:
+```powershell
+.\.venv\Scripts\python.exe .agents/skills/preference-manager/scripts/audit_preferences.py --preferences 001-background/preferences.json --opportunities 004-work-opportunities/database/opportunities.json --output 004-work-opportunities/opportunities-preference-audit.md
+```
+
+#### The 3-Tier Categorization Logic:
+The engine analyzes each posting against Diego's active constraints and routes it into one of three deterministic categories:
+
+1. **Direct Matches (`direct_matches`)**:
+   - Opportunities with semester-compatible hours (`<= max_weekly_hours`, e.g. 20–30h/wk).
+   - Based in Mexico or offering fully remote work arrangements.
+   - Free of visa/relocation hurdles or caution flags.
+
+2. **Caution or Summer (`caution_or_summer`)**:
+   - Viable opportunities that require scheduling adjustments, international paperwork, or summer timing:
+     - **Summer internships**: Role takes place during summer break (ideal for Summer 2027 cycle).
+     - **Excess semester hours**: Workload (> max weekly hours, e.g. 40h/wk) exceeds semester bandwidth.
+     - **Visa sponsorship required**: US J-1 sponsorship, Canadian co-op work permit, or international relocation needed.
+     - **International remote**: Requires verifying W-8BEN contractor support vs US domestic payroll.
+     - **Summer onsite**: Full-time onsite roles scheduled during summer break (exempt from hard disqualification via the Summer Onsite Guard).
+
+3. **Disqualified (`disqualified`)**:
+   - Postings violating absolute dealbreakers:
+     - Hard status marks (`disqualified`, `ineligible`, `rejected`).
+     - Blacklisted industries (e.g. Crypto, Web3, Blockchain).
+     - Strict US citizenship or active security clearance requirements (with negation guards for "no citizenship required").
+     - Inflexible 5 days/week onsite during the active semester.
+
+#### Report Output:
+Generates [`004-work-opportunities/opportunities-preference-audit.md`](file:///c:/Users/Diego%20Perea/Desktop/Curriculum/004-work-opportunities/opportunities-preference-audit.md) with Obsidian-compliant flat YAML frontmatter, executive metrics summary, categorized tables, and a dynamic action plan.
 
 ---
 
