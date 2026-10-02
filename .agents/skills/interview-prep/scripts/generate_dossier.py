@@ -4,9 +4,20 @@ Generates targeted interview preparation dossiers with STAR behavioral stories,
 technical question drills, and system design talking points grounded in vault evidence.
 """
 
-from typing import Dict, List, Any
+from typing import Dict, List, Any, Optional
 import argparse
+import sys
 from pathlib import Path
+
+# Add 001-background to path to import candidate_profile
+BACKGROUND_DIR = Path(__file__).resolve().parent.parent.parent.parent / "001-background"
+if str(BACKGROUND_DIR) not in sys.path:
+    sys.path.insert(0, str(BACKGROUND_DIR))
+
+try:
+    import candidate_profile
+except ImportError:
+    candidate_profile = None
 
 
 def format_star_story(title: str, situation: str, task: str, action: str, result: str) -> str:
@@ -19,8 +30,18 @@ def format_star_story(title: str, situation: str, task: str, action: str, result
 """
 
 
-def build_dossier_markdown(role_info: Dict[str, Any], background_assets: List[Dict[str, Any]]) -> str:
+def build_dossier_markdown(
+    role_info: Dict[str, Any],
+    background_assets: List[Dict[str, Any]],
+    candidate_name: Optional[str] = None,
+) -> str:
     """Builds a complete Markdown interview dossier for an opportunity."""
+    if candidate_name is None:
+        if candidate_profile:
+            candidate_name = candidate_profile.load_profile().get("name", "Candidate")
+        else:
+            candidate_name = "Candidate"
+
     company = role_info.get("company", "Target Company")
     role = role_info.get("role", "Target Role")
     tech_stack = ", ".join(role_info.get("tech_stack", []))
@@ -39,6 +60,7 @@ def build_dossier_markdown(role_info: Dict[str, Any], background_assets: List[Di
     return f"""---
 created: 2026-10-02
 type: interview-dossier
+candidate: "{candidate_name}"
 company: "{company}"
 role: "{role}"
 status: active
@@ -48,6 +70,7 @@ tags: [interview-prep, technical-interview, star-method]
 # Interview Preparation Dossier: {company} — {role}
 
 ## 1. Company & Role Intelligence
+- **Candidate:** {candidate_name}
 - **Target Company:** {company}
 - **Role:** {role}
 - **Core Technologies:** {tech_stack or "General Software / AI"}
@@ -78,6 +101,7 @@ def main():
     parser.add_argument("--company", required=True, help="Company name")
     parser.add_argument("--role", required=True, help="Role name")
     parser.add_argument("--stack", nargs="*", default=[], help="Tech stack keywords")
+    parser.add_argument("--candidate-name", help="Candidate full name")
     parser.add_argument("--output", help="Output file path")
     args = parser.parse_args()
 
@@ -86,7 +110,7 @@ def main():
         "role": args.role,
         "tech_stack": args.stack,
     }
-    content = build_dossier_markdown(role_info, [])
+    content = build_dossier_markdown(role_info, [], candidate_name=args.candidate_name)
     if args.output:
         out_path = Path(args.output)
         out_path.parent.mkdir(parents=True, exist_ok=True)

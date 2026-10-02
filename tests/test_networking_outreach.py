@@ -64,5 +64,21 @@ class TestNetworkingOutreach(unittest.TestCase):
         self.assertIn("Hi Sarah", outreach["recruiter"])
         self.assertIn("Dear Dr. Smith", outreach["hiring_manager"])
 
+    def test_default_candidate_info_when_omitted(self):
+        role_info = {
+            "company": "Anthropic",
+            "role": "Systems Research Intern",
+            "key_skill": "Distributed Training",
+        }
+        outreach = generate_outreach.build_outreach_templates(role_info)
+        self.assertIn("alumni", outreach)
+        self.assertIn("recruiter", outreach)
+        self.assertIn("hiring_manager", outreach)
+        self.assertIn("Anthropic", outreach["recruiter"])
+
+        md = generate_outreach.format_outreach_markdown(role_info)
+        self.assertIn("# Networking Outreach: Anthropic - Systems Research Intern", md)
+
+
 if __name__ == "__main__":
     unittest.main()
