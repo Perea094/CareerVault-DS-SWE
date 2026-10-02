@@ -1,0 +1,248 @@
+{
+  "main": {
+    "id": "dc49ae5748671bcf",
+    "type": "split",
+    "children": [
+      {
+        "id": "b5ac762cd5952bb1",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "e51a47718f338636",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "001-background/preferences.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "preferences"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "500d11828f092706",
+    "type": "split",
+    "children": [
+      {
+        "id": "9b34c5dde0a6eacd",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "9d6f9d060f371c5a",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Explorador de archivos"
+            }
+          },
+          {
+            "id": "bfcd201444107a39",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Buscar"
+            }
+          },
+          {
+            "id": "ac3304a5227dbc0f",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-bookmark",
+              "title": "Marcadores"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "b0e6d00b0d56f06c",
+    "type": "split",
+    "children": [
+      {
+        "id": "65b10503a2924bf0",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "df46f2f9bff85455",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "001-background/preferences.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Enlaces entrantes"
+            }
+          },
+          {
+            "id": "1846d9ec659f80e3",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "002-cv/general-cv.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Enlaces salientes"
+            }
+          },
+          {
+            "id": "f04720dbe5b61359",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Etiquetas"
+            }
+          },
+          {
+            "id": "48be918b99640c44",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "Todas las propiedades"
+            }
+          },
+          {
+            "id": "ae7a614fa163755e",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "002-cv/general-cv.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Esquema"
+            }
+          },
+          {
+            "id": "f2d9214d9c6d1976",
+            "type": "leaf",
+            "state": {
+              "type": "calendar",
+              "state": {},
+              "icon": "calendar-with-checkmark",
+              "title": "Calendar"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Abrir selector rápido": false,
+      "graph:Abrir vista gráfica": false,
+      "canvas:Crear nuevo lienzo": false,
+      "daily-notes:Abrir la nota de hoy": false,
+      "templates:Insertar plantilla": false,
+      "command-palette:Abrir paleta de comandos": false,
+      "bases:Crear nueva base": false,
+      "obsidian-excalidraw-plugin:Nuevo Bosquejo": false,
+      "obsidian-git:Open Git source control": false,
+      "realclaudian:Open Claudian": false
+    }
+  },
+  "active": "e51a47718f338636",
+  "lastOpenFiles": [
+    "001-background/projects/projects-2026-09-15.md",
+    "docs/superpowers/plans/2026-10-02-career-vault-expansion.md",
+    "tests/__pycache__/test_preference_server.cpython-311-pytest-9.1.1.pyc",
+    "tests/__pycache__/test_preference_models.cpython-311-pytest-9.1.1.pyc",
+    "tests/__pycache__/test_audit_preferences.cpython-311-pytest-9.1.1.pyc",
+    "scratch_update_audit_md.py",
+    "scratch_ingest_scouted.py",
+    "scratch_ug_rank.py",
+    "scratch_rank.py",
+    "scratch_categorized.json",
+    "scratch_deep_scout.py",
+    "scratch_print.py",
+    "004-work-opportunities/opportunities-preference-audit.md",
+    "001-background/preferences_test.md",
+    "docs/superpowers/plans/2026-10-02-dynamic-preferences-form-and-audit.md",
+    "superpowers/CLAUDE.md",
+    "superpowers/CODE_OF_CONDUCT.md",
+    "superpowers/GEMINI.md",
+    "superpowers/AGENTS.md",
+    "GEMINI.md",
+    "handoff.md",
+    "session-ses_0e09.md",
+    "004-work-opportunities/opportunities-audit-2026-09-20.md",
+    "004-work-opportunities/opportunities-audit-2026-10.md",
+    "003-extra/prompts/daily-opportunities-audit-prompt.md",
+    "004-work-opportunities/mba-internship.md",
+    "004-work-opportunities/Intern-Generative AI Research Engineer.md",
+    "004-work-opportunities/opportunities/2027 Intern - Machine Learning Engineer_files/logo_QlYL.png",
+    "004-work-opportunities/opportunities/2027 Intern - Machine Learning Engineer_files/banner_QlYL.png",
+    "004-work-opportunities/opportunities/2027 Intern - Machine Learning Engineer_files/5818c49e5b271001b6b21dc26ee20000_QlYL.png",
+    "004-work-opportunities/opportunities/AI & Data Platform Engineering Intern (Undergraduate)_files/logo_yK_r.png",
+    "004-work-opportunities/opportunities/AI & Data Platform Engineering Intern (Undergraduate)_files/banner_yK_r.png",
+    "004-work-opportunities/opportunities/AI & Data Platform Engineering Intern (Undergraduate)_files/08d6a193210101020d36aef5b7770000_yK_r.png",
+    "001-background/findings/consolidated-findings.md",
+    "004-work-opportunities/scripts/README.md",
+    "001-background/experiences/experiences-2026-10-01.md",
+    "003-extra/prompts.md",
+    "002-cv/general-cv.md",
+    "004-work-opportunities/database/README.md",
+    "002-cv/evaluations/2026-09-18-general-cv-audit.md",
+    "001-background/findings/2026-09-15/expansion-findings-2026-09-15.md",
+    "001-background/findings/2026-09-15/background-and-cv-audit.md"
+  ]
+}
