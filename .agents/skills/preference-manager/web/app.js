@@ -17,15 +17,24 @@ const DAYS = [
   { id: 'sunday', label: 'Sunday' }
 ];
 
-const TIME_SLOTS = [
-  { id: '08_10', label: '08:00 - 10:00', hours: 2 },
-  { id: '10_12', label: '10:00 - 12:00', hours: 2 },
-  { id: '12_14', label: '12:00 - 14:00', hours: 2 },
-  { id: '14_16', label: '14:00 - 16:00', hours: 2 },
-  { id: '16_18', label: '16:00 - 18:00', hours: 2 },
-  { id: '18_20', label: '18:00 - 20:00', hours: 2 },
-  { id: '20_22', label: '20:00 - 22:00', hours: 2 }
-];
+// 30-minute time slots spanning 06:00 to 22:00 (32 slots per day, 0.5 hours each)
+const TIME_SLOTS = [];
+for (let h = 6; h < 22; h++) {
+  const hPad = String(h).padStart(2, '0');
+  const hNext = String(h + 1).padStart(2, '0');
+  TIME_SLOTS.push({
+    id: `${hPad}_00`,
+    label: `${hPad}:00 - ${hPad}:30`,
+    time: `${hPad}:00`,
+    hours: 0.5
+  });
+  TIME_SLOTS.push({
+    id: `${hPad}_30`,
+    label: `${hPad}:30 - ${hNext}:00`,
+    time: `${hPad}:30`,
+    hours: 0.5
+  });
+}
 
 // Pre-seeded domain options
 const PRESET_DOMAINS = [
@@ -196,15 +205,25 @@ let state = {
   }
 };
 
-// Initialize default grid in state
 function initDefaultGrid() {
   const grid = {};
+  const classSlots = [];
+  for (let h = 8; h < 12; h++) {
+    const hp = String(h).padStart(2, '0');
+    classSlots.push(`${hp}_00`, `${hp}_30`);
+  }
+  const workSlots = [];
+  for (let h = 14; h < 20; h++) {
+    const hp = String(h).padStart(2, '0');
+    workSlots.push(`${hp}_00`, `${hp}_30`);
+  }
+
   DAYS.forEach(day => {
     grid[day.id] = {};
     TIME_SLOTS.forEach(slot => {
-      if (['monday', 'tuesday', 'wednesday', 'thursday'].includes(day.id) && ['08_10', '10_12'].includes(slot.id)) {
+      if (['monday', 'tuesday', 'wednesday', 'thursday'].includes(day.id) && classSlots.includes(slot.id)) {
         grid[day.id][slot.id] = 'classes';
-      } else if (['monday', 'tuesday', 'wednesday', 'thursday', 'friday'].includes(day.id) && ['14_16', '16_18', '18_20'].includes(slot.id)) {
+      } else if (['monday', 'tuesday', 'wednesday', 'thursday', 'friday'].includes(day.id) && workSlots.includes(slot.id)) {
         grid[day.id][slot.id] = 'available';
       } else {
         grid[day.id][slot.id] = 'busy';
@@ -299,16 +318,18 @@ function renderAvailabilityGrid() {
   TIME_SLOTS.forEach(slot => {
     // Time label cell
     const timeCell = document.createElement('div');
-    timeCell.className = 'grid-time-cell';
-    timeCell.innerHTML = `<div>${slot.label}</div><div class="hours-label">2 hrs</div>`;
+    const isHour = slot.id.endsWith('_00');
+    timeCell.className = `grid-time-cell ${isHour ? 'hour-start' : 'half-hour'}`;
+    timeCell.innerHTML = `<div class="time-main">${escapeHtml(slot.label)}</div><div class="hours-label">30m</div>`;
     container.appendChild(timeCell);
 
     // 7 day slot cells
     DAYS.forEach(day => {
       const slotCell = document.createElement('div');
-      slotCell.className = 'grid-slot-cell';
+      slotCell.className = `grid-slot-cell ${isHour ? 'hour-start' : 'half-hour'}`;
       slotCell.dataset.day = day.id;
       slotCell.dataset.slot = slot.id;
+      slotCell.title = `${day.label} ${slot.label}`;
 
       const currentStatus = (grid[day.id] && grid[day.id][slot.id]) ? grid[day.id][slot.id] : 'busy';
       applySlotStyle(slotCell, currentStatus);
@@ -438,7 +459,8 @@ function setupPresetButtons() {
     DAYS.forEach(day => {
       grid[day.id] = {};
       TIME_SLOTS.forEach(slot => {
-        if (['monday', 'tuesday', 'wednesday', 'thursday', 'friday'].includes(day.id) && ['12_14', '14_16', '16_18', '18_20', '20_22'].includes(slot.id)) {
+        const hour = parseInt(slot.id.slice(0, 2), 10);
+        if (['monday', 'tuesday', 'wednesday', 'thursday', 'friday'].includes(day.id) && hour >= 12 && hour < 20) {
           grid[day.id][slot.id] = 'available';
         } else {
           grid[day.id][slot.id] = 'busy';
@@ -447,7 +469,7 @@ function setupPresetButtons() {
     });
     state.availability_calendar.weekly_grid = grid;
     renderAvailabilityGrid();
-    showToast("All weekday afternoons set to available!", "info");
+    showToast("All weekday afternoons (12:00-20:00) set to available!", "info");
   });
 
   document.getElementById('preset-clear').addEventListener('click', () => {

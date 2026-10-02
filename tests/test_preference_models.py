@@ -20,6 +20,9 @@ class TestPreferenceModels(unittest.TestCase):
         pref = DEFAULT_PREFERENCES
         self.assertIn("availability_calendar", pref)
         self.assertIn("weekly_grid", pref["availability_calendar"])
+        self.assertEqual(len(pref["availability_calendar"]["time_slots"]), 32)
+        self.assertEqual(pref["availability_calendar"]["time_slots"][0]["label"], "06:00 - 06:30")
+        self.assertEqual(pref["availability_calendar"]["time_slots"][-1]["label"], "21:30 - 22:00")
         self.assertIn("work_arrangement", pref)
         self.assertIn("location_visa", pref)
         self.assertIn("compensation_benefits", pref)
@@ -80,7 +83,8 @@ class TestPreferenceModels(unittest.TestCase):
             self.assertEqual(reloaded["version"], "1.1")
             self.assertEqual(reloaded["status"], "active")
             self.assertIn("weekly_grid", reloaded["availability_calendar"])
-            self.assertEqual(reloaded["availability_calendar"]["weekly_grid"]["monday"]["14_16"], "available")
+            self.assertEqual(len(reloaded["availability_calendar"]["time_slots"]), 32)
+            self.assertEqual(reloaded["availability_calendar"]["weekly_grid"]["monday"]["14_00"], "available")
             self.assertIn("# Narrative Context", reloaded.get("narrative_context", ""))
         finally:
             if os.path.exists(temp_md_path):

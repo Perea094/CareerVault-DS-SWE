@@ -13,15 +13,64 @@ from typing import Any, Dict, List, Optional, Union
 
 DAYS = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
 
-TIME_SLOTS = [
-    {"id": "08_10", "label": "08:00 - 10:00", "hours": 2},
-    {"id": "10_12", "label": "10:00 - 12:00", "hours": 2},
-    {"id": "12_14", "label": "12:00 - 14:00", "hours": 2},
-    {"id": "14_16", "label": "14:00 - 16:00", "hours": 2},
-    {"id": "16_18", "label": "16:00 - 18:00", "hours": 2},
-    {"id": "18_20", "label": "18:00 - 20:00", "hours": 2},
-    {"id": "20_22", "label": "20:00 - 22:00", "hours": 2},
+# Generate 30-minute time slots from 06:00 to 22:00 (32 slots per day, 0.5 hours each)
+TIME_SLOTS: List[Dict[str, Any]] = []
+for _h in range(6, 22):
+    _h_str = f"{_h:02d}"
+    _next_h_str = f"{_h + 1:02d}"
+    TIME_SLOTS.append({
+        "id": f"{_h_str}_00",
+        "label": f"{_h_str}:00 - {_h_str}:30",
+        "hours": 0.5,
+    })
+    TIME_SLOTS.append({
+        "id": f"{_h_str}_30",
+        "label": f"{_h_str}:30 - {_next_h_str}:00",
+        "hours": 0.5,
+    })
+
+# Slot IDs for university classes (08:00 to 12:00 -> 8 slots, 4h/day)
+CLASS_SLOT_IDS: List[str] = [
+    f"{_h:02d}_{_m}" for _h in range(8, 12) for _m in ["00", "30"]
 ]
+
+# Slot IDs for available work hours (14:00 to 20:00 -> 12 slots, 6h/day, 30h/week Mon-Fri)
+WORK_SLOT_IDS: List[str] = [
+    f"{_h:02d}_{_m}" for _h in range(14, 20) for _m in ["00", "30"]
+]
+
+# Mapping from legacy 2-hour slots to 30-minute slots
+OLD_TO_NEW_SLOT_MAP: Dict[str, List[str]] = {
+    "08_10": ["08_00", "08_30", "09_00", "09_30"],
+    "10_12": ["10_00", "10_30", "11_00", "11_30"],
+    "12_14": ["12_00", "12_30", "13_00", "13_30"],
+    "14_16": ["14_00", "14_30", "15_00", "15_30"],
+    "16_18": ["16_00", "16_30", "17_00", "17_30"],
+    "18_20": ["18_00", "18_30", "19_00", "19_30"],
+    "20_22": ["20_00", "20_30", "21_00", "21_30"],
+}
+
+
+def normalize_weekly_grid(grid: Dict[str, Any]) -> Dict[str, Dict[str, str]]:
+    """Normalize weekly grid to standard 32 30-minute slots from 06:00 to 22:00."""
+    normalized: Dict[str, Dict[str, str]] = {}
+    for day in DAYS:
+        normalized[day] = {}
+        day_input = grid.get(day, {})
+        has_old_keys = any(k in OLD_TO_NEW_SLOT_MAP for k in day_input)
+        if has_old_keys:
+            for slot in TIME_SLOTS:
+                normalized[day][slot["id"]] = "busy"
+            for old_key, new_keys in OLD_TO_NEW_SLOT_MAP.items():
+                status = day_input.get(old_key, "busy")
+                for nk in new_keys:
+                    normalized[day][nk] = status
+        else:
+            for slot in TIME_SLOTS:
+                slot_id = slot["id"]
+                normalized[day][slot_id] = day_input.get(slot_id, "busy")
+    return normalized
+
 
 # Generate default grid: Mon-Thu mornings are classes, Mon-Fri afternoons are available, others busy
 DEFAULT_GRID: Dict[str, Dict[str, str]] = {}
@@ -29,12 +78,13 @@ for d in DAYS:
     DEFAULT_GRID[d] = {}
     for slot in TIME_SLOTS:
         slot_id = slot["id"]
-        if d in ["monday", "tuesday", "wednesday", "thursday"] and slot_id in ["08_10", "10_12"]:
+        if d in ["monday", "tuesday", "wednesday", "thursday"] and slot_id in CLASS_SLOT_IDS:
             DEFAULT_GRID[d][slot_id] = "classes"
-        elif d in ["monday", "tuesday", "wednesday", "thursday", "friday"] and slot_id in ["14_16", "16_18", "18_20"]:
+        elif d in ["monday", "tuesday", "wednesday", "thursday", "friday"] and slot_id in WORK_SLOT_IDS:
             DEFAULT_GRID[d][slot_id] = "available"
         else:
             DEFAULT_GRID[d][slot_id] = "busy"
+
 
 DEFAULT_PREFERENCES: Dict[str, Any] = {
     "version": "1.1",
@@ -172,6 +222,12 @@ class PreferenceModel:
         else:
             raise TypeError("data must be a dict or PreferenceModel instance")
 
+        if "availability_calendar" in self.data and isinstance(self.data["availability_calendar"], dict):
+            cal = self.data["availability_calendar"]
+            cal["time_slots"] = copy.deepcopy(TIME_SLOTS)
+            if "weekly_grid" in cal and isinstance(cal["weekly_grid"], dict):
+                cal["weekly_grid"] = normalize_weekly_grid(cal["weekly_grid"])
+
     def calculate_available_hours(self) -> float:
         """Calculate total weekly available hours from availability_calendar.weekly_grid."""
         grid = self.data.get("availability_calendar", {}).get("weekly_grid", {})
@@ -188,13 +244,13 @@ class PreferenceModel:
                         stat_val = str(status).lower()
 
                     if stat_val == "available":
-                        total += slot_hours.get(slot_id, 2.0)
+                        total += slot_hours.get(slot_id, 0.5)
             elif isinstance(slots, list):
                 for item in slots:
                     if isinstance(item, dict):
                         stat_val = str(item.get("status", "")).lower()
                         if stat_val == "available" or (not stat_val and item.get("available") is True):
-                            total += item.get("hours", 2.0)
+                            total += item.get("hours", 0.5)
         return total
 
     def to_dict(self) -> Dict[str, Any]:
@@ -211,7 +267,13 @@ def load_preferences_json(path: str) -> Dict[str, Any]:
     if not os.path.exists(path):
         return copy.deepcopy(DEFAULT_PREFERENCES)
     with open(path, "r", encoding="utf-8") as f:
-        return json.load(f)
+        data = json.load(f)
+    if isinstance(data, dict) and "availability_calendar" in data and isinstance(data["availability_calendar"], dict):
+        cal = data["availability_calendar"]
+        cal["time_slots"] = copy.deepcopy(TIME_SLOTS)
+        if "weekly_grid" in cal and isinstance(cal["weekly_grid"], dict):
+            cal["weekly_grid"] = normalize_weekly_grid(cal["weekly_grid"])
+    return data
 
 
 def save_preferences_json(data: Union[Dict[str, Any], PreferenceModel], path: str) -> None:

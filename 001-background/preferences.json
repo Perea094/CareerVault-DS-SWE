@@ -6,7 +6,7 @@
     "name": "Diego Perea León",
     "university": "Tecnológico de Monterrey (Campus Querétaro)",
     "degree": "B.S. Data Science & Mathematics",
-    "current_semester": "4th semester",
+    "current_semester": "5th semester",
     "expected_graduation": "May 2028",
     "email_contact": "diego.perea@tec.mx"
   },
@@ -27,7 +27,7 @@
   "academic_context": {
     "university": "Tecnológico de Monterrey (Campus Querétaro)",
     "program": "B.S. Data Science & Mathematics",
-    "term": "4th semester",
+    "term": "5th semester",
     "expected_graduation": "May 2028",
     "class_schedule_status": "Morning classes likely; schedule TBD",
     "focus_areas": [
@@ -39,104 +39,404 @@
   "availability_calendar": {
     "time_slots": [
       {
-        "id": "08_10",
-        "label": "08:00 - 10:00",
-        "hours": 2
+        "id": "06_00",
+        "label": "06:00 - 06:30",
+        "hours": 0.5
       },
       {
-        "id": "10_12",
-        "label": "10:00 - 12:00",
-        "hours": 2
+        "id": "06_30",
+        "label": "06:30 - 07:00",
+        "hours": 0.5
       },
       {
-        "id": "12_14",
-        "label": "12:00 - 14:00",
-        "hours": 2
+        "id": "07_00",
+        "label": "07:00 - 07:30",
+        "hours": 0.5
       },
       {
-        "id": "14_16",
-        "label": "14:00 - 16:00",
-        "hours": 2
+        "id": "07_30",
+        "label": "07:30 - 08:00",
+        "hours": 0.5
       },
       {
-        "id": "16_18",
-        "label": "16:00 - 18:00",
-        "hours": 2
+        "id": "08_00",
+        "label": "08:00 - 08:30",
+        "hours": 0.5
       },
       {
-        "id": "18_20",
-        "label": "18:00 - 20:00",
-        "hours": 2
+        "id": "08_30",
+        "label": "08:30 - 09:00",
+        "hours": 0.5
       },
       {
-        "id": "20_22",
-        "label": "20:00 - 22:00",
-        "hours": 2
+        "id": "09_00",
+        "label": "09:00 - 09:30",
+        "hours": 0.5
+      },
+      {
+        "id": "09_30",
+        "label": "09:30 - 10:00",
+        "hours": 0.5
+      },
+      {
+        "id": "10_00",
+        "label": "10:00 - 10:30",
+        "hours": 0.5
+      },
+      {
+        "id": "10_30",
+        "label": "10:30 - 11:00",
+        "hours": 0.5
+      },
+      {
+        "id": "11_00",
+        "label": "11:00 - 11:30",
+        "hours": 0.5
+      },
+      {
+        "id": "11_30",
+        "label": "11:30 - 12:00",
+        "hours": 0.5
+      },
+      {
+        "id": "12_00",
+        "label": "12:00 - 12:30",
+        "hours": 0.5
+      },
+      {
+        "id": "12_30",
+        "label": "12:30 - 13:00",
+        "hours": 0.5
+      },
+      {
+        "id": "13_00",
+        "label": "13:00 - 13:30",
+        "hours": 0.5
+      },
+      {
+        "id": "13_30",
+        "label": "13:30 - 14:00",
+        "hours": 0.5
+      },
+      {
+        "id": "14_00",
+        "label": "14:00 - 14:30",
+        "hours": 0.5
+      },
+      {
+        "id": "14_30",
+        "label": "14:30 - 15:00",
+        "hours": 0.5
+      },
+      {
+        "id": "15_00",
+        "label": "15:00 - 15:30",
+        "hours": 0.5
+      },
+      {
+        "id": "15_30",
+        "label": "15:30 - 16:00",
+        "hours": 0.5
+      },
+      {
+        "id": "16_00",
+        "label": "16:00 - 16:30",
+        "hours": 0.5
+      },
+      {
+        "id": "16_30",
+        "label": "16:30 - 17:00",
+        "hours": 0.5
+      },
+      {
+        "id": "17_00",
+        "label": "17:00 - 17:30",
+        "hours": 0.5
+      },
+      {
+        "id": "17_30",
+        "label": "17:30 - 18:00",
+        "hours": 0.5
+      },
+      {
+        "id": "18_00",
+        "label": "18:00 - 18:30",
+        "hours": 0.5
+      },
+      {
+        "id": "18_30",
+        "label": "18:30 - 19:00",
+        "hours": 0.5
+      },
+      {
+        "id": "19_00",
+        "label": "19:00 - 19:30",
+        "hours": 0.5
+      },
+      {
+        "id": "19_30",
+        "label": "19:30 - 20:00",
+        "hours": 0.5
+      },
+      {
+        "id": "20_00",
+        "label": "20:00 - 20:30",
+        "hours": 0.5
+      },
+      {
+        "id": "20_30",
+        "label": "20:30 - 21:00",
+        "hours": 0.5
+      },
+      {
+        "id": "21_00",
+        "label": "21:00 - 21:30",
+        "hours": 0.5
+      },
+      {
+        "id": "21_30",
+        "label": "21:30 - 22:00",
+        "hours": 0.5
       }
     ],
     "weekly_grid": {
       "monday": {
-        "08_10": "classes",
-        "10_12": "classes",
-        "12_14": "busy",
-        "14_16": "available",
-        "16_18": "available",
-        "18_20": "available",
-        "20_22": "busy"
+        "06_00": "busy",
+        "06_30": "busy",
+        "07_00": "busy",
+        "07_30": "busy",
+        "08_00": "busy",
+        "08_30": "busy",
+        "09_00": "busy",
+        "09_30": "busy",
+        "10_00": "classes",
+        "10_30": "classes",
+        "11_00": "classes",
+        "11_30": "classes",
+        "12_00": "classes",
+        "12_30": "classes",
+        "13_00": "classes",
+        "13_30": "classes",
+        "14_00": "classes",
+        "14_30": "classes",
+        "15_00": "classes",
+        "15_30": "classes",
+        "16_00": "classes",
+        "16_30": "classes",
+        "17_00": "classes",
+        "17_30": "classes",
+        "18_00": "busy",
+        "18_30": "busy",
+        "19_00": "busy",
+        "19_30": "busy",
+        "20_00": "available",
+        "20_30": "available",
+        "21_00": "available",
+        "21_30": "available"
       },
       "tuesday": {
-        "08_10": "classes",
-        "10_12": "classes",
-        "12_14": "busy",
-        "14_16": "available",
-        "16_18": "available",
-        "18_20": "available",
-        "20_22": "busy"
+        "06_00": "busy",
+        "06_30": "busy",
+        "07_00": "busy",
+        "07_30": "busy",
+        "08_00": "busy",
+        "08_30": "busy",
+        "09_00": "busy",
+        "09_30": "busy",
+        "10_00": "classes",
+        "10_30": "classes",
+        "11_00": "classes",
+        "11_30": "classes",
+        "12_00": "classes",
+        "12_30": "classes",
+        "13_00": "classes",
+        "13_30": "classes",
+        "14_00": "classes",
+        "14_30": "classes",
+        "15_00": "classes",
+        "15_30": "classes",
+        "16_00": "classes",
+        "16_30": "classes",
+        "17_00": "classes",
+        "17_30": "classes",
+        "18_00": "classes",
+        "18_30": "classes",
+        "19_00": "classes",
+        "19_30": "classes",
+        "20_00": "available",
+        "20_30": "available",
+        "21_00": "available",
+        "21_30": "available"
       },
       "wednesday": {
-        "08_10": "classes",
-        "10_12": "classes",
-        "12_14": "busy",
-        "14_16": "available",
-        "16_18": "available",
-        "18_20": "available",
-        "20_22": "busy"
+        "06_00": "busy",
+        "06_30": "busy",
+        "07_00": "busy",
+        "07_30": "busy",
+        "08_00": "busy",
+        "08_30": "busy",
+        "09_00": "busy",
+        "09_30": "busy",
+        "10_00": "available",
+        "10_30": "available",
+        "11_00": "available",
+        "11_30": "available",
+        "12_00": "available",
+        "12_30": "available",
+        "13_00": "available",
+        "13_30": "available",
+        "14_00": "classes",
+        "14_30": "classes",
+        "15_00": "classes",
+        "15_30": "classes",
+        "16_00": "classes",
+        "16_30": "classes",
+        "17_00": "classes",
+        "17_30": "classes",
+        "18_00": "available",
+        "18_30": "available",
+        "19_00": "available",
+        "19_30": "available",
+        "20_00": "available",
+        "20_30": "available",
+        "21_00": "available",
+        "21_30": "available"
       },
       "thursday": {
-        "08_10": "classes",
-        "10_12": "classes",
-        "12_14": "busy",
-        "14_16": "available",
-        "16_18": "available",
-        "18_20": "available",
-        "20_22": "busy"
+        "06_00": "busy",
+        "06_30": "busy",
+        "07_00": "busy",
+        "07_30": "busy",
+        "08_00": "busy",
+        "08_30": "busy",
+        "09_00": "busy",
+        "09_30": "busy",
+        "10_00": "classes",
+        "10_30": "classes",
+        "11_00": "classes",
+        "11_30": "classes",
+        "12_00": "classes",
+        "12_30": "classes",
+        "13_00": "classes",
+        "13_30": "classes",
+        "14_00": "classes",
+        "14_30": "classes",
+        "15_00": "classes",
+        "15_30": "classes",
+        "16_00": "classes",
+        "16_30": "classes",
+        "17_00": "classes",
+        "17_30": "classes",
+        "18_00": "busy",
+        "18_30": "busy",
+        "19_00": "busy",
+        "19_30": "busy",
+        "20_00": "available",
+        "20_30": "available",
+        "21_00": "available",
+        "21_30": "available"
       },
       "friday": {
-        "08_10": "busy",
-        "10_12": "busy",
-        "12_14": "busy",
-        "14_16": "available",
-        "16_18": "available",
-        "18_20": "available",
-        "20_22": "busy"
+        "06_00": "busy",
+        "06_30": "busy",
+        "07_00": "busy",
+        "07_30": "busy",
+        "08_00": "busy",
+        "08_30": "busy",
+        "09_00": "busy",
+        "09_30": "busy",
+        "10_00": "classes",
+        "10_30": "classes",
+        "11_00": "classes",
+        "11_30": "classes",
+        "12_00": "classes",
+        "12_30": "classes",
+        "13_00": "classes",
+        "13_30": "classes",
+        "14_00": "classes",
+        "14_30": "classes",
+        "15_00": "classes",
+        "15_30": "classes",
+        "16_00": "classes",
+        "16_30": "classes",
+        "17_00": "classes",
+        "17_30": "classes",
+        "18_00": "classes",
+        "18_30": "classes",
+        "19_00": "classes",
+        "19_30": "classes",
+        "20_00": "available",
+        "20_30": "available",
+        "21_00": "available",
+        "21_30": "available"
       },
       "saturday": {
-        "08_10": "busy",
-        "10_12": "busy",
-        "12_14": "busy",
-        "14_16": "busy",
-        "16_18": "busy",
-        "18_20": "busy",
-        "20_22": "busy"
+        "06_00": "busy",
+        "06_30": "busy",
+        "07_00": "busy",
+        "07_30": "busy",
+        "08_00": "busy",
+        "08_30": "busy",
+        "09_00": "busy",
+        "09_30": "busy",
+        "10_00": "classes",
+        "10_30": "classes",
+        "11_00": "classes",
+        "11_30": "classes",
+        "12_00": "classes",
+        "12_30": "classes",
+        "13_00": "classes",
+        "13_30": "classes",
+        "14_00": "available",
+        "14_30": "available",
+        "15_00": "available",
+        "15_30": "available",
+        "16_00": "available",
+        "16_30": "available",
+        "17_00": "available",
+        "17_30": "available",
+        "18_00": "available",
+        "18_30": "available",
+        "19_00": "available",
+        "19_30": "available",
+        "20_00": "available",
+        "20_30": "available",
+        "21_00": "available",
+        "21_30": "available"
       },
       "sunday": {
-        "08_10": "busy",
-        "10_12": "busy",
-        "12_14": "busy",
-        "14_16": "busy",
-        "16_18": "busy",
-        "18_20": "busy",
-        "20_22": "busy"
+        "06_00": "busy",
+        "06_30": "busy",
+        "07_00": "busy",
+        "07_30": "busy",
+        "08_00": "busy",
+        "08_30": "busy",
+        "09_00": "busy",
+        "09_30": "busy",
+        "10_00": "available",
+        "10_30": "available",
+        "11_00": "available",
+        "11_30": "available",
+        "12_00": "available",
+        "12_30": "available",
+        "13_00": "available",
+        "13_30": "available",
+        "14_00": "available",
+        "14_30": "available",
+        "15_00": "available",
+        "15_30": "available",
+        "16_00": "available",
+        "16_30": "available",
+        "17_00": "available",
+        "17_30": "available",
+        "18_00": "available",
+        "18_30": "available",
+        "19_00": "available",
+        "19_30": "available",
+        "20_00": "busy",
+        "20_30": "busy",
+        "21_00": "busy",
+        "21_30": "busy"
       }
     },
     "target_weekly_hours_min": 20,
@@ -164,7 +464,7 @@
   },
   "compensation_benefits": {
     "minimum_hourly": 20,
-    "equity_importance": "Don't care",
+    "equity_importance": "Nice to have",
     "benefits_priorities": [
       "PTO",
       "Health insurance",

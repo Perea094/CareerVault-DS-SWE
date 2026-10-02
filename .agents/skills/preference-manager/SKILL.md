@@ -66,9 +66,9 @@ The web UI guides Diego through structured configuration cards:
 1. **Work Modality Ranking:**
    - Drag-and-drop or use up/down reorder buttons to rank `Remote`, `Hybrid`, and `Onsite`.
 2. **Weekly Availability & Schedule Grid:**
-   - 7 days (Monday–Sunday) across 7 two-hour blocks (08:00–10:00, 10:00–12:00, 12:00–14:00, 14:00–16:00, 16:00–18:00, 18:00–20:00, 20:00–22:00).
+   - 7 days (Monday–Sunday) across 32 thirty-minute time blocks from 06:00 to 22:00 (06:00–06:30 through 21:30–22:00).
    - Click or drag-select cells to cycle through 3 slot states:
-     - `available` (open for work/projects, adds 2 hrs to weekly tally)
+     - `available` (open for work/projects, adds 0.5 hrs (30 min) to weekly tally)
      - `classes` (academic coursework / Tec commitments)
      - `busy` (personal blocks, study, or other commitments)
    - Real-time weekly available hours calculator (summing active `available` slots).
