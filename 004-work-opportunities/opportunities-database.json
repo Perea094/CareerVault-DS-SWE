@@ -1,0 +1,2791 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Curriculum Opportunities Database",
+  "description": "Structured repository of evaluated job and internship opportunities aligned with Diego Perea León's profile and constraints.",
+  "version": "1.0.0",
+  "created": "2026-09-20",
+  "last_updated": "2026-10-02",
+  "total_records": 61,
+  "candidate": {
+    "name": "Diego Perea León",
+    "degree": "B.S. Data Science & Mathematics",
+    "institution": "Tecnológico de Monterrey (Campus Querétaro)",
+    "graduation_date": "May 2028",
+    "location": "Querétaro, Mexico",
+    "us_work_authorization": "None (Requires Visa Sponsorship / Remote / Local Entity)",
+    "target_hours_per_week": "20-30 hrs/week (Semester) or 40 hrs/week (Summer/Breaks)",
+    "preferences_source": "001-background/preferences.md"
+  },
+  "data_sources": [
+    "https://github.com/speedyapply/2027-AI-College-Jobs",
+    "https://github.com/speedyapply/2027-SWE-College-Jobs",
+    "004-work-opportunities/opportunities-audit-2026-09-20.md"
+  ],
+  "opportunities": [
+    {
+      "id": "opp-01-salesforce-ai-builder-intern-mexico",
+      "numeric_id": 1,
+      "company": "Salesforce",
+      "role": "AI Builder Intern [Mexico]",
+      "tier": "Tier 1: Maximum Viability — Mexico & LATAM (Direct Legal Match)",
+      "location": "Mexico City, Mexico (Flexible Hybrid / Remote Days)",
+      "work_arrangement": "Part-time, Fixed Term & Temporary (University Futureforce Program)",
+      "hours_per_week": "20-30",
+      "compensation": "Standard Corporate",
+      "realistic_success_ratio": "85% - 90%",
+      "success_ratio_min": 0.85,
+      "success_ratio_max": 0.9,
+      "success_ratio_justification": "Extremely high pass rate. You are a Mexican national at a top tier university (Tec de Monterrey) studying Data Science & Math, already building agentic workflows).",
+      "urgency": "High (Posted 9d ago)",
+      "strategic_action": "Immediate Apply (Tier 1)",
+      "source_repo": "https://github.com/speedyapply/2027-AI-College-Jobs",
+      "apply_url": "https://salesforce.wd12.myworkdayjobs.com/en-US/external_career_site/job/Mexico---Mexico-City/AI-Builder-Intern--Mexico-_JR359971-2",
+      "file_reference": "004-work-opportunities/opportunities/AI Builder Intern [Mexico].htm",
+      "vault_note": "004-work-opportunities/eligible/intl-internships/2026-09-20-salesforce-ai-builder-intern-mexico.md",
+      "status": "eligible",
+      "application_status": "pending_tailoring",
+      "key_points_to_highlight": [
+        "Autonomous Agents & Tool Calling: Highlight your practical experience with agentic frameworks (**Antigravity, Claude Code, OpenCode**), autonomous decision loops, and structured tool calling.",
+        "Tooling Stack: Salesforce explicitly highlights that interns work with **Claude, Cursor, and Agentforce**. Highlight your deep daily workflow with Cursor and Claude for code generation, prompt decomposition, and testing.",
+        "Prompt Engineering: Highlight your systematic prompt techniques (Few-shot, Chain-of-Thought, ReAct, XML tagging).",
+        "LEIA Leadership: Highlight co-founding LEIA at Tec de Monterrey, signaling early initiative, curiosity, and rapid execution."
+      ],
+      "key_considerations": [
+        "Designed for students currently in school. Part-time load is fully compatible with morning lectures.",
+        "Sits alongside customer-facing teams building production Agentforce solutions for Fortune 500 companies."
+      ],
+      "pros": [
+        "Massive tier-1 corporate brand",
+        "directly aligns with your GenAI/LLM/Agent interests",
+        "dedicated mentorship and onboarding buddy."
+      ],
+      "cons": [
+        "Hybrid office in Mexico City (may require occasional commuting or travel from Querétaro)."
+      ],
+      "missing_or_bridge_skills": [
+        "Salesforce Ecosystem & Agentforce architecture: Complete the free introductory **Salesforce Trailhead** modules on Agentforce and Salesforce Data Cloud before your interview."
+      ],
+      "date_identified": "2026-09-20",
+      "last_audited": "2026-09-20"
+    },
+    {
+      "id": "opp-02-thomson-reuters-ai-training-claude-implementation-intern",
+      "numeric_id": 2,
+      "company": "Thomson Reuters",
+      "role": "AI Training & Claude Implementation Intern",
+      "tier": "Tier 1: Maximum Viability — Mexico & LATAM (Direct Legal Match)",
+      "location": "Mexico City, Mexico (Mexico Global Center - Flex My Way Hybrid)",
+      "work_arrangement": "Part-time",
+      "hours_per_week": "20-30",
+      "compensation": "Standard Corporate",
+      "realistic_success_ratio": "85% - 90%",
+      "success_ratio_min": 0.85,
+      "success_ratio_max": 0.9,
+      "success_ratio_justification": "Near perfect alignment between your student workshop teaching experience and their enablement mandate).",
+      "urgency": "High (Posted 18d ago)",
+      "strategic_action": "Immediate Apply (Tier 1)",
+      "source_repo": "https://github.com/speedyapply/2027-AI-College-Jobs",
+      "apply_url": "https://thomsonreuters.wd5.myworkdayjobs.com/en-US/external_career_site/job/Mexico-Mexico-City/AI-Training---Claude-Implementation-Intern_JREQ203272",
+      "file_reference": "004-work-opportunities/opportunities/AI Training & Claude Implementation Intern.htm",
+      "vault_note": "004-work-opportunities/eligible/intl-internships/2026-09-20-thomson-reuters-ai-training-claude-intern-mexico.md",
+      "status": "eligible",
+      "application_status": "pending_tailoring",
+      "key_points_to_highlight": [
+        "Anthropic Claude Expertise: The JD explicitly states: *\"Learn the full breadth of Claude's capabilities (models, artifacts, projects, file analysis, web search, extended thinking)...\"* Highlight your comprehensive understanding of Claude 3.5 Sonnet, context window utilization, Claude projects, and system prompt engineering.",
+        "Prompt Frameworks & Enablement: The role uses the **C.R.E.A.T.E.** prompt framework. Highlight your coursework in *Inteligencia Artificial Generativa* and your leadership leading **LEIA AI Workshops** for 30+ students (proven ability to teach AI concepts clearly).",
+        "Documentation & Evals: Mention your practice maintaining comprehensive technical logs and reproducible prompt templates."
+      ],
+      "key_considerations": [
+        "Part-time structure built for university students.",
+        "High focus on education, responsible AI usage, and internal tool adoption."
+      ],
+      "pros": [
+        "Directly works with cutting-edge Anthropic Claude features",
+        "excellent work-life balance (*Flex My Way* policy with 8 weeks remote/year)",
+        "low barrier to entry for a proactive Tec student."
+      ],
+      "cons": [
+        "More enablement/training/prompting focused rather than heavy C++/PyTorch low-level model architecture."
+      ],
+      "missing_or_bridge_skills": [
+        "Enterprise change management & prompt auditing frameworks (e.g., C.R.E.A.T.E. framework). Review Anthropic's official prompt engineering interactive tutorial on GitHub."
+      ],
+      "date_identified": "2026-09-20",
+      "last_audited": "2026-09-20"
+    },
+    {
+      "id": "opp-03-shift-technology-data-scientist-intern-english-speaker",
+      "numeric_id": 3,
+      "company": "Shift Technology",
+      "role": "Data Scientist Intern (English Speaker)",
+      "tier": "Tier 1: Maximum Viability — Mexico & LATAM (Direct Legal Match)",
+      "location": "Mexico City, Mexico",
+      "work_arrangement": "Minimum 6-Month Internship (Requires official University Agreement / Convenio de Prácticas)",
+      "hours_per_week": "40 (Summer/Break)",
+      "compensation": "Standard Corporate",
+      "realistic_success_ratio": "80% - 85%",
+      "success_ratio_min": 0.8,
+      "success_ratio_max": 0.85,
+      "success_ratio_justification": "Tec de Monterrey provides the mandatory *Convenio de Prácticas Profesionales* standardly).",
+      "urgency": "Active (Requires Convenio)",
+      "strategic_action": "Apply via Tec Convenio",
+      "source_repo": "https://github.com/speedyapply/2027-AI-College-Jobs",
+      "apply_url": "https://job-boards.greenhouse.io/shifttechnology/jobs/7652429003",
+      "file_reference": "004-work-opportunities/opportunities/Job Application for Data Scientist Intern (English Speaker) at Shift Technology.htm",
+      "vault_note": null,
+      "status": "eligible",
+      "application_status": "pending_tailoring",
+      "key_points_to_highlight": [
+        "Applied Mathematics & Algorithmic Rigor: Shift builds insurance fraud detection and decision agents. Highlight your dual Data Science & Mathematics degree, GPA (94/100), and mathematical modeling rigor.",
+        "Object-Oriented Programming (OOP) & SQL: Mention Python, SQL, and your C# / C++ projects (Labyrinth 3D engine and C++ racing game) to prove software engineering fluency.",
+        "Industry Practical Experience: Highlight your internship at **Aristor Consultoría** building geospatial predictive scoring models.",
+        "Bilingual Fluency: Emphasize fluent English and native Spanish."
+      ],
+      "key_considerations": [
+        "Minimum commitment of 6 months.",
+        "Mandatory university contract (convenio) signed by Tec de Monterrey."
+      ],
+      "pros": [
+        "High-growth French-founded AI unicorn in insurance automation",
+        "heavy mathematical modeling and client interaction",
+        "full English-speaking international team."
+      ],
+      "cons": [
+        "Requires committing for at least 6 months",
+        "fraud detection modeling is domain-heavy."
+      ],
+      "missing_or_bridge_skills": [
+        "Insurance fraud concepts (claims fraud, healthcare abuse patterns) and enterprise SQL optimization. Brush up on advanced SQL window functions and anomaly detection algorithms (Isolation Forests, One-Class SVM)."
+      ],
+      "date_identified": "2026-09-20",
+      "last_audited": "2026-09-20"
+    },
+    {
+      "id": "opp-04-bbva-data-scientist-associate-ai-performance-evolution",
+      "numeric_id": 4,
+      "company": "BBVA",
+      "role": "Data Scientist Associate – AI Performance & Evolution",
+      "tier": "Tier 1: Maximum Viability — Mexico & LATAM (Direct Legal Match)",
+      "location": "Mexico City (Cuauhtémoc), Mexico (Hybrid)",
+      "work_arrangement": "Full-Time Associate (Junior / Early Career)",
+      "hours_per_week": "40 (Summer/Break)",
+      "compensation": "Standard Corporate",
+      "realistic_success_ratio": "70% - 75%",
+      "success_ratio_min": 0.7,
+      "success_ratio_max": 0.75,
+      "success_ratio_justification": "Strong technical match, but it is listed as Full-Time Associate, so you must negotiate flexible hours or confirm if ongoing undergraduate status is accepted).",
+      "urgency": "⚠️ **URGENT: Closes Sep 21!**",
+      "strategic_action": "Immediate 1-Click Submit",
+      "source_repo": "https://github.com/speedyapply/2027-AI-College-Jobs",
+      "apply_url": "https://bbva.wd3.myworkdayjobs.com/en-US/BBVA/job/Data-Scientist-Associate---AI-Performance---Evolution--Ciudad-de-Mxico-_JR00115182",
+      "file_reference": "004-work-opportunities/opportunities/Data Scientist Associate – AI Performance & Evolution (Ciudad de México).htm",
+      "vault_note": null,
+      "status": "eligible",
+      "application_status": "pending_tailoring",
+      "key_points_to_highlight": [
+        "LLM Evals & Golden Datasets: The JD is obsessed with: *\"Liderarás el uso de Evals, Golden Datasets y trazas productivas con el fin de diagnosticar degradaciones y realizar análisis de causa raíz.\"* Highlight your experience building automated evaluation benchmarks, unit test suites (630 tests in pytest for LEIA), and LLM metrics.",
+        "Monitoring & Telemetry: Highlight your telemetry and dashboard work on **DAVE** (FastAPI, logging, clip buffer) and **Street Fighter Gradio Hub**.",
+        "Databricks Sun Holdings Challenge: Mention your ongoing work in the 13-Week Databricks Challenge for fraud and pricing analytics."
+      ],
+      "key_considerations": [
+        "⚠️ **CRITICAL DEADLINE ALERT: Closes on September 21, 2026 (Tomorrow!). Workday profile must be filled out 100%.**"
+      ],
+      "pros": [
+        "Elite Latin American financial institution",
+        "very modern technical mandate (AI Observability, LLM Evals, Runbooks)",
+        "permanent contract opportunity."
+      ],
+      "cons": [
+        "Listed as Full-time, which would conflict with morning lectures unless remote/hybrid flexibility is negotiated."
+      ],
+      "missing_or_bridge_skills": [
+        "AI Observability tools (Arize, LangSmith, TruLens) and ITIL incident management runbooks."
+      ],
+      "date_identified": "2026-09-20",
+      "last_audited": "2026-09-20"
+    },
+    {
+      "id": "opp-05-healthesystems-intern-artificial-intelligence-engineer",
+      "numeric_id": 5,
+      "company": "Healthesystems",
+      "role": "Intern - Artificial Intelligence Engineer",
+      "tier": "Tier 2: High Viability — Part-Time & Fully Remote AI / Data Roles",
+      "location": "Remote",
+      "work_arrangement": "**Part-Time - Remote**",
+      "hours_per_week": "20-30",
+      "compensation": "Standard Corporate",
+      "realistic_success_ratio": "75% - 80%",
+      "success_ratio_min": 0.75,
+      "success_ratio_max": 0.8,
+      "success_ratio_justification": "Extremely rare: an explicit Part-Time + Remote AI Engineer role posted just 1 day ago).",
+      "urgency": "High (Posted 1d ago)",
+      "strategic_action": "Apply (Verify Remote/Contractor)",
+      "source_repo": "https://github.com/speedyapply/2027-AI-College-Jobs",
+      "apply_url": "https://healthesystems.com/careers-list/?gh_jid=7928315003",
+      "file_reference": "004-work-opportunities/opportunities/Careers List - Healthesystems.htm",
+      "vault_note": "004-work-opportunities/eligible/usa-internships/2026-09-20-healthesystems-ai-engineer-part-time-remote.md",
+      "status": "eligible",
+      "application_status": "pending_tailoring",
+      "key_points_to_highlight": [
+        "Healthcare / Biometrics AI: Highlight **DAVE (Driver Attention & Vigilance Engine)**, emphasizing real-time biomechanical analysis (EAR, MAR, eye tracking) and sensor fusion, showing you can handle sensitive human biometric data.",
+        "Model Optimization & Pipelines: Highlight ONNX runtime, PyTorch model deployment, and FastAPI backend engineering.",
+        "Time Commitment: Reiterate availability for **20–30 hours/week**, directly matching their part-time requirement."
+      ],
+      "key_considerations": [
+        "Need to verify whether they hire international independent contractors in Mexico or require US residential tax status."
+      ],
+      "pros": [
+        "Exact match for your 20-30 hrs/week preference",
+        "100% remote",
+        "healthcare analytics domain."
+      ],
+      "cons": [
+        "US corporate entity may require W-8BEN contractor onboarding if you lack US work authorization."
+      ],
+      "missing_or_bridge_skills": [
+        "Familiarity with HIPAA guidelines and healthcare claims analytics."
+      ],
+      "date_identified": "2026-09-20",
+      "last_audited": "2026-09-20"
+    },
+    {
+      "id": "opp-06-single-grain-llc-ai-automation-internship",
+      "numeric_id": 6,
+      "company": "Single Grain LLC",
+      "role": "AI Automation Internship",
+      "tier": "Tier 2: High Viability — Part-Time & Fully Remote AI / Data Roles",
+      "location": "Remote",
+      "work_arrangement": "Internship / Flexible Remote",
+      "hours_per_week": "40 (Summer/Break)",
+      "compensation": "Standard Corporate",
+      "realistic_success_ratio": "75% - 80%",
+      "success_ratio_min": 0.75,
+      "success_ratio_max": 0.8,
+      "success_ratio_justification": "Single Grain is an agile digital marketing & AI agency known for hiring talent globally with portfolio-based reviews).",
+      "urgency": "Active (Posted 5d ago)",
+      "strategic_action": "Apply (Portfolio Link)",
+      "source_repo": "https://github.com/speedyapply/2027-AI-College-Jobs",
+      "apply_url": "https://jobs.gusto.com/postings/single-grain-llc-ai-automation-internship-120b7ba9-6a00-4379-b022-0592f78fc3e6",
+      "file_reference": "004-work-opportunities/opportunities/AI Automation Internship at Single Grain LLC.htm",
+      "vault_note": null,
+      "status": "eligible",
+      "application_status": "pending_tailoring",
+      "key_points_to_highlight": [
+        "Autonomous Agents & Scripting: JD specifies: *\"Design, prompt engineer, and prototype flows in Zapier Agents, n8n, Make.com, Lindy.ai, or custom Python/LangChain scripts.\"* Highlight your Python, LangChain, LlamaIndex, and agentic workflows.",
+        "Vector Databases & RAG: Highlight your knowledge of vector embeddings, semantic chunking, and ChromaDB / Pinecone."
+      ],
+      "key_considerations": [
+        "Heavy focus on practical automation tools (n8n, Make, Zapier) and LLM wrappers rather than deep math/research."
+      ],
+      "pros": [
+        "Fast-moving agency led by Eric Siu",
+        "global remote friendly",
+        "immediate hands-on agency automation experience."
+      ],
+      "cons": [
+        "Less focus on deep mathematical data science or low-level ML systems."
+      ],
+      "missing_or_bridge_skills": [
+        "No-code / low-code workflow builders (n8n, Make.com). Spending 2 hours setting up a sample n8n webhook with a LangChain agent will bridge this 100%."
+      ],
+      "date_identified": "2026-09-20",
+      "last_audited": "2026-09-20"
+    },
+    {
+      "id": "opp-07-ancestry-data-science-ai-document-understanding-co-op",
+      "numeric_id": 7,
+      "company": "Ancestry",
+      "role": "Data Science - AI Document Understanding Co-op",
+      "tier": "Tier 2: High Viability — Part-Time & Fully Remote AI / Data Roles",
+      "location": "Remote",
+      "work_arrangement": "Co-op / Remote Flexible",
+      "hours_per_week": "40 (Summer/Break)",
+      "compensation": "Standard Corporate",
+      "realistic_success_ratio": "65% - 70%",
+      "success_ratio_min": 0.65,
+      "success_ratio_max": 0.7,
+      "success_ratio_justification": "JD mentions preference for Master's/PhD, but undergraduate candidates with strong portfolio projects and math background are regularly reviewed).",
+      "urgency": "Active (Posted 4d ago)",
+      "strategic_action": "Apply (Showcase Multimodal/Vision)",
+      "source_repo": "https://github.com/speedyapply/2027-AI-College-Jobs",
+      "apply_url": "https://ancestry.wd501.myworkdayjobs.com/en-US/Careers/job/Data-Science---AI-Document-Understanding--Co-op_R003449",
+      "file_reference": "004-work-opportunities/opportunities/Data Science - AI Document Understanding, Co-op.htm",
+      "vault_note": null,
+      "status": "eligible",
+      "application_status": "pending_tailoring",
+      "key_points_to_highlight": [
+        "Computer Vision & OCR: Ancestry specializes in parsing historical handwriting, old census records, and archival documents. Highlight your computer vision work from **DAVE** (MediaPipe, image pre-processing, CLAHE, adaptive filtering).",
+        "Multimodal LLMs & Transformers: Highlight your experience running quantized local vision-language models and fine-tuning."
+      ],
+      "key_considerations": [
+        "Confirm co-op dates and remote hiring country allowances."
+      ],
+      "pros": [
+        "Highly intellectual and challenging problem domain (document parsing, multi-modal layout analysis, vision transformers)",
+        "fully remote."
+      ],
+      "cons": [
+        "Preference stated for advanced degree students",
+        "large applicant pool."
+      ],
+      "missing_or_bridge_skills": [
+        "Document layout analysis architectures (LayoutLMv3, Donut, TrOCR)."
+      ],
+      "date_identified": "2026-09-20",
+      "last_audited": "2026-09-20"
+    },
+    {
+      "id": "opp-08-workiva-summer-2027-intern-machine-learning-engineering",
+      "numeric_id": 8,
+      "company": "Workiva",
+      "role": "Summer 2027 Intern - Machine Learning Engineering",
+      "tier": "Tier 2: High Viability — Part-Time & Fully Remote AI / Data Roles",
+      "location": "USA - Remote",
+      "work_arrangement": "Summer 2027 Internship",
+      "hours_per_week": "40 (Summer/Break)",
+      "compensation": "$20+/hr (Competitive)",
+      "realistic_success_ratio": "65% - 70%",
+      "success_ratio_min": 0.65,
+      "success_ratio_max": 0.7,
+      "success_ratio_justification": "Direct tech stack alignment; undergraduate applicants explicitly welcome).",
+      "urgency": "⚠️ **Closes Oct 2 (11 days left!)**",
+      "strategic_action": "Apply (LlamaIndex / Agents fit)",
+      "source_repo": "https://github.com/speedyapply/2027-AI-College-Jobs",
+      "apply_url": "https://workiva.wd503.myworkdayjobs.com/en-US/careers/job/Summer-2027-Intern---Machine-Learning-Engineering_R12194-1",
+      "file_reference": "004-work-opportunities/opportunities/Summer 2027 Intern - Machine Learning Engineering.htm",
+      "vault_note": null,
+      "status": "eligible",
+      "application_status": "pending_tailoring",
+      "key_points_to_highlight": [
+        "LlamaIndex & LlamaParse Integration: The JD explicitly highlights: *\"Help integrate tools such as LlamaIndex and LlamaParse into existing workflows. Assist in building and deploying AI Agents to automate data processing and analysis tasks.\"* This is an exact 1:1 match with your 5th-semester GenAI curriculum!",
+        "Testing & Quality Assurance: Highlight your **630 unit tests in pytest** for LEIA and CI/CD discipline."
+      ],
+      "key_considerations": [
+        "⚠️ **DEADLINE: Application closes October 2, 2026 (11 days left!).**",
+        "Check whether US-Remote requires US citizenship/residency or if they sponsor summer J-1 exchange visas."
+      ],
+      "pros": [
+        "Exceptional tech stack (LlamaIndex, LlamaParse, autonomous agents, modern ML engineering)",
+        "structured summer timeline."
+      ],
+      "cons": [
+        "US remote listing might restrict hiring to US domestic payroll."
+      ],
+      "missing_or_bridge_skills": [
+        "LlamaParse advanced document chunking configurations."
+      ],
+      "date_identified": "2026-09-20",
+      "last_audited": "2026-09-20"
+    },
+    {
+      "id": "opp-09-amgen-undergrad-intern-machine-learning-engineer-summer-2027",
+      "numeric_id": 9,
+      "company": "Amgen",
+      "role": "Undergrad Intern – Machine Learning Engineer (Summer 2027)",
+      "tier": "Tier 2: High Viability — Part-Time & Fully Remote AI / Data Roles",
+      "location": "United States - Remote",
+      "work_arrangement": "Summer 2027 Undergraduate Internship",
+      "hours_per_week": "40 (Summer/Break)",
+      "compensation": "$20+/hr (Competitive)",
+      "realistic_success_ratio": "60% - 65%",
+      "success_ratio_min": 0.6,
+      "success_ratio_max": 0.65,
+      "success_ratio_justification": "Explicitly targeted at undergraduate students; strong biomedical tech brand).",
+      "urgency": "Active (Posted 6d ago)",
+      "strategic_action": "Apply (Data Pipelines / ML)",
+      "source_repo": "https://github.com/speedyapply/2027-AI-College-Jobs",
+      "apply_url": "https://amgen.wd1.myworkdayjobs.com/en-US/Careers/job/Undergrad-Intern---Machine-Learning-Engineer---Amgen-s-Technology---Medical-Organizations--Summer-2027-_R-255709",
+      "file_reference": "004-work-opportunities/opportunities/Undergrad Intern – Machine Learning Engineer – Technology, AI & Data (Summer 2027).htm",
+      "vault_note": null,
+      "status": "eligible",
+      "application_status": "pending_tailoring",
+      "key_points_to_highlight": [
+        "Scalable Data Pipelines & Clean Code: Highlight data engineering from the Databricks Sun Holdings challenge and Aristor Consultoría.",
+        "Automated Model Training & Evaluation: Highlight your distributed Ape-X learner/actor training loop and automated metric logging.",
+        "Visualization Dashboards: Mention your React/TypeScript DAVE dashboard and Gradio telemetry interfaces."
+      ],
+      "key_considerations": [
+        "Requires continuous enrollment in a Bachelor's degree program."
+      ],
+      "pros": [
+        "Massive biopharma leader",
+        "high compensation and structured learning program",
+        "dedicated undergraduate cohort."
+      ],
+      "cons": [
+        "May require US work authorization if payroll cannot support international remote workers."
+      ],
+      "missing_or_bridge_skills": [
+        "Pharmaceutical data structures (clinical trial datasets, EHR data)."
+      ],
+      "date_identified": "2026-09-20",
+      "last_audited": "2026-09-20"
+    },
+    {
+      "id": "opp-10-wex-ai-data-platform-engineering-intern-undergraduate",
+      "numeric_id": 10,
+      "company": "WEX",
+      "role": "AI & Data Platform Engineering Intern (Undergraduate)",
+      "tier": "Tier 2: High Viability — Part-Time & Fully Remote AI / Data Roles",
+      "location": "Remote - USA",
+      "work_arrangement": "13-Week Summer Internship (Late May – Mid August 2027)",
+      "hours_per_week": "40 (Summer/Break)",
+      "compensation": "$20+/hr (Competitive)",
+      "realistic_success_ratio": "60% - 65%",
+      "success_ratio_min": 0.6,
+      "success_ratio_max": 0.65,
+      "success_ratio_justification": ".",
+      "urgency": "Active (Posted 6d ago)",
+      "strategic_action": "Apply (Databricks / Cloud)",
+      "source_repo": "https://github.com/speedyapply/2027-AI-College-Jobs",
+      "apply_url": "https://wexinc.wd5.myworkdayjobs.com/en-US/WEXInc/job/AI---Data-Platform-Engineering-Intern--Undergraduate-_R23055",
+      "file_reference": "004-work-opportunities/opportunities/AI & Data Platform Engineering Intern (Undergraduate).htm",
+      "vault_note": null,
+      "status": "eligible",
+      "application_status": "pending_tailoring",
+      "key_points_to_highlight": [
+        "Data Platform Engineering: Highlight your distributed Ape-X infrastructure (HTTP communication over Tailscale, GPU learner, CPU actors) and Databricks pipeline development.",
+        "Undergraduate Standing: WEX specifically designed this requisition for undergraduates in computer science, data science, and math."
+      ],
+      "key_considerations": [
+        "Fixed 13-week summer timeline aligns with Tec de Monterrey summer vacation."
+      ],
+      "pros": [
+        "FinTech data platform scale",
+        "tailored for undergraduates",
+        "strong mentorship program."
+      ],
+      "cons": [
+        "Typical US-remote corporate payroll constraints."
+      ],
+      "missing_or_bridge_skills": [
+        "Enterprise cloud data warehouses (Snowflake, AWS Glue)."
+      ],
+      "date_identified": "2026-09-20",
+      "last_audited": "2026-09-20"
+    },
+    {
+      "id": "opp-11-cotiviti-intern-gen-ai-research-engineer",
+      "numeric_id": 11,
+      "company": "Cotiviti",
+      "role": "Intern - Gen AI Research Engineer",
+      "tier": "Tier 2: High Viability — Part-Time & Fully Remote AI / Data Roles",
+      "location": "US Nationwide Remote",
+      "work_arrangement": "Flexible (20–40 hrs/week, minimum one semester up to one year)",
+      "hours_per_week": "20-30",
+      "compensation": "Standard Corporate",
+      "realistic_success_ratio": "60% - 65%",
+      "success_ratio_min": 0.6,
+      "success_ratio_max": 0.65,
+      "success_ratio_justification": ".",
+      "urgency": "Active (Hiring Now)",
+      "strategic_action": "Apply (Healthcare GenAI)",
+      "source_repo": "https://github.com/speedyapply/2027-AI-College-Jobs",
+      "apply_url": "https://careers-cotiviti.icims.com/jobs/20183/intern---gen-ai-research-engineer-%28hiring-now%21%29/job",
+      "file_reference": "004-work-opportunities/opportunities/Intern - Gen AI Research Engineer (Hiring Now!) in Remote _ Careers at US Nationwide Remote.htm",
+      "vault_note": "004-work-opportunities/Intern-Generative AI Research Engineer.md",
+      "status": "eligible",
+      "application_status": "pending_tailoring",
+      "key_points_to_highlight": [
+        "Healthcare Informatics & GenAI Research: Highlight your GenAI course work, PEFT/LoRA fine-tuning, and research-backed approach to AI development.",
+        "LLM Context & Data Layer: Highlight your work in model quantization (GGUF, Unsloth, VRAM benchmarking)."
+      ],
+      "key_considerations": [
+        "Allows intern to choose hours between 20 to 40 hours per week."
+      ],
+      "pros": [
+        "Flexible duration (from one semester to one year)",
+        "choice of hours (can start at 20-30h during semester)",
+        "deep GenAI healthcare focus."
+      ],
+      "cons": [
+        "Corporate careers portal indicates US-Remote focus."
+      ],
+      "missing_or_bridge_skills": [
+        "Healthcare reimbursement and claims coding validation data (CMS-1500, UB-04)."
+      ],
+      "date_identified": "2026-09-20",
+      "last_audited": "2026-09-20"
+    },
+    {
+      "id": "opp-12-figma-data-science-intern-2027",
+      "numeric_id": 12,
+      "company": "Figma",
+      "role": "Data Science Intern (2027)",
+      "tier": "Tier 3: Elite US Summer 2027 Programs (Top Sponsoring Tech & Quant)",
+      "location": "San Francisco, CA or New York, NY Hubs",
+      "work_arrangement": "Summer 2027 Full-Time Internship",
+      "hours_per_week": "40 (Summer/Break)",
+      "compensation": "**$60.00 / hour**",
+      "realistic_success_ratio": "45% - 50%",
+      "success_ratio_min": 0.45,
+      "success_ratio_max": 0.5,
+      "success_ratio_justification": "Figma routinely sponsors J-1 exchange visitor visas for international university students; competition is fierce, but your math background provides a strong edge over pure CS applicants).",
+      "urgency": "Top Brand / J-1 Sponsor",
+      "strategic_action": "Apply with Strong Stats/Product CV",
+      "source_repo": "https://github.com/speedyapply/2027-AI-College-Jobs",
+      "apply_url": "https://boards.greenhouse.io/figma/jobs/6178857004?gh_jid=6178857004",
+      "file_reference": "004-work-opportunities/opportunities/Job Application for Data Science Intern (2027) at Figma.htm",
+      "vault_note": "004-work-opportunities/eligible/usa-internships/2026-09-20-figma-data-science-intern-2027.md",
+      "status": "eligible",
+      "application_status": "pending_tailoring",
+      "key_points_to_highlight": [
+        "Rigorous Statistics & Mathematics: Figma's Data Science team explicitly demands strong statistical foundations and experiment design. Highlight your Mathematics degree, probability theory, hypothesis testing, and academic excellence (94 GPA, PARA program).",
+        "End-to-End Ownership: Highlight how you engineered DAVE from raw sensor data to a production React dashboard, and how you led LEIA's Street Fighter project.",
+        "Product Analytics & A/B Testing: Frame your Aristor Consultoría analytics as data-driven decision-making for product growth."
+      ],
+      "key_considerations": [
+        "Onsite in San Francisco or NYC during summer (fully paid relocation + top-tier hourly rate).",
+        "Open to undergraduates."
+      ],
+      "pros": [
+        "One of the most prestigious product/design tech companies in the world",
+        "$60/hr compensation",
+        "sponsors international students",
+        "exceptional mentorship."
+      ],
+      "cons": [
+        "Highly competitive global talent pool."
+      ],
+      "missing_or_bridge_skills": [
+        "Product experimentation at scale (causal inference, CUPED variance reduction, multi-armed bandits)."
+      ],
+      "date_identified": "2026-09-20",
+      "last_audited": "2026-09-20"
+    },
+    {
+      "id": "opp-13-adobe-2027-intern-machine-learning-engineer",
+      "numeric_id": 13,
+      "company": "Adobe",
+      "role": "2027 Intern - Machine Learning Engineer",
+      "tier": "Tier 3: Elite US Summer 2027 Programs (Top Sponsoring Tech & Quant)",
+      "location": "San Jose / San Francisco, CA (View all 6 locations)",
+      "work_arrangement": "Summer 2027 Full-Time Internship",
+      "hours_per_week": "40 (Summer/Break)",
+      "compensation": "**~$55.00 / hour**",
+      "realistic_success_ratio": "40% - 45%",
+      "success_ratio_min": 0.4,
+      "success_ratio_max": 0.45,
+      "success_ratio_justification": "Adobe sponsors J-1 summer visas; heavy focus on generative media).",
+      "urgency": "Active (Matches 2027-2028 Grad)",
+      "strategic_action": "Apply with Transcript + CV",
+      "source_repo": "https://github.com/speedyapply/2027-AI-College-Jobs",
+      "apply_url": "https://adobe.wd5.myworkdayjobs.com/en-US/external_experienced/job/San-Jose/XMLNAME-2027-Intern---Machine-Learning-Engineer_R171519",
+      "file_reference": "004-work-opportunities/opportunities/2027 Intern - Machine Learning Engineer.htm",
+      "vault_note": null,
+      "status": "eligible",
+      "application_status": "pending_tailoring",
+      "key_points_to_highlight": [
+        "Deep Learning Frameworks (PyTorch): Highlight custom PyTorch implementations, loss functions, and neural network architectures from Street Fighter QR-DQN.",
+        "Multimodal AI & Computer Vision: Highlight DAVE's 3D facial landmark mesh and YOLOv8 pipeline.",
+        "Model Optimization: Mention ONNX runtime, Hailo NPU deployment, and LLM quantization (GGUF)."
+      ],
+      "key_considerations": [
+        "Open to Bachelor's, Master's, and PhD students."
+      ],
+      "pros": [
+        "Massive global impact in Creative Generative AI (Firefly)",
+        "high compensation",
+        "strong university recruiting machinery."
+      ],
+      "cons": [
+        "Competes directly against Master's and PhD candidates in the same pool."
+      ],
+      "missing_or_bridge_skills": [
+        "Diffusion models (Latent Diffusion, ControlNet) and generative image/video architectures."
+      ],
+      "date_identified": "2026-09-20",
+      "last_audited": "2026-09-20"
+    },
+    {
+      "id": "opp-14-lyft-data-science-intern-algorithms-summer-2027",
+      "numeric_id": 14,
+      "company": "Lyft",
+      "role": "Data Science Intern, Algorithms (Summer 2027)",
+      "tier": "Tier 3: Elite US Summer 2027 Programs (Top Sponsoring Tech & Quant)",
+      "location": "San Francisco, CA / New York City / Toronto, Canada",
+      "work_arrangement": "Summer 2027 Full-Time Internship",
+      "hours_per_week": "40 (Summer/Break)",
+      "compensation": "**$58.00 / hour**",
+      "realistic_success_ratio": "**15% – 20% (US) / 30% (Toronto)** (⚠️ **Critical Recruiter Gate:** The JD explicitly states: *\"Currently pursuing a Masters or PhD degree in mathematical sciences\"*. Undergraduates face an automated filter unless applying to the Toronto office or referred).",
+      "success_ratio_min": null,
+      "success_ratio_max": null,
+      "success_ratio_justification": "",
+      "urgency": "Active (Posted 20d ago)",
+      "strategic_action": "Apply (GenAI / PyTorch)",
+      "source_repo": "https://github.com/speedyapply/2027-AI-College-Jobs",
+      "apply_url": "https://app.careerpuck.com/job-board/lyft/job/8767723002",
+      "file_reference": "004-work-opportunities/opportunities/Lyft Data Science Intern, Algorithms (Summer 2027 - SF_NYC).htm",
+      "vault_note": null,
+      "status": "eligible",
+      "application_status": "pending_tailoring",
+      "key_points_to_highlight": [
+        "Reinforcement Learning & Dynamic Optimization: Lyft Algorithms manages dispatch, dynamic pricing, and marketplace balancing. Highlight your **Distributed Ape-X DQN** and Markov Decision Process formulations.",
+        "Applied Mathematics & Operations Research: Emphasize your pure mathematics coursework (optimization, linear algebra, stochastic processes)."
+      ],
+      "key_considerations": [
+        "Formal requirement states Masters/PhD. If applying, target the Canadian requisition or obtain an internal referral."
+      ],
+      "pros": [
+        "One of the premier applied operations research and algorithmic data science teams in tech."
+      ],
+      "cons": [
+        "Strict automated degree-gate filter for undergraduates."
+      ],
+      "missing_or_bridge_skills": [
+        "Operations Research solvers (Gurobi, CPLEX, SciPy Linear Programming) and two-sided marketplace dynamics."
+      ],
+      "date_identified": "2026-09-20",
+      "last_audited": "2026-09-20"
+    },
+    {
+      "id": "opp-15-jane-street-machine-learning-engineer-internship",
+      "numeric_id": 15,
+      "company": "Jane Street",
+      "role": "Machine Learning Engineer Internship",
+      "tier": "Tier 3: Elite US Summer 2027 Programs (Top Sponsoring Tech & Quant)",
+      "location": "New York City, NY",
+      "work_arrangement": "Summer 2027 Full-Time Internship",
+      "hours_per_week": "40 (Summer/Break)",
+      "compensation": "**$120.00 / hour ($240,000 annualized base rate)**",
+      "realistic_success_ratio": "15% - 20%",
+      "success_ratio_min": 0.15,
+      "success_ratio_max": 0.2,
+      "success_ratio_justification": "Jane Street has one of the highest technical hiring bars globally, but they evaluate undergraduate mathematics students heavily and provide full J-1 visa sponsorship).",
+      "urgency": "Active",
+      "strategic_action": "Apply (APIs, Agents & LLMs)",
+      "source_repo": "https://github.com/speedyapply/2027-AI-College-Jobs",
+      "apply_url": "https://www.janestreet.com/join-jane-street/position/8611307002/",
+      "file_reference": "004-work-opportunities/opportunities/Machine Learning Engineer Internship, New York __ Jane Street.htm",
+      "vault_note": null,
+      "status": "eligible",
+      "application_status": "pending_tailoring",
+      "key_points_to_highlight": [
+        "Quantile Regression & Deep RL: Highlight your implementation of **Quantile Regression DQN (QR-DQN)**, distributional reinforcement learning, and custom loss formulations. Jane Street values mathematical depth over buzzwords.",
+        "Extreme Systems Performance: Highlight achieving **3,700 FPS per process** in `libretro` headless simulation and distributed actor/learner synchronization.",
+        "Academic Rigor: Highlight your 94 GPA, PARA honors program, and TELMEX Foundation scholarship."
+      ],
+      "key_considerations": [
+        "Multi-round technical interviews focusing on pure algorithmic problem solving, probability puzzles, and mathematical reasoning."
+      ],
+      "pros": [
+        "Absolute pinnacle of technical prestige and compensation ($120/hr)",
+        "world-class peer group",
+        "sponsors international visas."
+      ],
+      "cons": [
+        "Intense interview process requiring months of probability and systems preparation."
+      ],
+      "missing_or_bridge_skills": [
+        "OCaml / Functional Programming concepts, high-frequency low-latency distributed systems."
+      ],
+      "date_identified": "2026-09-20",
+      "last_audited": "2026-09-20"
+    },
+    {
+      "id": "opp-16-jane-street-data-engineer-internship",
+      "numeric_id": 16,
+      "company": "Jane Street",
+      "role": "Data Engineer Internship",
+      "tier": "Tier 3: Elite US Summer 2027 Programs (Top Sponsoring Tech & Quant)",
+      "location": "New York City, NY",
+      "work_arrangement": "Summer 2027 Full-Time Internship",
+      "hours_per_week": "40 (Summer/Break)",
+      "compensation": "**$120.00 / hour**",
+      "realistic_success_ratio": "20% - 25%",
+      "success_ratio_min": 0.2,
+      "success_ratio_max": 0.25,
+      "success_ratio_justification": ".",
+      "urgency": "Active",
+      "strategic_action": "Apply (Winter Co-op)",
+      "source_repo": "https://github.com/speedyapply/2027-AI-College-Jobs",
+      "apply_url": "https://www.janestreet.com/join-jane-street/position/8631973002/",
+      "file_reference": "004-work-opportunities/opportunities/Data Engineer Internship, New York __ Jane Street.htm",
+      "vault_note": null,
+      "status": "eligible",
+      "application_status": "pending_tailoring",
+      "key_points_to_highlight": [
+        "High-Throughput Data Ingestion: Highlight the shared memory buffer, ring buffer, and distributed state serialization in your Street Fighter and DAVE projects.",
+        "Systems Programming: Highlight your C++ and C# systems work, bit-level WRAM memory reading via Lua, and socket communication."
+      ],
+      "key_considerations": [
+        "Interviews emphasize clean systems design, data structures, and memory management."
+      ],
+      "pros": [
+        "Unmatched compensation ($120/hr)",
+        "elite engineering culture."
+      ],
+      "cons": [
+        "Extremely high competition from top global CS programs (MIT, Stanford, Waterloo)."
+      ],
+      "missing_or_bridge_skills": [
+        "Low-level network protocols (UDP multicasting, ZeroMQ), Linux kernel tuning."
+      ],
+      "date_identified": "2026-09-20",
+      "last_audited": "2026-09-20"
+    },
+    {
+      "id": "opp-17-citadel-sector-data-scientist-2027-intern-us",
+      "numeric_id": 17,
+      "company": "Citadel",
+      "role": "Sector Data Scientist - 2027 Intern (US)",
+      "tier": "Tier 3: Elite US Summer 2027 Programs (Top Sponsoring Tech & Quant)",
+      "location": "New York City, NY / Miami, FL",
+      "work_arrangement": "Summer 2027 Full-Time Internship",
+      "hours_per_week": "40 (Summer/Break)",
+      "compensation": "**$125.00 / hour ($250,000 annualized base rate)**",
+      "realistic_success_ratio": "15% - 20%",
+      "success_ratio_min": 0.15,
+      "success_ratio_max": 0.2,
+      "success_ratio_justification": "Elite hedge fund screening bar; J-1 visa sponsorship guaranteed for accepted candidates).",
+      "urgency": "Active (Posted 3d ago)",
+      "strategic_action": "Apply (Evals & Guardrails)",
+      "source_repo": "https://github.com/speedyapply/2027-AI-College-Jobs",
+      "apply_url": "https://www.citadel.com/careers/details/sector-data-scientist-2027-intern-us/",
+      "file_reference": "004-work-opportunities/opportunities/Sector Data Scientist - 2027 Intern (US) - Citadel.htm",
+      "vault_note": null,
+      "status": "eligible",
+      "application_status": "pending_tailoring",
+      "key_points_to_highlight": [
+        "Quantitative Data Analysis: Highlight your predictive modeling for market potential at Aristor Consultoría and transactional analytics in the Databricks challenge.",
+        "Statistical Rigor & Math Honors: Put your B.S. in Mathematics front and center, emphasizing stochastic modeling, calculus, and linear algebra."
+      ],
+      "key_considerations": [
+        "Requires strong mental math, statistical intuition, and Python data manipulation skills."
+      ],
+      "pros": [
+        "Industry-leading compensation ($125/hr)",
+        "unmatched financial data access",
+        "luxury corporate housing."
+      ],
+      "cons": [
+        "High-pressure performance culture."
+      ],
+      "missing_or_bridge_skills": [
+        "Financial statement analysis, fundamental equity valuation, and alternative data parsing."
+      ],
+      "date_identified": "2026-09-20",
+      "last_audited": "2026-09-20"
+    },
+    {
+      "id": "opp-18-capital-one-canada-intern-data-scientist-winter-2027",
+      "numeric_id": 18,
+      "company": "Capital One Canada",
+      "role": "Intern, Data Scientist (Winter 2027)",
+      "tier": "Tier 4: Canadian AI Co-op & International Innovation Hubs",
+      "location": "Toronto, Ontario, Canada (161 Bay Street)",
+      "work_arrangement": "4-Month Winter Co-op (January – April 2027)",
+      "hours_per_week": "40 (Summer/Break)",
+      "compensation": "Standard Corporate",
+      "realistic_success_ratio": "50% - 55%",
+      "success_ratio_min": 0.5,
+      "success_ratio_max": 0.55,
+      "success_ratio_justification": "Your graduation date aligns 100% with their mandatory hiring bracket).",
+      "urgency": "Frontier Lab / Extremely High Bar",
+      "strategic_action": "Apply (RL & Quantization edge)",
+      "source_repo": "https://github.com/speedyapply/2027-AI-College-Jobs",
+      "apply_url": "https://capitalone.wd12.myworkdayjobs.com/en-US/Capital_One/job/Intern--Data-Scientist---Winter-2027_R999619-1",
+      "file_reference": "004-work-opportunities/opportunities/Intern, Data Scientist - Winter 2027.htm",
+      "vault_note": null,
+      "status": "eligible",
+      "application_status": "pending_tailoring",
+      "key_points_to_highlight": [
+        "Data Warehousing & Pipelines: Highlight SQL, Python, Snowflake concepts, and pipeline building from the Databricks challenge.",
+        "Transcript Submission: Note that Capital One Canada **requires** attaching your official/unofficial transcript in the same PDF as your resume."
+      ],
+      "key_considerations": [
+        "Requires temporary relocation to Toronto for the 4-month winter term (Jan–Apr 2027). You would need a Canadian co-op work permit / working holiday or company visa support."
+      ],
+      "pros": [
+        "Perfectly matches your degree year",
+        "exceptional fintech data science training",
+        "Toronto financial core."
+      ],
+      "cons": [
+        "Winter term in Toronto requires taking a temporary study leave or online semester at Tec de Monterrey."
+      ],
+      "missing_or_bridge_skills": [
+        "dbt (data build tool) and Snowflake data modeling."
+      ],
+      "date_identified": "2026-09-20",
+      "last_audited": "2026-09-20"
+    },
+    {
+      "id": "opp-19-eq-bank-intern-retail-lending-ai-engineer-winter-2027",
+      "numeric_id": 19,
+      "company": "EQ Bank",
+      "role": "Intern - Retail Lending AI Engineer (Winter 2027)",
+      "tier": "Tier 4: Canadian AI Co-op & International Innovation Hubs",
+      "location": "Toronto, Canada (Hybrid)",
+      "work_arrangement": "Winter Term (January – April 2027)",
+      "hours_per_week": "40 (Summer/Break)",
+      "compensation": "Standard Corporate",
+      "realistic_success_ratio": "50% - 55%",
+      "success_ratio_min": 0.5,
+      "success_ratio_max": 0.55,
+      "success_ratio_justification": ".",
+      "urgency": "Elite Quant / World-Class Pool",
+      "strategic_action": "Apply (Showcase Ape-X Math/RL)",
+      "source_repo": "https://github.com/speedyapply/2027-AI-College-Jobs",
+      "apply_url": "https://jobs.lever.co/eqbank/1c46930a-7ffe-4760-9d31-e08ea191ddea",
+      "file_reference": "004-work-opportunities/opportunities/EQ Bank _ Canada's Challenger Bank - Intern - Retail Lending AI Engineer, Winter 2027.htm",
+      "vault_note": null,
+      "status": "eligible",
+      "application_status": "pending_tailoring",
+      "key_points_to_highlight": [
+        "LLM Integrations & Intelligent Agents: JD calls for: *\"Support development of microservices, LLM integrations, intelligent agents, and workflow automations.\"* Highlight your agentic harness experience and FastAPI backends.",
+        "RESTful APIs & Unit Testing: Highlight FastAPI, Docker containerization, and your 630 pytest automated tests."
+      ],
+      "key_considerations": [
+        "Canadian challenger bank; hybrid in Toronto."
+      ],
+      "pros": [
+        "Innovative modern stack",
+        "focus on AI agents in banking",
+        "competitive Canadian banking compensation."
+      ],
+      "cons": [
+        "Canadian work authorization / co-op visa needed."
+      ],
+      "missing_or_bridge_skills": [
+        "Microsoft Power Platform, Spring MVC / Java microservices."
+      ],
+      "date_identified": "2026-09-20",
+      "last_audited": "2026-09-20"
+    },
+    {
+      "id": "opp-20-ciena-ai-engineer-intern-winter-2027",
+      "numeric_id": 20,
+      "company": "Ciena",
+      "role": "AI Engineer Intern (Winter 2027)",
+      "tier": "Tier 4: Canadian AI Co-op & International Innovation Hubs",
+      "location": "Ottawa, Ontario, Canada",
+      "work_arrangement": "Winter 2027 Co-op",
+      "hours_per_week": "40 (Summer/Break)",
+      "compensation": "Standard Corporate",
+      "realistic_success_ratio": "45% - 50%",
+      "success_ratio_min": 0.45,
+      "success_ratio_max": 0.5,
+      "success_ratio_justification": ".",
+      "urgency": "Elite Quant / World-Class Pool",
+      "strategic_action": "Apply (Low-latency & C++ data)",
+      "source_repo": "https://github.com/speedyapply/2027-SWE-College-Jobs",
+      "apply_url": "https://ciena.wd5.myworkdayjobs.com/en-US/Careers/job/AI-Engineer-Intern--Winter-2027-_R031667",
+      "file_reference": "004-work-opportunities/opportunities/AI Engineer Intern (Winter 2027).htm",
+      "vault_note": null,
+      "status": "eligible",
+      "application_status": "pending_tailoring",
+      "key_points_to_highlight": [
+        "Networking / Edge ML: Highlight Hailo-8 NPU on Raspberry Pi 5 edge acceleration and low-latency inference from DAVE.",
+        "Python & C++ Systems: Highlight your dual proficiency in high-level Python and low-level C++."
+      ],
+      "key_considerations": [
+        "Telecommunications and optical networking hardware leader."
+      ],
+      "pros": [
+        "Strong edge and networking AI applications",
+        "highly respected Canadian R&D lab."
+      ],
+      "cons": [
+        "Canadian student co-op preference."
+      ],
+      "missing_or_bridge_skills": [
+        "Optical telecommunications protocols and telemetry data parsing."
+      ],
+      "date_identified": "2026-09-20",
+      "last_audited": "2026-09-20"
+    },
+    {
+      "id": "opp-21-kinaxis-co-op-intern-ai-quality-evaluation-security",
+      "numeric_id": 21,
+      "company": "Kinaxis",
+      "role": "Co-op/Intern AI Quality, Evaluation & Security",
+      "tier": "Tier 4: Canadian AI Co-op & International Innovation Hubs",
+      "location": "Ottawa, Ontario, Canada",
+      "work_arrangement": "Co-op / Internship",
+      "hours_per_week": "40 (Summer/Break)",
+      "compensation": "Standard Corporate",
+      "realistic_success_ratio": "50% - 55%",
+      "success_ratio_min": 0.5,
+      "success_ratio_max": 0.55,
+      "success_ratio_justification": ".",
+      "urgency": "Top Quant / Rigorous Math Screen",
+      "strategic_action": "Apply (Highlight 94 GPA & Math)",
+      "source_repo": "https://github.com/speedyapply/2027-AI-College-Jobs",
+      "apply_url": "https://careers-kinaxis.icims.com/jobs/35378/co-op-intern-ai-quality%2c-evaluation-%26-security/job",
+      "file_reference": "004-work-opportunities/opportunities/Co-op_Intern AI Quality, Evaluation & Security in Ottawa, Ontario _ Careers at Ottawa Headquarters.htm",
+      "vault_note": null,
+      "status": "eligible",
+      "application_status": "pending_tailoring",
+      "key_points_to_highlight": [
+        "AI Evals & Security Guardrails: Highlight your work with automated testing, bit-for-bit parity validation, and model verification.",
+        "Supply Chain Analytics: Highlight your business analytics experience with INEGI microdata and Databricks sales/pricing data."
+      ],
+      "key_considerations": [
+        "Focuses heavily on the safety, reliability, and security of enterprise supply chain AI models."
+      ],
+      "pros": [
+        "Rapidly expanding field of AI Security, Red Teaming, and Automated Evaluation",
+        "premier Canadian enterprise software company."
+      ],
+      "cons": [
+        "Ottawa location",
+        "requires co-op work visa."
+      ],
+      "missing_or_bridge_skills": [
+        "OWASP Top 10 for LLMs, prompt injection defense, and automated red-teaming harnesses."
+      ],
+      "date_identified": "2026-09-20",
+      "last_audited": "2026-09-20"
+    },
+    {
+      "id": "opp-22-mistral-ai-applied-scientist-internship-in-paris-or-london",
+      "numeric_id": 22,
+      "company": "Mistral AI",
+      "role": "Applied Scientist (Internship in Paris or London)",
+      "tier": "Tier 4: Canadian AI Co-op & International Innovation Hubs",
+      "location": "Paris, France or London, UK (With full pathway to Seoul, South Korea)",
+      "work_arrangement": "6-Month Full-Time Internship (Full visa sponsorship provided)",
+      "hours_per_week": "40 (Summer/Break)",
+      "compensation": "Standard Corporate",
+      "realistic_success_ratio": "25% - 30%",
+      "success_ratio_min": 0.25,
+      "success_ratio_max": 0.3,
+      "success_ratio_justification": "Frontier lab with an extraordinarily high hiring bar, but **they provide complete visa sponsorship and relocation support**; your quantization and math focus fits their technical ethos perfectly).",
+      "urgency": "High Degree Gate (MS/PhD bias)",
+      "strategic_action": "Apply only if submitting for Toronto",
+      "source_repo": "https://github.com/speedyapply/2027-AI-College-Jobs",
+      "apply_url": "https://jobs.ashbyhq.com/mistral.ai/60ab6a5e-9b02-4ae7-a0fb-4c7d9ec0fdf8",
+      "file_reference": "004-work-opportunities/opportunities/Applied Scientist (Internship in Paris or London) @ Mistral.htm",
+      "vault_note": null,
+      "status": "eligible",
+      "application_status": "pending_tailoring",
+      "key_points_to_highlight": [
+        "Open-Weights & Quantization Mastery: Mistral is the world's leading open-weights frontier lab. Highlight your hands-on work with **Unsloth, GGUF quantization, VRAM benchmarking, and local Ollama deployment**.",
+        "Reinforcement Learning from Human Feedback (RLHF) / Math Depth: Highlight your deep RL expertise with Ape-X DQN and your formal mathematical foundations in probability and linear algebra.",
+        "Clean, High-Performance Code: Highlight writing modular, fault-tolerant Python code backed by comprehensive test suites."
+      ],
+      "key_considerations": [
+        "6-month commitment based in Paris or London, designed as a direct pipeline into a full-time role in their Seoul office."
+      ],
+      "pros": [
+        "Working directly at the cutting edge of frontier foundation models (Mistral Large, Codestral, Pixtral)",
+        "full European visa sponsorship + relocation covered",
+        "unmatched prestige."
+      ],
+      "cons": [
+        "6 months abroad requires academic deferral or semester leave at Tec",
+        "extreme international competition."
+      ],
+      "missing_or_bridge_skills": [
+        "Distributed GPU training orchestration (Megatron-LM, DeepSpeed, FSDP) and FlashAttention kernel optimization."
+      ],
+      "date_identified": "2026-09-20",
+      "last_audited": "2026-09-20"
+    },
+    {
+      "id": "opp-23-pwc-dat-assurance-ai-associate-queretaro",
+      "numeric_id": 23,
+      "company": "PwC",
+      "role": "Acceleration Center - DAT Assurance - AI - Experience Associate",
+      "tier": "Tier 1: Maximum Viability — Mexico & LATAM (Direct Legal Match)",
+      "location": "Santiago de Querétaro, Mexico (PwC AC Querétaro Hub)",
+      "work_arrangement": "Full-Time Associate / Entry-Level (Undergraduate & New Grad eligible)",
+      "hours_per_week": "40 (Flexible / Local entity)",
+      "compensation": "Competitive Corporate Base ($25k - $35k MXN/mo)",
+      "realistic_success_ratio": "85% - 90%",
+      "success_ratio_min": 0.85,
+      "success_ratio_max": 0.9,
+      "success_ratio_justification": "Direct hometown match in Santiago de Querétaro with PwC's Acceleration Center. Diego's background combining mathematical data science, automated audit testing (630 pytest tests in LEIA), and business modeling at Aristor provides immediate credibility for digital assurance and AI governance.",
+      "urgency": "High (Posted 2d ago)",
+      "strategic_action": "Immediate 1-Click Apply (Tier 1 Local)",
+      "source_repo": "https://github.com/speedyapply/2027-AI-College-Jobs",
+      "apply_url": "https://pwc.wd3.myworkdayjobs.com/en-US/crm_experienced_careers_site/job/Mexico-City/Acceleration-Center---DAT-Assurance----AI--Experience-Associate_740851WD-1",
+      "file_reference": "004-work-opportunities/opportunities/PwC - DAT Assurance AI Experience Associate.htm",
+      "vault_note": "",
+      "status": "eligible",
+      "application_status": "pending_tailoring",
+      "key_points_to_highlight": [
+        "Data Validation & Automated Testing: Highlight building and maintaining 630 unit tests in pytest for LEIA, demonstrating disciplined test-driven quality assurance and risk mitigation.",
+        "Enterprise Data Analytics: Showcase Aristor Consultoría geospatial demographic modeling and SQL analytics across 15+ urban zones.",
+        "Local Querétaro Presence: Highlight physical proximity to the PwC Querétaro Acceleration Center, eliminating any relocation friction.",
+        "Academic Rigor & Honors: Feature 94/100 GPA, PARA Academic Honors, and TELMEX Foundation Scholarship."
+      ],
+      "key_considerations": [
+        "Positioned within PwC's Acceleration Center supporting international audit and digital assurance clients.",
+        "Open to Querétaro residents; flexible hybrid setup."
+      ],
+      "pros": [
+        "Big 4 brand recognition with dedicated Querétaro office",
+        "Focus on AI compliance, risk management, and governance frameworks",
+        "Zero visa barriers; immediate local employment contract"
+      ],
+      "cons": [
+        "Corporate assurance/audit focus rather than pure frontier model research",
+        "Requires balancing semester coursework with full-time associate expectations"
+      ],
+      "missing_or_bridge_skills": [
+        "Enterprise ERP audit standards (SAP, Oracle, Workday audit controls): Review PwC's public AI Governance Framework and SOX compliance data controls."
+      ],
+      "date_identified": "2026-10-01",
+      "last_audited": "2026-10-01"
+    },
+    {
+      "id": "opp-24-passport-analytics-engineer-data-analyst-mexico",
+      "numeric_id": 24,
+      "company": "Passport",
+      "role": "Analytics Engineer / Data Analyst",
+      "tier": "Tier 1: Maximum Viability — Mexico & LATAM (Direct Legal Match)",
+      "location": "Mexico (Fully Remote)",
+      "work_arrangement": "Full-Time / Flexible Contractor (Remote Mexico)",
+      "hours_per_week": "40 (Flexible hours)",
+      "compensation": "$2,500 - $4,000 USD/month ($30,000 - $48,000 USD/yr)",
+      "realistic_success_ratio": "80% - 85%",
+      "success_ratio_min": 0.8,
+      "success_ratio_max": 0.85,
+      "success_ratio_justification": "Passport specifically seeks Mexico-based data talent proficient in SQL, dbt modeling, and leveraging AI for internal automation. Diego's practical SQL pipelines from Aristor Consultoría and Databricks Sun Holdings challenge, coupled with advanced agentic LLM workflows, make him an ideal candidate.",
+      "urgency": "Immediate (Posted 0d ago!)",
+      "strategic_action": "Immediate Submit via Ashby (Tier 1 Remote)",
+      "source_repo": "https://github.com/speedyapply/2027-AI-College-Jobs",
+      "apply_url": "https://jobs.ashbyhq.com/passport/ab3739eb-bd55-4e38-904f-89381b3f2b49",
+      "file_reference": "004-work-opportunities/opportunities/Passport - Analytics Engineer Data Analyst.htm",
+      "vault_note": "",
+      "status": "eligible",
+      "application_status": "pending_tailoring",
+      "key_points_to_highlight": [
+        "SQL & Dimensional Data Modeling: Highlight Aristor Consultoría's data modeling for commercial site selection, structuring demographic data for rapid query performance.",
+        "AI Enablement & Semantic Layers: Emphasize building internal knowledge bases, semantic layers, and agentic workflows using Antigravity, Claude, and LangChain.",
+        "Cloud Data Lakehouse Pipelines: Feature Databricks Sun Holdings challenge data transformation pipelines in PySpark and SQL.",
+        "Bilingual Professional Communication: Native Spanish, fluent English communication with international cross-border logistics teams."
+      ],
+      "key_considerations": [
+        "Fast-growing cross-border e-commerce logistics platform backed by tier-1 venture capital.",
+        "Direct USD compensation or remote contractor agreement fully compatible with Mexican tax residence."
+      ],
+      "pros": [
+        "100% remote flexibility from Querétaro",
+        "High USD-pegged compensation floor well above local graduate rates",
+        "Direct ownership of dbt models and semantic layers for AI"
+      ],
+      "cons": [
+        "High-growth startup pace with autonomous delivery expectations",
+        "Requires quick familiarity with dbt syntax if not used daily"
+      ],
+      "missing_or_bridge_skills": [
+        "dbt (data build tool) production practices: Complete the free dbt Fundamentals certification course (takes ~4 hours)."
+      ],
+      "date_identified": "2026-10-01",
+      "last_audited": "2026-10-01"
+    },
+    {
+      "id": "opp-25-alten-ingeniero-sistemas-embebidos-queretaro",
+      "numeric_id": 25,
+      "company": "ALTEN MEXICO",
+      "role": "Ingeniero de Sistemas Embebidos - Software Base y Sistemas Operativos (2069)",
+      "tier": "Tier 1: Maximum Viability — Mexico & LATAM (Direct Legal Match)",
+      "location": "Santiago de Querétaro, Mexico",
+      "work_arrangement": "Full-Time / Flexible Junior Role (0-2 yrs exp)",
+      "hours_per_week": "40 (Local Querétaro office)",
+      "compensation": "Competitive Engineering Base ($22k - $30k MXN/mo)",
+      "realistic_success_ratio": "85% - 90%",
+      "success_ratio_min": 0.85,
+      "success_ratio_max": 0.9,
+      "success_ratio_justification": "ALTEN is actively recruiting junior embedded engineers in Querétaro with C/C++ and Linux/RTOS experience. Diego's architecture of DAVE (Driver Attention & Vigilance Engine on Raspberry Pi 5 with Hailo-8 NPU hardware integration) is literally a live, award-winning embedded systems showcase.",
+      "urgency": "Active (Local Querétaro Hub)",
+      "strategic_action": "Apply via Workable (Highlight DAVE Hardware)",
+      "source_repo": "https://github.com/speedyapply/2027-SWE-College-Jobs",
+      "apply_url": "https://apply.workable.com/alten-mexico-1/j/BA502694BB/",
+      "file_reference": "004-work-opportunities/opportunities/ALTEN - Ingeniero Sistemas Embebidos Querétaro.htm",
+      "vault_note": "",
+      "status": "eligible",
+      "application_status": "pending_tailoring",
+      "key_points_to_highlight": [
+        "DAVE Embedded Edge System: Detail architecting the biometric surveillance system on Raspberry Pi 5 with Hailo-8 NPU, managing camera I/O, IPC queues, and hardware accelerators.",
+        "C / C++ & Low-Level Programming: Feature C++ gaming engine development and C# 3D game engine projects showing deep OOP and memory management.",
+        "Linux / OS Fundamentals: Highlight Linux daemon development, headless script execution, and multithreaded process synchronization.",
+        "Local Querétaro Candidate: Emphasize physical residence in Querétaro with zero commute or relocation overhead."
+      ],
+      "key_considerations": [
+        "Automotive and industrial engineering consulting firm with major operations in Querétaro.",
+        "Ideal fallback or immediate parallel local option alongside academic studies."
+      ],
+      "pros": [
+        "Located directly in Santiago de Querétaro",
+        "Validates real-world embedded C/C++ firmware capabilities",
+        "Zero visa issues; immediate hiring cycle"
+      ],
+      "cons": [
+        "Industrial automotive focus rather than cutting-edge GenAI/LLM research",
+        "Onsite/hybrid office expectations in Querétaro"
+      ],
+      "missing_or_bridge_skills": [
+        "CAN bus and automotive communication protocols (AUTOSAR, CANalyzer): Review basic CAN bus framing and microcontroller communication sheets."
+      ],
+      "date_identified": "2026-10-01",
+      "last_audited": "2026-10-01"
+    },
+    {
+      "id": "opp-26-lyft-swe-intern-backend-mexico-2027",
+      "numeric_id": 26,
+      "company": "Lyft",
+      "role": "Software Engineer Intern, Backend (Summer 2027 - Mexico)",
+      "tier": "Tier 1: Maximum Viability — Mexico & LATAM (Direct Legal Match)",
+      "location": "Mexico City, Mexico (Hybrid)",
+      "work_arrangement": "Summer 2027 Internship (12 weeks)",
+      "hours_per_week": "40 (Summer break)",
+      "compensation": "Top Tech Intern Salary (~$35,000 - $45,000 MXN/mo)",
+      "realistic_success_ratio": "75% - 80%",
+      "success_ratio_min": 0.75,
+      "success_ratio_max": 0.8,
+      "success_ratio_justification": "Lyft's Mexico City tech hub hires Mexican university students for premier backend engineering internships. Diego's high GPA (94/100) at Tec de Monterrey, strong data structures foundation, and distributed systems experience (Ape-X multi-process actor/learner architecture) make him a top-tier contender.",
+      "urgency": "High (Summer 2027 Cohort Active)",
+      "strategic_action": "Apply via Greenhouse (Backend CV)",
+      "source_repo": "https://github.com/speedyapply/2027-SWE-College-Jobs",
+      "apply_url": "https://app.careerpuck.com/job-board/lyft/job/8767715002?gh_jid=8767715002",
+      "file_reference": "004-work-opportunities/opportunities/Lyft - SWE Intern Backend Mexico.htm",
+      "vault_note": "",
+      "status": "eligible",
+      "application_status": "pending_tailoring",
+      "key_points_to_highlight": [
+        "Distributed Backend Architecture: Highlight designing the Ape-X distributed RL system handling multi-process IPC, 3,700 FPS data throughput, and high-concurrency learner/actor queues.",
+        "REST APIs & Asynchronous Microservices: Showcase DAVE's FastAPI backend service with real-time video buffer streaming, low latency telemetry, and background worker threads.",
+        "Rigorous Software Testing: Feature 630 unit tests in pytest built for LEIA, verifying robust edge cases and CI/CD discipline.",
+        "Algorithmic Problem Solving: Highlight mathematical problem solving from dual Data Science & Mathematics degree."
+      ],
+      "key_considerations": [
+        "Run out of Lyft's Mexico City engineering office; hybrid presence during summer 2027.",
+        "Competitive LeetCode / algorithmic screening required."
+      ],
+      "pros": [
+        "Prestigious global tech brand on resume",
+        "High-scale distributed systems engineering exposure",
+        "Direct pipeline to return new-grad SWE offer in Mexico"
+      ],
+      "cons": [
+        "Intense technical interview screening (algorithms and system design)",
+        "Mexico City hybrid presence required during the 12-week summer term"
+      ],
+      "missing_or_bridge_skills": [
+        "Go (Golang) / Envoy proxy backend patterns used heavily at Lyft: Complete a Go tour and build a basic concurrent HTTP service in Go."
+      ],
+      "date_identified": "2026-10-01",
+      "last_audited": "2026-10-01"
+    },
+    {
+      "id": "opp-27-datarobot-deep-learning-research-engineer-intern",
+      "numeric_id": 27,
+      "company": "DataRobot",
+      "role": "Deep Learning Research Engineer Intern",
+      "tier": "Tier 2: High Viability — Part-Time & Fully Remote AI / Data Roles",
+      "location": "Remote (USA / Flexible Remote)",
+      "work_arrangement": "Research Engineering Internship (Flexible / Co-op)",
+      "hours_per_week": "20-30 (Flexible remote)",
+      "compensation": "$45 - $60/hr (Competitive Research Benchmark)",
+      "realistic_success_ratio": "60% - 65%",
+      "success_ratio_min": 0.6,
+      "success_ratio_max": 0.65,
+      "success_ratio_justification": "DataRobot's mandate is building a multi-target joint probabilistic foundation model combining temporal forecasting, tabular regression, and stochastic dynamics. Diego's dual degree in Mathematics & Data Science, knowledge of Quantile Regression DQN and probability theory, and deep PyTorch experience uniquely position him above standard CS undergraduates.",
+      "urgency": "High (Posted 2d ago)",
+      "strategic_action": "Apply via Workday (Highlight Math & PyTorch)",
+      "source_repo": "https://github.com/speedyapply/2027-AI-College-Jobs",
+      "apply_url": "https://datarobot.wd1.myworkdayjobs.com/en-US/datarobot_external_careers/job/Washington-US---Remote/Deep-Learning-Research-Engineer-Intern_R-102754",
+      "file_reference": "004-work-opportunities/opportunities/DataRobot - Deep Learning Research Engineer Intern.htm",
+      "vault_note": "",
+      "status": "eligible",
+      "application_status": "pending_tailoring",
+      "key_points_to_highlight": [
+        "Probabilistic & Distributional Modeling: Highlight implementing Quantile Regression DQN (QR-DQN) in PyTorch, parameterizing return distributions and calculating Wasserstein loss.",
+        "Mathematical Foundations & Stochastic Rigor: Emphasize 94/100 GPA in Data Science & Mathematics, coursework in probability density estimation, stochastic calculus, and linear algebra.",
+        "High-Throughput PyTorch Engineering: Detail optimizing training throughput and custom loss implementations across multi-actor environments.",
+        "Reproducible Research & Evals: Emphasize disciplined experiment tracking, ablation studies, and automated metric benchmarking."
+      ],
+      "key_considerations": [
+        "Role operates at a near post-graduate/doctoral research rigor, but Diego's theoretical math background offers strong differentiation.",
+        "Fully remote position."
+      ],
+      "pros": [
+        "Cutting-edge probabilistic foundation model architecture work",
+        "Supervised by senior research scientists in enterprise AI",
+        "High hourly compensation floor"
+      ],
+      "cons": [
+        "Exceedingly high theoretical bar (stochastic differential equations and measure theory)",
+        "Heavy competition from elite US PhD students"
+      ],
+      "missing_or_bridge_skills": [
+        "Stochastic differential equations (SDEs) in neural diffusion/flow models: Review Neural ODEs (Chen et al.) and SDE-based generative modeling literature."
+      ],
+      "date_identified": "2026-10-01",
+      "last_audited": "2026-10-01"
+    },
+    {
+      "id": "opp-28-ancestry-machine-learning-engineer-co-op",
+      "numeric_id": 28,
+      "company": "Ancestry",
+      "role": "Machine Learning Engineer, Co-op",
+      "tier": "Tier 2: High Viability — Part-Time & Fully Remote AI / Data Roles",
+      "location": "Remote (Location Flexible)",
+      "work_arrangement": "Part-time / Work-Study Co-op (Flexible Remote)",
+      "hours_per_week": "20-30",
+      "compensation": "$35 - $45/hr",
+      "realistic_success_ratio": "70% - 75%",
+      "success_ratio_min": 0.7,
+      "success_ratio_max": 0.75,
+      "success_ratio_justification": "Ancestry's MLE Co-op explicitly seeks students to build and optimize AI agents using agentic frameworks (LangChain, AutoGen), integrate GenAI/LLMs, and optimize inference latency. Diego's daily hands-on engineering with agentic systems, model quantization (DAVE on Hailo-8), and RAG pipelines matches their wishlist.",
+      "urgency": "High (Posted 6d ago)",
+      "strategic_action": "Apply via Workday (Highlight Agents & Quantization)",
+      "source_repo": "https://github.com/speedyapply/2027-AI-College-Jobs",
+      "apply_url": "https://ancestry.wd501.myworkdayjobs.com/en-US/careers/job/Remote/Machine-Learning-Engineer--Co-op_R003377",
+      "file_reference": "004-work-opportunities/opportunities/Ancestry - Machine Learning Engineer Co-op.htm",
+      "vault_note": "",
+      "status": "eligible",
+      "application_status": "pending_tailoring",
+      "key_points_to_highlight": [
+        "Autonomous AI Agents: Emphasize building agentic workflows with structured tool calling, multi-step reasoning, and state management using Antigravity, Claude Code, and LangChain.",
+        "Inference Speed & Model Optimization: Feature edge model optimization on DAVE using ONNX Runtime, FP16/INT8 quantization, and latency benchmarking.",
+        "MLOps & Automated Testing: Highlight 630 unit tests in pytest for LEIA ensuring continuous evaluation and regression testing of ML pipelines.",
+        "Information Retrieval & Vector Databases: Highlight practical experience with vector search, semantic embeddings, and RAG architectures."
+      ],
+      "key_considerations": [
+        "Part-time, work-study structure designed specifically for active university students.",
+        "Remote work policy across eligible territories."
+      ],
+      "pros": [
+        "Direct 1:1 match with GenAI/Agentic skill set",
+        "Part-time 20-30 hrs/week schedule is optimal for 5th semester coursework",
+        "Huge dataset scale (65+ billion historical records)"
+      ],
+      "cons": [
+        "Prefers Master's/PhD enrollment in posting, though undergraduate candidates with strong portfolio are evaluated",
+        "Must confirm contractor/visa processing for international student outside US"
+      ],
+      "missing_or_bridge_skills": [
+        "vLLM and Triton Inference Server production deployments: Run a local vLLM server instance and benchmark throughput on a quantized open-weights LLM."
+      ],
+      "date_identified": "2026-10-01",
+      "last_audited": "2026-10-01"
+    },
+    {
+      "id": "opp-29-pathai-machine-learning-intern-co-op",
+      "numeric_id": 29,
+      "company": "PathAI",
+      "role": "Machine Learning Intern/Co-op",
+      "tier": "Tier 2: High Viability — Part-Time & Fully Remote AI / Data Roles",
+      "location": "Remote / Boston, MA",
+      "work_arrangement": "3-6 Month Co-op / Internship (Fall 2026 / Winter 2027)",
+      "hours_per_week": "20-40 (Flexible Co-op)",
+      "compensation": "$35 - $45/hr",
+      "realistic_success_ratio": "65% - 70%",
+      "success_ratio_min": 0.65,
+      "success_ratio_max": 0.7,
+      "success_ratio_justification": "PathAI is the world leader in AI-powered pathology and medical computer vision. Diego's award-winning DAVE project demonstrated complex real-time biometric computer vision (MediaPipe facial landmarking, EAR/MAR metric extraction, and sub-second edge inference), proving practical vision AI execution.",
+      "urgency": "High (Posted 5d ago)",
+      "strategic_action": "Apply via Greenhouse (Vision & DAVE CV)",
+      "source_repo": "https://github.com/speedyapply/2027-AI-College-Jobs",
+      "apply_url": "https://www.pathai.com/careers/8843495002?gh_jid=8843495002",
+      "file_reference": "004-work-opportunities/opportunities/PathAI - Machine Learning Intern Co-op.htm",
+      "vault_note": "",
+      "status": "eligible",
+      "application_status": "pending_tailoring",
+      "key_points_to_highlight": [
+        "Computer Vision & Landmark Detection: Detail DAVE's computer vision pipeline processing real-time video streams, calculating eye-aspect ratio (EAR) and mouth-aspect ratio (MAR) with sub-second latency.",
+        "Hardware Acceleration & Model Quantization: Showcase Hailo-8 NPU compilation and ONNX runtime integration for high-efficiency image inference.",
+        "Rigorous Experimental Methodology: Feature 630 pytest unit tests in LEIA, proving strict verification standards necessary for healthcare/clinical data.",
+        "Cross-Functional Collaboration: Highlight co-founding LEIA and mentoring 30+ engineering students in applied AI."
+      ],
+      "key_considerations": [
+        "High preference for 4-6 month co-op commitment.",
+        "Healthcare domain with strict scientific validation and reproducibility requirements."
+      ],
+      "pros": [
+        "World-class mission improving oncology patient outcomes with AI",
+        "Deep computer vision and deep learning engineering team",
+        "Flexible remote option"
+      ],
+      "cons": [
+        "High bar in pathology/histopathology image processing",
+        "Onsite presence in Boston is noted as preferred, though remote is offered"
+      ],
+      "missing_or_bridge_skills": [
+        "Gigapixel Whole Slide Image (WSI) processing and patch-based classification: Review the OpenSlide library and patch-sampling techniques for histological slides."
+      ],
+      "date_identified": "2026-10-01",
+      "last_audited": "2026-10-01"
+    },
+    {
+      "id": "opp-30-monzo-associate-data-scientist-intern",
+      "numeric_id": 30,
+      "company": "Monzo",
+      "role": "Associate Data Scientist - Intern",
+      "tier": "Tier 2: High Viability — Part-Time & Fully Remote AI / Data Roles",
+      "location": "Remote / London, UK",
+      "work_arrangement": "Internship / Placement (Closing Nov 1, 2026)",
+      "hours_per_week": "35-40 (Flexible)",
+      "compensation": "£42,500 pro rata (~$55,000 USD annualized)",
+      "realistic_success_ratio": "65% - 70%",
+      "success_ratio_min": 0.65,
+      "success_ratio_max": 0.7,
+      "success_ratio_justification": "Monzo's Data Science internship focuses on building machine learning models to detect fraudulent payments and analyze user product journeys. Diego's work on the 13-week Databricks Sun Holdings challenge for transactional fraud detection and SQL pricing analytics is an immediate domain match.",
+      "urgency": "Closes Nov 1, 2026",
+      "strategic_action": "Apply via Greenhouse (Fintech / Fraud CV)",
+      "source_repo": "https://github.com/speedyapply/2027-AI-College-Jobs",
+      "apply_url": "https://job-boards.greenhouse.io/monzo/jobs/8232726",
+      "file_reference": "004-work-opportunities/opportunities/Monzo - Associate Data Scientist Intern.htm",
+      "vault_note": "",
+      "status": "eligible",
+      "application_status": "pending_tailoring",
+      "key_points_to_highlight": [
+        "Transactional Fraud Detection: Highlight building analytics and classification models in the Databricks Sun Holdings challenge to detect anomalous transaction patterns.",
+        "SQL & Real-Time Data Analytics: Showcase advanced SQL querying, data cleaning, and statistical metrics across customer datasets at Aristor Consultoría.",
+        "Mathematical Modeling: Emphasize dual degree in Data Science & Mathematics with 94/100 GPA, illustrating deep probability and statistical foundations.",
+        "Code Quality & CI/CD: Mention maintaining 630 pytest unit tests in LEIA, ensuring bulletproof production deployments."
+      ],
+      "key_considerations": [
+        "Prominent UK digital challenger bank with a massive 300+ person data organization.",
+        "Application closes strictly on November 1, 2026."
+      ],
+      "pros": [
+        "Leading global fintech brand with exceptional engineering culture",
+        "High salary benchmark (£42.5k pro rata)",
+        "Direct ownership of production fraud/behavior models"
+      ],
+      "cons": [
+        "Timezone difference with UK team (6-7 hours ahead of Querétaro)",
+        "Requires verifying UK remote right-to-work or contractor onboarding"
+      ],
+      "missing_or_bridge_skills": [
+        "Financial crime typologies (AML, synthetic identity fraud): Review standard banking transaction fraud indicators and imbalance classification techniques (SMOTE, focal loss)."
+      ],
+      "date_identified": "2026-10-01",
+      "last_audited": "2026-10-01"
+    },
+    {
+      "id": "opp-31-figma-data-engineer-intern-2027",
+      "numeric_id": 31,
+      "company": "Figma",
+      "role": "Data Engineer Intern (2027)",
+      "tier": "Tier 3: Elite US Summer 2027 Programs (Top Sponsoring Tech & Quant)",
+      "location": "San Francisco, CA or New York, NY",
+      "work_arrangement": "Summer 2027 Internship (12 weeks)",
+      "hours_per_week": "40 (Summer)",
+      "compensation": "$60 - $70/hr + Housing Stipend",
+      "realistic_success_ratio": "40% - 45%",
+      "success_ratio_min": 0.4,
+      "success_ratio_max": 0.45,
+      "success_ratio_justification": "Figma actively sponsors J-1 exchange visitor visas for international students. The role seeks Python and SQL data pipeline builders who can optimize datasets for analytics and AI. Diego's PySpark data lakehouse work (Databricks Sun Holdings challenge) and Aristor SQL modeling fit their pipeline requirements, though competition among US students is extreme.",
+      "urgency": "High (Posted 6d ago)",
+      "strategic_action": "Apply via Greenhouse (Data Engineering Focus)",
+      "source_repo": "https://github.com/speedyapply/2027-AI-College-Jobs",
+      "apply_url": "https://boards.greenhouse.io/figma/jobs/6178851004?gh_jid=6178851004",
+      "file_reference": "004-work-opportunities/opportunities/Figma - Data Engineer Intern.htm",
+      "vault_note": "",
+      "status": "eligible",
+      "application_status": "pending_tailoring",
+      "key_points_to_highlight": [
+        "Data Pipeline Engineering: Detail building and orchestrating data transformation pipelines in PySpark and SQL during the 13-Week Databricks Sun Holdings challenge.",
+        "Warehouse Schema & Modeling: Highlight Aristor Consultoría data architecture, standardizing demographic datasets into high-performance relational tables.",
+        "High-Throughput IPC & Optimization: Showcase low-latency data streaming and queue management from the Ape-X RL distributed architecture.",
+        "Testing & Observability: Feature 630 pytest unit tests in LEIA, emphasizing data validation and zero-regression testing."
+      ],
+      "key_considerations": [
+        "Figma handles full J-1 visa sponsorship, flights, and corporate housing for international summer interns.",
+        "San Francisco or NYC design and engineering hub."
+      ],
+      "pros": [
+        "Premier Silicon Valley brand on resume",
+        "Elite compensation ($60+/hr plus housing and travel)",
+        "World-class mentorship and direct conversion to full-time new grad"
+      ],
+      "cons": [
+        "Extremely competitive applicant pool from top global universities",
+        "Rigorous systems and data modeling interview loop"
+      ],
+      "missing_or_bridge_skills": [
+        "Snowflake / dbt enterprise warehouse patterns: Familiarize with Snowflake query profiling and clustering keys."
+      ],
+      "date_identified": "2026-10-01",
+      "last_audited": "2026-10-01"
+    },
+    {
+      "id": "opp-32-sig-machine-learning-engineering-intern-summer-2027",
+      "numeric_id": 32,
+      "company": "Susquehanna International Group (SIG)",
+      "role": "Machine Learning Engineering Internship: Summer 2027",
+      "tier": "Tier 3: Elite US Summer 2027 Programs (Top Sponsoring Tech & Quant)",
+      "location": "Bala Cynwyd, PA (Philadelphia Metro)",
+      "work_arrangement": "10-Week Summer 2027 Internship",
+      "hours_per_week": "40 (Summer)",
+      "compensation": "$100 - $125/hr + Corporate Housing & Travel",
+      "realistic_success_ratio": "25% - 30%",
+      "success_ratio_min": 0.25,
+      "success_ratio_max": 0.3,
+      "success_ratio_justification": "SIG explicitly specifies: 'Hands-on experience with PyTorch that goes beyond calling APIs — training at scale, making workflows measurably faster... comfort in C++ a plus.' Diego's Distributed Ape-X DQN RL project (custom headless simulation at 3,700 FPS, C++/Lua memory reading, Quantile Regression DQN) is the exact high-performance ML engineering profile SIG is looking for.",
+      "urgency": "High (Posted 6d ago)",
+      "strategic_action": "Apply via iCIMS (Highlight Ape-X DQN & C++)",
+      "source_repo": "https://github.com/speedyapply/2027-AI-College-Jobs",
+      "apply_url": "https://careers-sig.icims.com/jobs/11555/machine-learning-engineering-internship%3a-summer-2027/job",
+      "file_reference": "004-work-opportunities/opportunities/SIG - Machine Learning Engineering Internship.htm",
+      "vault_note": "",
+      "status": "eligible",
+      "application_status": "pending_tailoring",
+      "key_points_to_highlight": [
+        "Distributed Ape-X DQN Architecture: Emphasize scaling Street Fighter RL to 3,700 FPS, building custom learner/actor multiprocessing queues, and reading emulator RAM via C++/Lua.",
+        "Quantile Regression & Mathematical Rigor: Detail implementing QR-DQN in PyTorch, Huber loss, and distributional bellman equations, grounded in 94/100 GPA in Mathematics.",
+        "Systems & Hardware Optimization: Feature C++ gaming engine development and Hailo-8 NPU compilation, proving systems fluency beyond plain Python.",
+        "Academic Excellence: Highlight TELMEX Foundation Scholarship and PARA Academic Honors Program."
+      ],
+      "key_considerations": [
+        "Full J-1 visa sponsorship, luxury corporate housing, and catered campus provided.",
+        "Intense quantitative, probability, and algorithmic coding interviews."
+      ],
+      "pros": [
+        "Elite quantitative trading firm with unmatched technical reputation",
+        "Highest-tier compensation ($100+/hr)",
+        "Direct exposure to low-latency financial machine learning"
+      ],
+      "cons": [
+        "Bar-raiser quant interview questions (brainteasers, conditional probability, C++ memory layout)",
+        "Highly selective acceptance rate (<2% overall)"
+      ],
+      "missing_or_bridge_skills": [
+        "High-frequency market microstructure and order book dynamics: Read 'Quantitative Trading' by Ernie Chan and review limit order book simulation concepts."
+      ],
+      "date_identified": "2026-10-01",
+      "last_audited": "2026-10-01"
+    },
+    {
+      "id": "opp-33-hrt-data-scientist-intern-2027",
+      "numeric_id": 33,
+      "company": "Hudson River Trading (HRT)",
+      "role": "Data Scientist Summer Internship - 2027",
+      "tier": "Tier 3: Elite US Summer 2027 Programs (Top Sponsoring Tech & Quant)",
+      "location": "New York City, NY",
+      "work_arrangement": "Summer 2027 Internship",
+      "hours_per_week": "40 (Summer)",
+      "compensation": "$120 - $135/hr + Housing & Travel",
+      "realistic_success_ratio": "20% - 25%",
+      "success_ratio_min": 0.2,
+      "success_ratio_max": 0.25,
+      "success_ratio_justification": "HRT Data Scientists investigate methodologies for extracting high-signal quantitative features from noisy vendor datasets. Diego's mathematical rigor (94 GPA, dual Math degree), experience modeling spatial demographics from raw census tables at Aristor, and transactional fraud analysis fit the analytical requirements.",
+      "urgency": "High (Posted 7d ago)",
+      "strategic_action": "Apply via Greenhouse (Math & Stats Focus)",
+      "source_repo": "https://github.com/speedyapply/2027-AI-College-Jobs",
+      "apply_url": "https://www.hudsonrivertrading.com/careers/job/?gh_jid=8222414",
+      "file_reference": "004-work-opportunities/opportunities/HRT - Data Scientist Intern.htm",
+      "vault_note": "",
+      "status": "eligible",
+      "application_status": "pending_tailoring",
+      "key_points_to_highlight": [
+        "Feature Engineering & Statistical Validation: Highlight extracting high-value predictive signals from noisy census and demographic datasets across 15+ urban zones at Aristor Consultoría.",
+        "Mathematical Foundation & Probability: Showcase 94/100 GPA in Data Science & Mathematics, TELMEX Scholar status, and advanced linear algebra and probability coursework.",
+        "High-Performance Python (polars/pandas): Detail processing massive transactional logs during the Databricks Sun Holdings challenge.",
+        "Distributed Systems Fluency: Mention Ape-X DQN distributed computing and C++ integration."
+      ],
+      "key_considerations": [
+        "HRT provides full J-1 sponsorship, flights, and premier housing in Manhattan.",
+        "Rigorous mathematical and statistical screening."
+      ],
+      "pros": [
+        "Tier-1 proprietary trading firm with stellar culture and intellectual rigor",
+        "Exceptional compensation package (~$5,000/week)",
+        "Direct pathway to Algorithmic Researcher / Data Scientist return offer"
+      ],
+      "cons": [
+        "Extremely intense mathematical and algorithmic screening process",
+        "Very low acceptance rate"
+      ],
+      "missing_or_bridge_skills": [
+        "Polars library internals and high-performance columnar manipulations: Build a quick benchmarking script comparing Polars vs Pandas on 10M+ rows."
+      ],
+      "date_identified": "2026-10-01",
+      "last_audited": "2026-10-01"
+    },
+    {
+      "id": "opp-34-bmo-ai-engineer-winter-2027-co-op-toronto",
+      "numeric_id": 34,
+      "company": "Bank of Montreal (BMO)",
+      "role": "AI Engineer, Winter 2027 (Co-op/Internship) - 8 months",
+      "tier": "Tier 4: Canadian AI Co-op & International Innovation Hubs",
+      "location": "Toronto, Ontario, Canada (33 Dundas Street West / Hybrid)",
+      "work_arrangement": "8-Month Co-op (Winter 2027: Jan - Aug 2027)",
+      "hours_per_week": "37.5 - 40",
+      "compensation": "$55,500 - $75,000 CAD annualized (~$28 - $38 CAD/hr)",
+      "realistic_success_ratio": "55% - 60%",
+      "success_ratio_min": 0.55,
+      "success_ratio_max": 0.6,
+      "success_ratio_justification": "BMO's job description literally lists Diego's exact core competencies under 'Beneficial Skills: RAG solutions, Agentic workflows, AI evaluation frameworks, MLOps concepts'. His leadership co-founding LEIA, teaching AI workshops, and maintaining 630 pytest evaluation tests make this an outstanding Canadian co-op match.",
+      "urgency": "⚠️ CRITICAL: Closes October 7, 2026 (6 days left!)",
+      "strategic_action": "Immediate Submit with Transcript + Cover Letter",
+      "source_repo": "https://github.com/speedyapply/2027-AI-College-Jobs",
+      "apply_url": "https://bmo.wd3.myworkdayjobs.com/en-US/external/job/Toronto-ON-CAN/AI-Engineer--Winter-2027--Co-op-Internship----8-months_R260027622-1",
+      "file_reference": "004-work-opportunities/opportunities/BMO - AI Engineer Winter 2027 Co-op.htm",
+      "vault_note": "",
+      "status": "eligible",
+      "application_status": "pending_tailoring",
+      "key_points_to_highlight": [
+        "Agentic Workflows & RAG: Highlight architecting agentic systems with structured tool calling, dynamic prompting, and retrieval-augmented generation.",
+        "AI Evaluation Frameworks: Feature building comprehensive automated test suites (630 pytest unit tests in LEIA) for model outputs, telemetry, and regression prevention.",
+        "Cloud AI & MLOps: Detail Dockerized FastAPI microservices, ONNX model optimization, and Databricks lakehouse integration.",
+        "Technical Leadership: Emphasize co-founding LEIA and leading AI workshops for 30+ students at Tec de Monterrey."
+      ],
+      "key_considerations": [
+        "Requires 8-month commitment (Jan - Aug 2027); would require coordinating remote semester credits or study leave with Tec de Monterrey.",
+        "Canada provides expedited International Co-op work permits (SWAP / IEC Co-op stream) for enrolled international students.",
+        "Requires submitting cover letter, resume, and unofficial transcript."
+      ],
+      "pros": [
+        "Major North American financial institution (8th largest by assets)",
+        "Explicit desire for Agentic and RAG skills that Diego already masters",
+        "8-month term provides deep resume impact and direct Canadian PR pathway"
+      ],
+      "cons": [
+        "Strict application deadline on October 7, 2026 (urgent!)",
+        "Requires coordinating international co-op work permit for Canada"
+      ],
+      "missing_or_bridge_skills": [
+        "Microsoft Copilot Studio & Azure OpenAI enterprise patterns: Explore Azure AI Studio and build a quick demo agent connected to Azure OpenAI."
+      ],
+      "date_identified": "2026-10-01",
+      "last_audited": "2026-10-01"
+    },
+    {
+      "id": "opp-35-cibc-ai-data-analytics-analyst-co-op-toronto",
+      "numeric_id": 35,
+      "company": "CIBC",
+      "role": "AI & Data Analytics and Reporting Analyst, Winter 2027 Co-op",
+      "tier": "Tier 4: Canadian AI Co-op & International Innovation Hubs",
+      "location": "Toronto, Ontario, Canada",
+      "work_arrangement": "4-Month Winter 2027 Co-op",
+      "hours_per_week": "37.5",
+      "compensation": "$25 - $32 CAD/hr",
+      "realistic_success_ratio": "50% - 55%",
+      "success_ratio_min": 0.5,
+      "success_ratio_max": 0.55,
+      "success_ratio_justification": "CIBC is recruiting students to combine Power BI reporting with AI agents, Copilot, and intelligent automation. Diego's background in demographic data modeling at Aristor Consultoría and daily agentic workflow automation makes this an accessible Canadian bank co-op.",
+      "urgency": "Active (Posted 5d ago)",
+      "strategic_action": "Apply via Workday (Analytics & Agents CV)",
+      "source_repo": "https://github.com/speedyapply/2027-AI-College-Jobs",
+      "apply_url": "https://cibc.wd3.myworkdayjobs.com/en-US/campus/job/Toronto-ON/AI---Data-Analytics-and-Reporting-Analyst-Co-op_2619748",
+      "file_reference": "004-work-opportunities/opportunities/CIBC - AI Data Analytics Reporting Analyst Co-op.htm",
+      "vault_note": "",
+      "status": "eligible",
+      "application_status": "pending_tailoring",
+      "key_points_to_highlight": [
+        "Data Modeling & Reporting: Highlight Aristor Consultoría demographic models and structured reporting for executive decision making.",
+        "AI Agents & Automation: Feature using agentic AI to automate repetitive workflows, data ingestion, and validation.",
+        "Mathematical Foundation: Emphasize 94/100 GPA in Data Science & Mathematics, demonstrating rigorous data hygiene.",
+        "Collaborative Communication: Highlight teaching AI concepts to 30+ students in LEIA workshops."
+      ],
+      "key_considerations": [
+        "Standard 4-month Canadian winter co-op term (Jan - Apr 2027).",
+        "Co-op work authorization required."
+      ],
+      "pros": [
+        "Top-5 Canadian bank with strong student co-op culture",
+        "Manageable 4-month term fits standard university calendar",
+        "Combines practical analytics with early-stage AI agent prototyping"
+      ],
+      "cons": [
+        "More reporting and business analytics focused rather than deep mathematical ML research",
+        "Requires Canadian co-op visa paperwork"
+      ],
+      "missing_or_bridge_skills": [
+        "Power BI DAX formulas: Review advanced Power BI DAX patterns for time-intelligence and dynamic filtering."
+      ],
+      "date_identified": "2026-10-01",
+      "last_audited": "2026-10-01"
+    },
+    {
+      "id": "opp-36-fgf-brands-ai-engineer-cerebro-co-op-toronto",
+      "numeric_id": 36,
+      "company": "fgf brands",
+      "role": "AI Engineer Cerebro Co-op (Winter 2027)",
+      "tier": "Tier 4: Canadian AI Co-op & International Innovation Hubs",
+      "location": "Greater Toronto Area, Ontario, Canada",
+      "work_arrangement": "4-Month Winter 2027 Co-op",
+      "hours_per_week": "40",
+      "compensation": "$26 - $34 CAD/hr",
+      "realistic_success_ratio": "55% - 60%",
+      "success_ratio_min": 0.55,
+      "success_ratio_max": 0.6,
+      "success_ratio_justification": "fgf brands is renowned in North America for treating industrial manufacturing as a tech platform, developing proprietary AI (Cerebro) for robotics and computer vision. Diego's DAVE computer vision engine and Hailo-8 hardware integration align with Cerebro's edge intelligence needs.",
+      "urgency": "Active (Posted 5d ago)",
+      "strategic_action": "Apply via iCIMS (Vision & Robotics Focus)",
+      "source_repo": "https://github.com/speedyapply/2027-AI-College-Jobs",
+      "apply_url": "https://careerscoopinternen-fgfbrands.icims.com/jobs/27239/ai-engineer-cerebro-co-op-%28winter-2027%29/job",
+      "file_reference": "004-work-opportunities/opportunities/fgf brands - AI Engineer Cerebro Co-op.htm",
+      "vault_note": "",
+      "status": "eligible",
+      "application_status": "pending_tailoring",
+      "key_points_to_highlight": [
+        "Edge AI & Computer Vision: Highlight DAVE's real-time biometric and facial feature extraction running on Raspberry Pi 5 with Hailo-8 NPU hardware acceleration.",
+        "Autonomous Decision Systems: Showcase RL policy training and automated decision making from the Ape-X DQN project.",
+        "Python Software Engineering: Feature 630 unit tests in pytest from LEIA, demonstrating bulletproof software engineering habits.",
+        "Prompt Engineering & GenAI: Highlight hands-on experience with LLM prompting, RAG pipelines, and automated tool calling."
+      ],
+      "key_considerations": [
+        "4-month term (Jan - Apr 2027) in Greater Toronto Area.",
+        "High-energy engineering environment with direct factory-floor AI deployment."
+      ],
+      "pros": [
+        "Cutting-edge industrial AI and edge vision deployment",
+        "High ownership of end-to-end Cerebro platform modules",
+        "Canadian co-op visa eligibility"
+      ],
+      "cons": [
+        "Onsite presence in Toronto manufacturing/tech facilities required",
+        "Demanding fast-paced robotics automation environment"
+      ],
+      "missing_or_bridge_skills": [
+        "Industrial edge camera APIs (GigE Vision, GenICam): Review OpenCV video capture with industrial camera stream protocols."
+      ],
+      "date_identified": "2026-10-01",
+      "last_audited": "2026-10-01"
+    },
+    {
+      "id": "opp-37-lyft-swe-intern-frontend-mexico-2027",
+      "numeric_id": 37,
+      "company": "Lyft",
+      "role": "Software Engineer Intern - Frontend - Summer 2027",
+      "tier": "Tier 1: Maximum Viability — Mexico & LATAM (Direct Legal Match)",
+      "location": "Mexico City, Mexico (Hybrid)",
+      "work_arrangement": "Summer 2027 Internship (12 weeks)",
+      "hours_per_week": "40 (Summer break)",
+      "compensation": "Top Tech Intern Salary (~$35,000 - $45,000 MXN/mo)",
+      "realistic_success_ratio": "75% - 80%",
+      "success_ratio_min": 0.75,
+      "success_ratio_max": 0.8,
+      "success_ratio_justification": "Companion frontend role to the backend cohort at Lyft Mexico City. Diego's experience developing interactive AI user interfaces, Gradio dashboards for Street Fighter RL, and telemetry frontends for DAVE gives him a strong edge in frontend state management and visual data representation.",
+      "urgency": "High (Summer 2027 Cohort Active)",
+      "strategic_action": "Apply via Greenhouse (Frontend/Full-Stack CV)",
+      "source_repo": "https://github.com/speedyapply/2027-SWE-College-Jobs",
+      "apply_url": "https://app.careerpuck.com/job-board/lyft/job/8797819002?gh_jid=8797819002",
+      "file_reference": "004-work-opportunities/opportunities/Lyft - SWE Intern Frontend Mexico.htm",
+      "vault_note": "",
+      "status": "eligible",
+      "application_status": "pending_tailoring",
+      "key_points_to_highlight": [
+        "Interactive AI Dashboards & Telemetry: Highlight building the real-time Gradio web hub for Street Fighter RL model inference and telemetry monitoring.",
+        "Full-Stack State Management: Showcase DAVE's FastAPI frontend communication, managing live webcam stream overlays, EAR/MAR meters, and alert thresholds.",
+        "Testing & Component Reliability: Feature 630 unit tests in pytest from LEIA, demonstrating disciplined verification practices across application layers.",
+        "Algorithmic Fundamentals: Emphasize 94/100 GPA in Data Science & Mathematics at Tec de Monterrey."
+      ],
+      "key_considerations": [
+        "Hybrid presence at Lyft's Mexico City tech hub during the 12-week summer term.",
+        "Direct pipeline to return offer in Mexico without visa dependency."
+      ],
+      "pros": [
+        "Top-tier brand prestige on resume",
+        "Modern UI/UX engineering with massive consumer app impact",
+        "Zero visa friction (Mexican employment contract)"
+      ],
+      "cons": [
+        "Competitive frontend technical interview loop (JavaScript/TypeScript, DOM, system design)",
+        "Mexico City relocation required for summer duration"
+      ],
+      "missing_or_bridge_skills": [
+        "Modern React / TypeScript state management (Redux Toolkit or Zustand): Build a quick React+TS component visualizing live sensor data."
+      ],
+      "date_identified": "2026-10-01",
+      "last_audited": "2026-10-01"
+    },
+    {
+      "id": "opp-38-amazon-sde-intern-guadalajara",
+      "numeric_id": 38,
+      "company": "Amazon",
+      "role": "Software Development Engineer Intern (SDE Intern)",
+      "tier": "Tier 1: Maximum Viability — Mexico & LATAM (Direct Legal Match)",
+      "location": "Guadalajara, Jalisco, Mexico (Amazon MDC)",
+      "work_arrangement": "Summer / Fall Internship (Convenio Tec de Monterrey)",
+      "hours_per_week": "40 (Summer / Break)",
+      "compensation": "Standard Amazon Tech Intern (~$30,000 - $40,000 MXN/mo)",
+      "realistic_success_ratio": "80% - 85%",
+      "success_ratio_min": 0.8,
+      "success_ratio_max": 0.85,
+      "success_ratio_justification": "Amazon Mexico hires dozens of interns every cycle via standard university agreements (Convenio Tec). Diego's distributed Ape-X DQN RL project (multi-process queues, 3,700 FPS) demonstrates high-concurrency systems programming well beyond typical undergraduate coursework.",
+      "urgency": "Active (Fall/Summer Cohort)",
+      "strategic_action": "Immediate Submit via Amazon Jobs (Convenio Tec)",
+      "source_repo": "https://raw.githubusercontent.com/Proyecto-Nutria/MX-Internships/main/README.md",
+      "apply_url": "https://www.amazon.jobs/en/jobs/2459010/software-development-engineer-intern",
+      "file_reference": "",
+      "vault_note": "",
+      "status": "eligible",
+      "application_status": "pending_tailoring",
+      "key_points_to_highlight": [
+        "Distributed Systems & IPC: Emphasize Ape-X DQN distributed RL architecture handling multi-actor process queues and high throughput.",
+        "Clean Code & Architecture: Highlight 630 pytest unit tests in LEIA, showing Amazon Leadership Principles (High Standards, Customer Obsession).",
+        "C++ & Python OOP: Feature C++ game development and Python backend microservices.",
+        "Academic Excellence: Highlight TELMEX Scholar status and 94/100 GPA in Data Science & Mathematics."
+      ],
+      "key_considerations": [
+        "Amazon Mexico requires an active student status and signing of the Tec de Monterrey internship agreement (convenio).",
+        "Online Assessment (OA) requires passing 2 algorithmic questions on HackerRank."
+      ],
+      "pros": [
+        "Tier-1 global cloud & e-commerce titan",
+        "Standardized pipeline to full-time SDE return offer upon graduation",
+        "High intern hiring volume in Guadalajara tech center"
+      ],
+      "cons": [
+        "Standardized corporate OA filter; requires sharp LeetCode medium prep",
+        "Guadalajara hybrid office presence"
+      ],
+      "missing_or_bridge_skills": [
+        "Amazon Leadership Principles behavioral storytelling: Structure STAR stories for 'Customer Obsession', 'Ownership', and 'Invent and Simplify'."
+      ],
+      "date_identified": "2026-10-01",
+      "last_audited": "2026-10-01"
+    },
+    {
+      "id": "opp-39-oracle-software-developer-intern-zapopan",
+      "numeric_id": 39,
+      "company": "Oracle",
+      "role": "Software Developer Intern",
+      "tier": "Tier 1: Maximum Viability — Mexico & LATAM (Direct Legal Match)",
+      "location": "Zapopan, Jalisco, Mexico (Oracle Mexico Development Center - MDC)",
+      "work_arrangement": "Part-Time / Student Internship (Convenio Tec)",
+      "hours_per_week": "20-30 (Flexible student hours)",
+      "compensation": "Competitive Corporate Intern (~$18,000 - $25,000 MXN/mo)",
+      "realistic_success_ratio": "85% - 90%",
+      "success_ratio_min": 0.85,
+      "success_ratio_max": 0.9,
+      "success_ratio_justification": "Oracle MDC in Zapopan has a premier partnership with Tec de Monterrey, offering dedicated part-time internships specifically scheduled around classes (20-30 hrs/week). Diego's database and data architecture background from Aristor and Databricks Sun Holdings challenge provides immediate domain alignment.",
+      "urgency": "Active (Zapopan MDC Cohort)",
+      "strategic_action": "Apply via Oracle Careers (Convenio Tec Match)",
+      "source_repo": "https://github.com/Proyecto-Nutria/MX-Internships",
+      "apply_url": "https://careers.oracle.com/jobs/#en/sites/jobsearch/job/199622/?utm_medium=jobshare",
+      "file_reference": "004-work-opportunities/opportunities/Oracle - Software Developer Intern Zapopan.htm",
+      "vault_note": "",
+      "status": "eligible",
+      "application_status": "pending_tailoring",
+      "key_points_to_highlight": [
+        "Relational Database & SQL Modeling: Highlight Aristor Consultoría geospatial database modeling, indexing, and high-performance SQL query construction.",
+        "C++ & Java / OOP Fundamentals: Feature C++ gaming engine architecture and object-oriented design patterns.",
+        "Data Lakehouse Processing: Showcase Databricks Sun Holdings challenge transforming big data pipelines.",
+        "Student Availability: Emphasize seeking a 20-30 hrs/week flexible role aligned with Tec de Monterrey academic calendar."
+      ],
+      "key_considerations": [
+        "Oracle MDC specifically accommodates ongoing university coursework with morning/afternoon schedule flexibility.",
+        "Formal university agreement with Tec de Monterrey standardly supported."
+      ],
+      "pros": [
+        "Highly flexible 20-30 hrs/week structure directly matching preferences.md",
+        "Major enterprise database and cloud infrastructure player",
+        "Extremely high conversion rate to permanent Junior Software Developer"
+      ],
+      "cons": [
+        "Zapopan/Guadalajara location (hybrid presence required)",
+        "Compensation lower than US remote/sponsoring tech roles"
+      ],
+      "missing_or_bridge_skills": [
+        "Oracle Cloud Infrastructure (OCI) core services: Complete Oracle's free OCI Foundations Associate training."
+      ],
+      "date_identified": "2026-10-01",
+      "last_audited": "2026-10-01"
+    },
+    {
+      "id": "opp-40-abb-data-analyst-internship-apodaca",
+      "numeric_id": 40,
+      "company": "ABB",
+      "role": "Data Analyst Internship",
+      "tier": "Tier 1: Maximum Viability — Mexico & LATAM (Direct Legal Match)",
+      "location": "Ciudad Apodaca, Nuevo León, Mexico",
+      "work_arrangement": "Student Internship (Part-Time / Hybrid)",
+      "hours_per_week": "20-30 (Flexible)",
+      "compensation": "Standard Industrial Intern (~$12,000 - $18,000 MXN/mo)",
+      "realistic_success_ratio": "85% - 90%",
+      "success_ratio_min": 0.85,
+      "success_ratio_max": 0.9,
+      "success_ratio_justification": "ABB is a global leader in electrification and automation with a massive manufacturing and engineering hub in Apodaca. Diego's background in demographic and spatial analytics (Aristor) and industrial data manipulation makes him an exceptional candidate for plant-level data optimization.",
+      "urgency": "High (Posted 7d ago)",
+      "strategic_action": "Apply via Workday (Analytics Focus)",
+      "source_repo": "https://github.com/speedyapply/2027-AI-College-Jobs",
+      "apply_url": "https://abb.wd3.myworkdayjobs.com/en-US/external_career_page/job/Apodaca-Nuevo-Len-Mexico/Data-Analyst-Internship_JR00047138",
+      "file_reference": "004-work-opportunities/opportunities/ABB - Data Analyst Internship Apodaca.htm",
+      "vault_note": "",
+      "status": "eligible",
+      "application_status": "pending_tailoring",
+      "key_points_to_highlight": [
+        "Predictive Analytics & Data Cleaning: Highlight Aristor Consultoría data modeling, cleaning messy datasets, and building predictive models for commercial growth.",
+        "Industrial Sensor Fusion & Hardware: Feature DAVE's edge deployment on Raspberry Pi 5 with Hailo-8 NPU, showing hardware familiarity.",
+        "Automated Reporting & Dashboards: Showcase data visualization and automated metrics logging.",
+        "Mathematics & Statistics Rigor: 94/100 GPA at Tec de Monterrey."
+      ],
+      "key_considerations": [
+        "Designed for enrolled college students; part-time flexibility supported.",
+        "Apodaca/Monterrey location; explore remote data reporting options."
+      ],
+      "pros": [
+        "Global industrial automation brand",
+        "Practical supply chain and manufacturing analytics exposure",
+        "Zero visa issues"
+      ],
+      "cons": [
+        "Apodaca location would require remote arrangement or local relocation",
+        "Lower compensation ceiling compared to tech/fintech"
+      ],
+      "missing_or_bridge_skills": [
+        "Supply chain KPI formulas (OEE, OTIF, scrap rates): Review basic industrial manufacturing operations metrics."
+      ],
+      "date_identified": "2026-10-01",
+      "last_audited": "2026-10-01"
+    },
+    {
+      "id": "opp-41-aha-intern-data-science-ml-ai-remote",
+      "numeric_id": 41,
+      "company": "American Heart Association",
+      "role": "Intern - Data Science - Machine Learning & AI-Remote",
+      "tier": "Tier 2: High Viability — Part-Time & Fully Remote AI / Data Roles",
+      "location": "Remote (USA / Global Remote)",
+      "work_arrangement": "Part-Time Remote Internship",
+      "hours_per_week": "20",
+      "compensation": "$22 - $28/hr (Competitive Non-Profit/Research)",
+      "realistic_success_ratio": "70% - 75%",
+      "success_ratio_min": 0.7,
+      "success_ratio_max": 0.75,
+      "success_ratio_justification": "AHA seeks data science interns to develop ML and AI algorithms for cardiovascular research and clinical datasets. Diego's DAVE biometric engine (heart-rate/eye-closure fatigue prediction, real-time physiological landmark tracking) provides direct healthcare/biomedical credibility.",
+      "urgency": "High (Posted 10d ago)",
+      "strategic_action": "Apply via iCIMS (Healthcare & DAVE Focus)",
+      "source_repo": "https://github.com/speedyapply/2027-AI-College-Jobs",
+      "apply_url": "https://careers-heart.icims.com/jobs/18243/intern%2c-data-science%2c-machine-learning-%26-ai-remote/job",
+      "file_reference": "004-work-opportunities/opportunities/American Heart Association - Intern Data Science ML AI Remote.htm",
+      "vault_note": "",
+      "status": "eligible",
+      "application_status": "pending_tailoring",
+      "key_points_to_highlight": [
+        "Biometric Health AI (DAVE): Highlight computer vision and landmark tracking for physiological monitoring (EAR, MAR, drowsiness detection).",
+        "Statistical Modeling & Healthcare Analytics: Feature dual degree in Mathematics & Data Science, emphasizing statistical inference and clinical trial data hygiene.",
+        "Python Machine Learning Stack: Showcase PyTorch, scikit-learn, and pandas models trained with cross-validation.",
+        "Testing & Rigor: Highlight 630 pytest unit tests in LEIA, emphasizing reproducible research practices."
+      ],
+      "key_considerations": [
+        "Fully remote 20 hrs/week schedule is 100% compliant with university semester constraints in preferences.md.",
+        "Strong mission-driven research environment."
+      ],
+      "pros": [
+        "100% remote flexibility from Querétaro with exactly 20 hrs/week",
+        "Prestigious non-profit biomedical research institution",
+        "High relevance for future Healthcare AI / BioML specialization"
+      ],
+      "cons": [
+        "Research-focused non-profit compensation scale ($22-$28/hr)",
+        "Must confirm contractor/W-8BEN paperwork for Mexican resident"
+      ],
+      "missing_or_bridge_skills": [
+        "Cardiovascular health metrics and biostatistical survival analysis: Review Kaplan-Meier curves and Cox proportional hazards regression."
+      ],
+      "date_identified": "2026-10-01",
+      "last_audited": "2026-10-01"
+    },
+    {
+      "id": "opp-42-pinterest-swe-intern-remote-2027",
+      "numeric_id": 42,
+      "company": "Pinterest",
+      "role": "Software Engineer Intern (Summer 2027)",
+      "tier": "Tier 2: High Viability — Part-Time & Fully Remote AI / Data Roles",
+      "location": "Remote in USA (or SF Bay Area)",
+      "work_arrangement": "Summer 2027 Internship (12 weeks)",
+      "hours_per_week": "40 (Summer)",
+      "compensation": "$55 - $65/hr + Housing Stipend",
+      "realistic_success_ratio": "45% - 50%",
+      "success_ratio_min": 0.45,
+      "success_ratio_max": 0.5,
+      "success_ratio_justification": "Pinterest offers fully remote internships in the US with top-tier compensation and sponsors J-1 visas for international students. Diego's distributed systems background (Ape-X multi-process actor/learner architecture) and high GPA match Pinterest's backend/ML infra requirements.",
+      "urgency": "Immediate (Posted 0d ago!)",
+      "strategic_action": "Apply via Greenhouse (Backend / ML Systems CV)",
+      "source_repo": "https://raw.githubusercontent.com/SimplifyJobs/Summer2027-Internships/dev/README.md",
+      "apply_url": "https://www.pinterestcareers.com/jobs/?gh_jid=7838577&utm_source=Simplify&ref=Simplify",
+      "file_reference": "004-work-opportunities/opportunities/Pinterest - SWE Intern Summer 2027.htm",
+      "vault_note": "",
+      "status": "eligible",
+      "application_status": "pending_tailoring",
+      "key_points_to_highlight": [
+        "Distributed Systems Architecture: Detail the Ape-X DQN distributed RL engine handling 3,700 FPS and high-concurrency inter-process communication.",
+        "Computer Vision & Multimodal Search: Highlight DAVE's computer vision and landmark extraction pipelines.",
+        "Disciplined Software Engineering: Emphasize maintaining 630 unit tests in pytest for LEIA and CI/CD pipelines.",
+        "Mathematical Foundation: Feature 94/100 GPA in Data Science & Mathematics, highlighting graph algorithms and statistical modeling."
+      ],
+      "key_considerations": [
+        "Pinterest is one of the pioneer tech companies supporting permanent remote work policies.",
+        "Provides J-1 visa sponsorship for international summer interns."
+      ],
+      "pros": [
+        "Elite tech brand with world-renowned ML/recommendation systems",
+        "High hourly compensation ($55-$65/hr)",
+        "Flexible remote work culture"
+      ],
+      "cons": [
+        "Highly competitive algorithmic and systems interview process",
+        "Large global applicant pool"
+      ],
+      "missing_or_bridge_skills": [
+        "Graph neural networks (PinSage) and visual search embeddings: Read the Pinterest PinSage paper on large-scale graph convolutions."
+      ],
+      "date_identified": "2026-10-01",
+      "last_audited": "2026-10-01"
+    },
+    {
+      "id": "opp-43-datacor-data-science-intern-summer-2027",
+      "numeric_id": 43,
+      "company": "Datacor",
+      "role": "Data Science Intern - Summer 2027 Program",
+      "tier": "Tier 2: High Viability — Part-Time & Fully Remote AI / Data Roles",
+      "location": "Remote in USA",
+      "work_arrangement": "Summer 2027 Remote Internship",
+      "hours_per_week": "40 (Summer)",
+      "compensation": "$25 - $35/hr",
+      "realistic_success_ratio": "65% - 70%",
+      "success_ratio_min": 0.65,
+      "success_ratio_max": 0.7,
+      "success_ratio_justification": "Datacor is an ERP and CRM software provider for process manufacturing. The role seeks students to build predictive models and business analytics. Diego's consulting internship at Aristor (commercial demographic modeling) and Databricks pricing challenge provide a direct domain match.",
+      "urgency": "Immediate (Posted 0d ago!)",
+      "strategic_action": "Apply via Greenhouse (Data Science Focus)",
+      "source_repo": "https://raw.githubusercontent.com/SimplifyJobs/Summer2027-Internships/dev/README.md",
+      "apply_url": "https://job-boards.greenhouse.io/datacor/jobs/5242412007?utm_source=Simplify&ref=Simplify",
+      "file_reference": "004-work-opportunities/opportunities/Datacor - Data Science Intern Summer 2027.htm",
+      "vault_note": "",
+      "status": "eligible",
+      "application_status": "pending_tailoring",
+      "key_points_to_highlight": [
+        "Commercial Data Analytics (Aristor): Highlight spatial and demographic modeling predicting high-potential market expansion zones with 20% higher projected revenue.",
+        "Data Pipeline Engineering: Feature Databricks Sun Holdings challenge cleaning transactional datasets and training pricing models.",
+        "Mathematical Foundation: Emphasize 94/100 GPA in Data Science & Mathematics.",
+        "Automated Testing & Clean Code: Highlight 630 pytest unit tests in LEIA."
+      ],
+      "key_considerations": [
+        "100% remote summer internship program.",
+        "Practical B2B software environment with direct customer analytics impact."
+      ],
+      "pros": [
+        "Fully remote summer term",
+        "Direct application of predictive modeling and commercial analytics",
+        "High recruiter responsiveness on newly posted greenhouse listing"
+      ],
+      "cons": [
+        "Niche chemical/manufacturing ERP domain",
+        "Smaller company brand compared to Big Tech"
+      ],
+      "missing_or_bridge_skills": [
+        "Time-series inventory forecasting methods: Review ARIMA, Prophet, and Holt-Winters forecasting models."
+      ],
+      "date_identified": "2026-10-01",
+      "last_audited": "2026-10-01"
+    },
+    {
+      "id": "opp-44-c3-ai-swe-intern-mexico",
+      "numeric_id": 44,
+      "company": "C3 AI",
+      "role": "Software Engineer - Intern - Summer 2027",
+      "tier": "Tier 1: Maximum Viability — Mexico & LATAM (Direct Legal Match)",
+      "location": "Guadalajara, Jalisco, Mexico",
+      "work_arrangement": "Summer 2027 Internship (12 weeks)",
+      "hours_per_week": "40 (Summer)",
+      "compensation": "Standard Top Tech (~$35,000 - $45,000 MXN/mo)",
+      "realistic_success_ratio": "85% - 90%",
+      "success_ratio_min": 0.85,
+      "success_ratio_max": 0.9,
+      "success_ratio_justification": "C3 AI Guadalajara explicitly recruits Mexican university students in 5th semester or higher in CS/Math/Data Science for their Summer 2027 internship. Diego's dual major in Data Science & Math at Tec de Monterrey, paired with hands-on agentic AI system architecture and distributed OOP development, is a direct bullseye match.",
+      "urgency": "High (Summer 2027 Active)",
+      "strategic_action": "Immediate Apply via C3 AI Portal",
+      "source_repo": "https://raw.githubusercontent.com/speedyapply/2027-SWE-College-Jobs/main/INTERN_INTL.md",
+      "apply_url": "https://c3.ai/job-description/8739323002?gh_jid=8739323002",
+      "file_reference": "",
+      "vault_note": "",
+      "status": "eligible",
+      "application_status": "pending_tailoring",
+      "key_points_to_highlight": [
+        "Agentic AI & Orchestration: Showcase direct experience building agentic AI platform workflows with tool calling, multi-agent reasoning, and dynamic prompts, directly aligned with the C3 Agentic AI Platform.",
+        "High-Throughput Distributed Systems: Highlight Ape-X DQN RL architecture managing IPC queues and 3,700 FPS data throughput in Python/OOP.",
+        "Automated Testing & Reliability: Detail 630 pytest unit tests in LEIA, proving production-grade software engineering discipline.",
+        "Data Pipeline Engineering: Emphasize Databricks Sun Holdings challenge and Aristor Consultoría demographic data pipelines."
+      ],
+      "key_considerations": [
+        "Must be enrolled in a Mexican university in 5th semester or higher with graduation around May 2028 (perfect fit).",
+        "Summer 2027 in Guadalajara engineering center; straightforward domestic relocation from Querétaro."
+      ],
+      "pros": [
+        "Pioneer enterprise AI application software company (NYSE: AI)",
+        "Direct experience with the C3 Agentic AI Platform and enterprise LLM stacks",
+        "Full Mexican employment compliance with no visa friction",
+        "High conversion rate to full-time new-grad offers"
+      ],
+      "cons": [
+        "Guadalajara hybrid/onsite presence during the 12-week summer term",
+        "Competitive algorithmic and OOP technical interview"
+      ],
+      "missing_or_bridge_skills": [
+        "C3 AI Type System & Model-Driven Architecture: Review C3 AI technical documentation and architectural whitepapers on its declarative platform model."
+      ],
+      "date_identified": "2026-10-02",
+      "last_audited": "2026-10-02"
+    },
+    {
+      "id": "opp-45-autodesk-swe-intern-toronto",
+      "numeric_id": 45,
+      "company": "Autodesk",
+      "role": "Software Development Internship - Summer 2027",
+      "tier": "Tier 4: High Viability — Canadian Co-op & International Hubs",
+      "location": "Toronto, Ontario, Canada (Hybrid)",
+      "work_arrangement": "4-Month Summer Internship (May - August 2027)",
+      "hours_per_week": "40 (Summer)",
+      "compensation": "$35 - $45 CAD/hr",
+      "realistic_success_ratio": "60% - 65%",
+      "success_ratio_min": 0.6,
+      "success_ratio_max": 0.65,
+      "success_ratio_justification": "Autodesk Toronto is a flagship engineering hub for 3D modeling, computer graphics, and design software. Diego's background in C++/C# 3D game engines, computational geometry, and 630 pytest unit tests provides strong evidence of software engineering rigor.",
+      "urgency": "High (Summer 2027 Active)",
+      "strategic_action": "Apply via Workday (Systems & C++ Focus)",
+      "source_repo": "https://raw.githubusercontent.com/speedyapply/2027-SWE-College-Jobs/main/INTERN_INTL.md",
+      "apply_url": "https://autodesk.wd1.myworkdayjobs.com/en-US/uni/job/Toronto-ON-CAN/Software-Development-Internship--Summer-2027-_26WD101436",
+      "file_reference": "",
+      "vault_note": "",
+      "status": "eligible",
+      "application_status": "pending_tailoring",
+      "key_points_to_highlight": [
+        "3D Graphics & Game Engine Architecture: Highlight C# 3D game engine and C++ game architecture demonstrating vector mathematics, spatial indexing, and OOP.",
+        "System Testing & Software Quality: Feature 630 unit tests in pytest from LEIA, demonstrating bulletproof quality assurance.",
+        "Mathematical Foundation: Emphasize 94/100 GPA in Data Science & Mathematics at Tec de Monterrey and TELMEX Foundation Scholar distinction.",
+        "Edge Optimization & Embedded Systems: Detail DAVE real-time biometric pipeline with hardware acceleration on Hailo-8."
+      ],
+      "key_considerations": [
+        "Eligible for Canadian International Co-op work permit (SWAP / IEC stream for Mexican university students).",
+        "4-month term (May - August 2027) seamlessly aligns with Tec de Monterrey summer vacation."
+      ],
+      "pros": [
+        "Global design software leader (AutoCAD, Maya, Revit, Fusion 360)",
+        "World-class Toronto engineering campus with hybrid flexibility",
+        "Straightforward Canadian student co-op visa pathway"
+      ],
+      "cons": [
+        "Requires international relocation to Toronto for the 4-month summer term",
+        "Competitive applicant pool from Canadian universities"
+      ],
+      "missing_or_bridge_skills": [
+        "Modern C++20 standard library & smart pointers: Review C++20 features, RAII patterns, and multithreading primitives."
+      ],
+      "date_identified": "2026-10-02",
+      "last_audited": "2026-10-02"
+    },
+    {
+      "id": "opp-46-autodesk-ai-ml-platform-intern-toronto",
+      "numeric_id": 46,
+      "company": "Autodesk",
+      "role": "Intern - AI/ML Platform - Winter 2027",
+      "tier": "Tier 4: High Viability — Canadian Co-op & International Hubs",
+      "location": "Toronto, Ontario, Canada",
+      "work_arrangement": "4-Month Winter Co-op (January - April 2027)",
+      "hours_per_week": "40 (Co-op)",
+      "compensation": "$35 - $45 CAD/hr",
+      "realistic_success_ratio": "60% - 65%",
+      "success_ratio_min": 0.6,
+      "success_ratio_max": 0.65,
+      "success_ratio_justification": "Autodesk's AI/ML Platform team builds the foundational infrastructure supporting generative design models and AI tools across all Autodesk products. Diego's work optimizing edge neural networks (Hailo-8 / DAVE) and distributed training loops (Ape-X RL) directly maps to ML platform engineering.",
+      "urgency": "High (Winter 2027 Active)",
+      "strategic_action": "Apply via Workday (MLOps & Platform Focus)",
+      "source_repo": "https://raw.githubusercontent.com/speedyapply/2027-AI-College-Jobs/main/INTERN_INTL.md",
+      "apply_url": "https://autodesk.wd1.myworkdayjobs.com/en-US/uni/job/Toronto-ON-CAN/Intern--AI-ML-Platform--Winter-_26WD101061",
+      "file_reference": "",
+      "vault_note": "",
+      "status": "eligible",
+      "application_status": "pending_tailoring",
+      "key_points_to_highlight": [
+        "ML Platform & Pipeline Automation: Highlight building distributed training pipelines and IPC actor-learner loops in Ape-X DQN.",
+        "Hardware Acceleration & Model Serving: Showcase DAVE edge inference with Hailo-8 NPU runtime and ONNX model optimization.",
+        "Cloud Lakehouse & ETL Pipelines: Feature Databricks Sun Holdings challenge using PySpark for transactional feature engineering.",
+        "Automated Testing Suites: Detail 630 pytest unit tests in LEIA, establishing robust automated evaluation."
+      ],
+      "key_considerations": [
+        "4-month Winter co-op term (Jan - Apr 2027); would require coordinating remote university credits or temporary leave with Tec de Monterrey.",
+        "Requires Canadian co-op work permit sponsorship via IEC/SWAP."
+      ],
+      "pros": [
+        "Direct experience building enterprise ML platforms for generative design",
+        "Tier-1 tech brand recognition on resume",
+        "High likelihood of return offer for summer 2027 or full-time new grad"
+      ],
+      "cons": [
+        "Winter term timing requires coordinating academic schedule",
+        "Toronto living expenses during winter months"
+      ],
+      "missing_or_bridge_skills": [
+        "Kubernetes & Ray distributed ML orchestration: Complete Ray Core and Ray Train hands-on tutorials."
+      ],
+      "date_identified": "2026-10-02",
+      "last_audited": "2026-10-02"
+    },
+    {
+      "id": "opp-47-lyft-ml-intern-toronto",
+      "numeric_id": 47,
+      "company": "Lyft",
+      "role": "Software Engineer Intern - Machine Learning - Summer 2027 - Toronto",
+      "tier": "Tier 4: High Viability — Canadian Co-op & International Hubs",
+      "location": "Toronto, Ontario, Canada (Hybrid)",
+      "work_arrangement": "Summer 2027 Internship (12 weeks)",
+      "hours_per_week": "40 (Summer)",
+      "compensation": "$45 - $55 CAD/hr + Housing Stipend",
+      "realistic_success_ratio": "55% - 60%",
+      "success_ratio_min": 0.55,
+      "success_ratio_max": 0.6,
+      "success_ratio_justification": "Lyft Toronto is a key engineering center for machine learning, dynamic matching, and dispatch algorithms. Diego's reinforcement learning system (Ape-X DQN with multi-actor queues) directly mirrors Lyft's dynamic dispatch and multi-agent dispatching challenges.",
+      "urgency": "High (Summer 2027 Active)",
+      "strategic_action": "Apply via Careerpuck / Greenhouse (ML & RL Focus)",
+      "source_repo": "https://raw.githubusercontent.com/speedyapply/2027-SWE-College-Jobs/main/INTERN_INTL.md",
+      "apply_url": "https://app.careerpuck.com/job-board/lyft/job/8802332002?gh_jid=8802332002",
+      "file_reference": "",
+      "vault_note": "",
+      "status": "eligible",
+      "application_status": "pending_tailoring",
+      "key_points_to_highlight": [
+        "Reinforcement Learning & Policy Optimization: Detail Ape-X distributed RL system handling multi-agent environment simulation and 3,700 FPS data throughput.",
+        "Real-Time Telemetry & Computer Vision: Showcase DAVE driver monitoring engine running real-time video buffer streaming on edge hardware.",
+        "Mathematical Foundations: Highlight 94/100 GPA in Data Science & Mathematics at Tec de Monterrey.",
+        "Software Rigor & Unit Testing: Emphasize 630 pytest unit tests in LEIA."
+      ],
+      "key_considerations": [
+        "HackerRank coding assessment and ML systems design technical interview.",
+        "Canadian co-op visa work authorization."
+      ],
+      "pros": [
+        "Top-tier tech brand with high compensation and housing support",
+        "Cutting-edge applied ML problems (dynamic pricing, dispatch, routing)",
+        "Direct pipeline to return new-grad SWE/MLE offer"
+      ],
+      "cons": [
+        "Highly competitive global talent pool applying to Toronto hub",
+        "Demanding algorithmic interview bar"
+      ],
+      "missing_or_bridge_skills": [
+        "Real-time feature store architectures (Feast) and multi-armed bandit algorithms: Study Thompson sampling and two-sided marketplace dynamics."
+      ],
+      "date_identified": "2026-10-02",
+      "last_audited": "2026-10-02"
+    },
+    {
+      "id": "opp-48-aha-data-science-intern-remote",
+      "numeric_id": 48,
+      "company": "American Heart Association",
+      "role": "Intern - Epidemiology - Data Science & Evaluation - Remote",
+      "tier": "Tier 2: High Viability — Part-Time & Fully Remote AI / Data Roles",
+      "location": "Remote (USA / Global Remote)",
+      "work_arrangement": "Part-Time Remote Internship (15-20 hrs/week)",
+      "hours_per_week": "15-20",
+      "compensation": "$20 - $25/hr",
+      "realistic_success_ratio": "70% - 75%",
+      "success_ratio_min": 0.7,
+      "success_ratio_max": 0.75,
+      "success_ratio_justification": "The American Heart Association seeks a student intern for epidemiology and health data science evaluation. Diego's consulting internship at Aristor (demographic modeling and statistical analysis across urban zones) and his dual mathematics degree give him exceptional credibility for statistical evaluation.",
+      "urgency": "High (Posted recently)",
+      "strategic_action": "Apply via iCIMS (Healthcare & Statistics Focus)",
+      "source_repo": "https://raw.githubusercontent.com/speedyapply/2027-AI-College-Jobs/main/README.md",
+      "apply_url": "https://careers-heart.icims.com/jobs/18244/intern%2c-epidemiology%2c-data-science-%26-evaluation-remote/job",
+      "file_reference": "",
+      "vault_note": "",
+      "status": "eligible",
+      "application_status": "pending_tailoring",
+      "key_points_to_highlight": [
+        "Geospatial & Demographic Modeling: Showcase Aristor Consultoría spatial and demographic modeling across 15+ urban zones.",
+        "Statistical Data Pipelines: Feature Python (pandas, scipy, statsmodels) and SQL pipelines for clean data transformations.",
+        "Automated Testing & Data Hygiene: Highlight 630 pytest unit tests in LEIA, demonstrating disciplined validation for research datasets.",
+        "Academic Excellence: Highlight 94/100 GPA in Data Science & Mathematics at Tec de Monterrey."
+      ],
+      "key_considerations": [
+        "100% remote flexibility with 15-20 hrs/week, perfectly matching Diego's preferred 20-30 hrs/week during university terms.",
+        "Independent student contractor or research agreement suitable for international remote setup."
+      ],
+      "pros": [
+        "100% remote with zero commute overhead",
+        "Flexible part-time schedule that fits alongside university classes",
+        "Prestigious global healthcare non-profit organization"
+      ],
+      "cons": [
+        "Public health and epidemiological data focus rather than deep generative AI",
+        "Non-profit compensation scale ($20-$25/hr)"
+      ],
+      "missing_or_bridge_skills": [
+        "Epidemiological study metrics (odds ratios, hazard ratios, relative risk): Review basic biostatistics formulas in health sciences."
+      ],
+      "date_identified": "2026-10-02",
+      "last_audited": "2026-10-02"
+    },
+    {
+      "id": "opp-49-jane-street-mle-intern-london",
+      "numeric_id": 49,
+      "company": "Jane Street",
+      "role": "Machine Learning Engineer Summer Internship",
+      "tier": "Tier 3: Moderate Viability — US & International Elite Sponsoring Tech / Quant",
+      "location": "London, United Kingdom",
+      "work_arrangement": "Summer 2027 Internship (10-12 weeks)",
+      "hours_per_week": "40 (Summer)",
+      "compensation": "Elite Quant Tier (~£80,000 - £100,000 annualized pro-rated + housing & flights)",
+      "realistic_success_ratio": "25% - 30%",
+      "success_ratio_min": 0.25,
+      "success_ratio_max": 0.3,
+      "success_ratio_justification": "Jane Street is among the world's most selective quantitative trading firms. They fully sponsor UK work visas and fly interns to London. Diego's dual major in Data Science & Pure Mathematics (94/100 GPA) and high-throughput systems implementation (Ape-X 3,700 FPS) provides the rigorous mathematical backing necessary to stand out.",
+      "urgency": "High (Summer 2027 Active)",
+      "strategic_action": "Apply via Jane Street Portal (Quant Math & Systems CV)",
+      "source_repo": "https://raw.githubusercontent.com/speedyapply/2027-AI-College-Jobs/main/INTERN_INTL.md",
+      "apply_url": "https://www.janestreet.com/join-jane-street/position/8648474002",
+      "file_reference": "",
+      "vault_note": "",
+      "status": "eligible",
+      "application_status": "pending_tailoring",
+      "key_points_to_highlight": [
+        "Mathematical Rigor & Statistics: Highlight 94/100 GPA in Data Science & Mathematics, TELMEX Foundation Scholar, and PARA Academic Honors.",
+        "High-Throughput Systems Programming: Detail Ape-X distributed RL architecture handling multi-process IPC queues and 3,700 FPS throughput.",
+        "Software Correctness & Verification: Feature 630 pytest unit tests in LEIA, proving an obsessive commitment to software correctness.",
+        "Pricing & Predictive Modeling: Showcase Databricks Sun Holdings challenge predictive models."
+      ],
+      "key_considerations": [
+        "Full UK visa sponsorship and accommodation provided by Jane Street in central London.",
+        "Rigorous interview process focused on probability theory, mental math, algorithms, and deep ML principles."
+      ],
+      "pros": [
+        "Unrivaled prestige in quantitative finance and machine learning",
+        "World-leading intern compensation and travel benefits",
+        "Full UK visa sponsorship for international candidates"
+      ],
+      "cons": [
+        "Extremely low acceptance rate (< 2% of applicants receive offers)",
+        "Intense mathematical problem-solving interview rounds"
+      ],
+      "missing_or_bridge_skills": [
+        "Advanced probability puzzles and functional programming (OCaml): Practice Jane Street probability interview questions and review basic OCaml syntax."
+      ],
+      "date_identified": "2026-10-02",
+      "last_audited": "2026-10-02"
+    },
+    {
+      "id": "opp-50-cotiviti-intern-ai-engineer-llm",
+      "numeric_id": 50,
+      "company": "Cotiviti",
+      "role": "Intern AI Engineer (Early-Career – LLM Context & Data Layer - Healthcare)",
+      "tier": "Tier 2: High Viability — Part-Time & Fully Remote AI / Data Roles",
+      "location": "Remote - USA (Flexible Remote)",
+      "work_arrangement": "Remote Internship / Part-time or Full-time flexible",
+      "hours_per_week": "20-30",
+      "compensation": "$25 - $35/hr USD",
+      "realistic_success_ratio": "70% - 75%",
+      "success_ratio_min": 0.7,
+      "success_ratio_max": 0.75,
+      "success_ratio_justification": "Direct match for Diego's GenAI / LLM coursework and healthcare sensor experience in DAVE. Cotiviti operates a nationwide remote framework and hires early-career AI engineers with demonstrated prompt decomposition, agent architectures, and clean code practices.",
+      "urgency": "High (Posted recently)",
+      "strategic_action": "Apply via iCIMS (GenAI & Healthcare CV)",
+      "source_repo": "https://raw.githubusercontent.com/speedyapply/2027-AI-College-Jobs/main/README.md",
+      "apply_url": "https://careers-cotiviti.icims.com/jobs/19531/intern-ai-engineer%2c-early-career-%e2%80%93-llm-context-%26-data-layer-%28healthcare%29/job",
+      "file_reference": "",
+      "vault_note": "",
+      "status": "eligible",
+      "application_status": "pending_tailoring",
+      "key_points_to_highlight": [
+        "LLM Context & RAG Architecture: Highlight prompt decomposition, context window optimization, and structured retrieval in agentic workflows.",
+        "Biometric & Health Signal AI: Feature DAVE (Driver Attention & Vigilance Engine) for real-time biomechanical analysis and sensor telemetry.",
+        "Testing & Evaluation Rigor: Emphasize 630 pytest unit tests in LEIA ensuring production-level software reliability.",
+        "Semester Availability: Highlight 20-30 hrs/week weekday afternoon/evening availability aligned with Cotiviti's part-time framework."
+      ],
+      "key_considerations": [
+        "Verify international contractor onboarding (W-8BEN) if US domestic payroll is restricted.",
+        "Focuses heavily on RAG and structured LLM evaluation over raw model pre-training."
+      ],
+      "pros": [
+        "100% remote flexibility with semester-compatible schedule (20-30h/wk)",
+        "Direct application of LLM context engineering in production healthcare systems",
+        "Strong early-career mentorship"
+      ],
+      "cons": [
+        "Requires confirmation of international contractor arrangement if restricted to US domestic payroll"
+      ],
+      "missing_or_bridge_skills": [
+        "Healthcare privacy (HIPAA) and EDI data standards: Review basic HIPAA compliance and HL7/FHIR healthcare data structures."
+      ],
+      "date_identified": "2026-10-02",
+      "last_audited": "2026-10-02"
+    },
+    {
+      "id": "opp-51-onepay-ai-research-intern",
+      "numeric_id": 51,
+      "company": "OnePay",
+      "role": "AI Research Intern",
+      "tier": "Tier 2: High Viability — Part-Time & Fully Remote AI / Data Roles",
+      "location": "Remote - USA",
+      "work_arrangement": "Remote Internship",
+      "hours_per_week": "20-30",
+      "compensation": "$30 - $40/hr USD",
+      "realistic_success_ratio": "65% - 70%",
+      "success_ratio_min": 0.65,
+      "success_ratio_max": 0.7,
+      "success_ratio_justification": "OnePay is an agile fintech developing autonomous payment and risk agents. Diego's pure mathematics background (GPA 94/100) and hands-on experience with agentic loops (Antigravity, Claude Code) make him an exceptional research intern candidate.",
+      "urgency": "Active (Posted 10d ago)",
+      "strategic_action": "Apply via Ashby (Research & Agents CV)",
+      "source_repo": "https://raw.githubusercontent.com/speedyapply/2027-AI-College-Jobs/main/README.md",
+      "apply_url": "https://jobs.ashbyhq.com/oneapp/84beb108-c04b-42d3-a9ae-9a91210201b7",
+      "file_reference": "",
+      "vault_note": "",
+      "status": "eligible",
+      "application_status": "pending_tailoring",
+      "key_points_to_highlight": [
+        "Autonomous Agents & Tool Calling: Showcase experience with ReAct patterns, MCP tool calling, and autonomous decision loops.",
+        "Mathematical Foundations: Detail 94/100 GPA in Data Science & Pure Mathematics, optimization theory, and TELMEX scholarship.",
+        "Reproducible Experimentation: Highlight structured evaluation harnesses and prompt benchmarks."
+      ],
+      "key_considerations": [
+        "Early-stage fintech environment requiring self-directed initiative and fast prototyping."
+      ],
+      "pros": [
+        "Fully remote with high hourly compensation ($30-$40/hr)",
+        "Direct research impact on frontier fintech agents",
+        "Fast Ashby ATS hiring cycle"
+      ],
+      "cons": [
+        "Fast-paced startup environment with changing requirements"
+      ],
+      "missing_or_bridge_skills": [
+        "Payment rails & transaction fraud telemetry: Study core payment gateway architectures and PCI-DSS compliance basics."
+      ],
+      "date_identified": "2026-10-02",
+      "last_audited": "2026-10-02"
+    },
+    {
+      "id": "opp-52-veeam-ci-ai-engineering-intern",
+      "numeric_id": 52,
+      "company": "Veeam Software",
+      "role": "Competitive Intelligence AI Engineering Intern - Summer 2027",
+      "tier": "Tier 2: High Viability — Part-Time & Fully Remote AI / Data Roles",
+      "location": "Remote - USA (Georgia / Flexible Remote)",
+      "work_arrangement": "Summer 2027 Remote Internship",
+      "hours_per_week": "40 (Summer)",
+      "compensation": "$28 - $35/hr USD",
+      "realistic_success_ratio": "65% - 70%",
+      "success_ratio_min": 0.65,
+      "success_ratio_max": 0.7,
+      "success_ratio_justification": "Veeam is a global leader in data resilience. This role builds autonomous LLM intelligence agents to analyze market shifts and enterprise software documentation. Diego's daily proficiency in multi-agent orchestration and automated scraping makes this an ideal fit.",
+      "urgency": "Immediate (Posted 0d ago!)",
+      "strategic_action": "Apply via Greenhouse (AI & Scraping CV)",
+      "source_repo": "https://raw.githubusercontent.com/speedyapply/2027-AI-College-Jobs/main/README.md",
+      "apply_url": "https://job-boards.eu.greenhouse.io/veeamsoftware/jobs/4955279101",
+      "file_reference": "",
+      "vault_note": "",
+      "status": "eligible",
+      "application_status": "pending_tailoring",
+      "key_points_to_highlight": [
+        "Automated Scraping & Intelligence Pipelines: Highlight custom python scrapers, vector storage, and document indexing.",
+        "LLM Agent Synthesis: Detail prompt chaining, structured JSON outputs, and automated report generation.",
+        "High Code Quality: Emphasize modular architecture and comprehensive pytest test coverage."
+      ],
+      "key_considerations": [
+        "Summer 2027 timing (June - August), matching 40 hrs/week break period."
+      ],
+      "pros": [
+        "Enterprise brand reputation in enterprise data backup & resilience",
+        "100% remote flexibility",
+        "Brand-new posting with zero applicant backlog"
+      ],
+      "cons": [
+        "Competitive intelligence focus rather than core platform infrastructure"
+      ],
+      "missing_or_bridge_skills": [
+        "Enterprise backup & disaster recovery concepts: Review Veeam Data Platform architecture whitepapers."
+      ],
+      "date_identified": "2026-10-02",
+      "last_audited": "2026-10-02"
+    },
+    {
+      "id": "opp-53-grow-financial-collections-data-analyst-spring-2027",
+      "numeric_id": 53,
+      "company": "Grow Financial Federal Credit Union",
+      "role": "Collections Data Analyst Intern - Spring 2027",
+      "tier": "Tier 2: High Viability — Part-Time & Fully Remote AI / Data Roles",
+      "location": "Remote - USA",
+      "work_arrangement": "Spring 2027 Internship (Starts January 2027, Semester-Compatible)",
+      "hours_per_week": "20-30",
+      "compensation": "$22 - $28/hr USD",
+      "realistic_success_ratio": "70% - 75%",
+      "success_ratio_min": 0.7,
+      "success_ratio_max": 0.75,
+      "success_ratio_justification": "Spring 2027 internship starting early January 2027 with full remote flexibility and semester-compatible part-time hours. Aligns seamlessly with Diego's predictive analytics work in the Databricks challenge and Aristor Consultoría.",
+      "urgency": "High (Spring 2027 Active)",
+      "strategic_action": "Apply via iCIMS (SQL & Predictive Modeling CV)",
+      "source_repo": "https://raw.githubusercontent.com/SimplifyJobs/Summer2027-Internships/dev/README-Off-Season.md",
+      "apply_url": "https://careers-growfinancial.icims.com/jobs/2755/collections-data-analyst-intern--spring-2027/job",
+      "file_reference": "",
+      "vault_note": "",
+      "status": "eligible",
+      "application_status": "pending_tailoring",
+      "key_points_to_highlight": [
+        "Predictive Modeling & Statistical Inference: Highlight Databricks Sun Holdings challenge predictive pricing and churn risk models.",
+        "Advanced SQL & Data Wrangling: Feature Aristor Consultoría geospatial SQL queries and automated ETL pipelines.",
+        "Semester Availability: Explicitly note 20-30 hrs/week weekday availability matching spring semester."
+      ],
+      "key_considerations": [
+        "Starts early January 2027; fits directly into spring semester schedule."
+      ],
+      "pros": [
+        "Fully remote part-time arrangement during active university classes",
+        "Immediate real-world credit risk modeling experience",
+        "Compensation well above the $20/hr floor"
+      ],
+      "cons": [
+        "Regional financial credit union with less brand international prestige than big tech"
+      ],
+      "missing_or_bridge_skills": [
+        "Credit delinquency scoring and FICO risk bands: Review basic retail banking credit loss metrics."
+      ],
+      "date_identified": "2026-10-02",
+      "last_audited": "2026-10-02"
+    },
+    {
+      "id": "opp-54-notion-data-science-intern-winter-2027",
+      "numeric_id": 54,
+      "company": "Notion",
+      "role": "Data Science Intern - Winter 2027",
+      "tier": "Tier 3: Moderate Viability — US & International Elite Sponsoring Tech / Quant",
+      "location": "San Francisco, CA (All-Paid Travel & Corporate Housing)",
+      "work_arrangement": "Winter 2027 Internship (Starts Jan 2027, 12-16 weeks)",
+      "hours_per_week": "40 (Winter Off-Season)",
+      "compensation": "$55 - $65/hr USD (~$9,500/mo) + Full Travel & Corporate Housing Stipend",
+      "realistic_success_ratio": "40% - 45%",
+      "success_ratio_min": 0.4,
+      "success_ratio_max": 0.45,
+      "success_ratio_justification": "Notion is an iconic tech unicorn with legendary product culture. They cover roundtrip international flights, provide fully furnished corporate housing or hefty stipend, and sponsor J-1 visas for international students. Diego's high mathematical GPA and product curiosity match Notion's bar.",
+      "urgency": "High (Winter 2027 Cohort Active)",
+      "strategic_action": "Apply via Ashby (Product Analytics & Math CV)",
+      "source_repo": "https://raw.githubusercontent.com/SimplifyJobs/Summer2027-Internships/dev/README-Off-Season.md",
+      "apply_url": "https://jobs.ashbyhq.com/notion/a67d6f2b-7c13-41d0-b36b-b2f662c9873e",
+      "file_reference": "",
+      "vault_note": "",
+      "status": "eligible",
+      "application_status": "pending_tailoring",
+      "key_points_to_highlight": [
+        "Product Analytics & Experimentation: Highlight causal inference, A/B testing frameworks, and metric definition.",
+        "Mathematical Foundation: Emphasize dual major in Data Science & Pure Mathematics (94/100 GPA) and optimization coursework.",
+        "Obsidian & Knowledge Graph Affinity: Highlight personal power-user experience with linked notes and markdown knowledge systems."
+      ],
+      "key_considerations": [
+        "Requires taking an off-season academic leave/co-op term or arranging remote credits with Tec de Monterrey.",
+        "J-1 visa sponsorship and all travel expenses paid by Notion."
+      ],
+      "pros": [
+        "100% all-paid travel: roundtrip flights + corporate housing provided",
+        "Top-tier tech brand and elite compensation ($55-$65/hr)",
+        "Winter/Jan 2027 timing allows focused Silicon Valley immersion"
+      ],
+      "cons": [
+        "High applicant bar; requires coordinating a temporary semester co-op leave with Tec de Monterrey"
+      ],
+      "missing_or_bridge_skills": [
+        "Product analytics tracking tools (Amplitude, Mixpanel): Review product telemetry schema design."
+      ],
+      "date_identified": "2026-10-02",
+      "last_audited": "2026-10-02"
+    },
+    {
+      "id": "opp-55-kodiak-robotics-winter-2027-data-engineering-intern",
+      "numeric_id": 55,
+      "company": "Kodiak Robotics",
+      "role": "Winter 2027 Intern - Data Engineering",
+      "tier": "Tier 3: Moderate Viability — US & International Elite Sponsoring Tech / Quant",
+      "location": "Mountain View, CA (Silicon Valley)",
+      "work_arrangement": "Winter 2027 Internship (Starts Jan 2027)",
+      "hours_per_week": "40 (Winter Off-Season)",
+      "compensation": "$50 - $60/hr USD + Relocation Allowance & Housing Assistance",
+      "realistic_success_ratio": "45% - 50%",
+      "success_ratio_min": 0.45,
+      "success_ratio_max": 0.5,
+      "success_ratio_justification": "Kodiak is a premier autonomous trucking company. Diego's edge computer vision project DAVE (driver drowsiness detection, real-time sensor processing) and high-throughput Python/C++ skills directly align with autonomous vehicle telemetry needs.",
+      "urgency": "High (Winter 2027 Active)",
+      "strategic_action": "Apply via Greenhouse (Autonomous Systems & PyTorch CV)",
+      "source_repo": "https://raw.githubusercontent.com/SimplifyJobs/Summer2027-Internships/dev/README-Off-Season.md",
+      "apply_url": "https://job-boards.greenhouse.io/kodiak/jobs/4396622009",
+      "file_reference": "",
+      "vault_note": "",
+      "status": "eligible",
+      "application_status": "pending_tailoring",
+      "key_points_to_highlight": [
+        "Autonomous Vehicle & Sensor Telemetry: Highlight DAVE edge computer vision, MediaPipe, and real-time biometric tracking.",
+        "High-Throughput IPC & Multiprocessing: Feature Ape-X distributed RL architecture handling 3,700 FPS.",
+        "Data Pipeline Engineering: Detail Databricks challenge ETL pipelines and Parquet/Delta Lake data handling."
+      ],
+      "key_considerations": [
+        "Starts January 2027 in Mountain View, CA; offers relocation travel and housing support.",
+        "J-1 visa sponsorship available for international students."
+      ],
+      "pros": [
+        "All-paid relocation and housing support in Silicon Valley",
+        "Direct domain match with vehicle safety and sensor fusion (DAVE)",
+        "Industry-leading autonomous systems engineering mentorship"
+      ],
+      "cons": [
+        "Onsite requirement in Mountain View; necessitates winter term academic co-op arrangement"
+      ],
+      "missing_or_bridge_skills": [
+        "ROS2 and robotics sensor logging formats (MCAP, ROS bags): Review basic ROS2 sensor data serialization."
+      ],
+      "date_identified": "2026-10-02",
+      "last_audited": "2026-10-02"
+    },
+    {
+      "id": "opp-56-ciena-ai-engineer-intern-winter-2027",
+      "numeric_id": 56,
+      "company": "Ciena",
+      "role": "AI Engineer Intern - Winter 2027",
+      "tier": "Tier 4: International Co-op & Global Hubs",
+      "location": "Ottawa, Ontario, Canada",
+      "work_arrangement": "4-Month Winter 2027 Co-op (January - April 2027)",
+      "hours_per_week": "37.5 - 40",
+      "compensation": "$28 - $36 CAD/hr",
+      "realistic_success_ratio": "55% - 60%",
+      "success_ratio_min": 0.55,
+      "success_ratio_max": 0.6,
+      "success_ratio_justification": "Ciena is an optical networking and cloud routing giant. Their Ottawa R&D center hires international co-op students for time-series ML, anomaly detection, and automated network optimization.",
+      "urgency": "Active (Posted 16d ago)",
+      "strategic_action": "Apply via Workday (Telecom ML & Python CV)",
+      "source_repo": "https://raw.githubusercontent.com/SimplifyJobs/Summer2027-Internships/dev/README-Off-Season.md",
+      "apply_url": "https://ciena.wd5.myworkdayjobs.com/en-US/careers/job/Ottawa/AI-Engineer-Intern--Winter-2027-_R031667",
+      "file_reference": "",
+      "vault_note": "",
+      "status": "eligible",
+      "application_status": "pending_tailoring",
+      "key_points_to_highlight": [
+        "Time-Series Anomaly Detection: Highlight mathematical statistical methods and deep learning models for sequence detection.",
+        "Model Optimization: Feature PyTorch model pruning, ONNX runtime, and latency optimization.",
+        "Mathematical Rigor: Detail linear algebra and signal processing fundamentals from Tec de Monterrey."
+      ],
+      "key_considerations": [
+        "Canadian co-op work permit required (straightforward for registered university students)."
+      ],
+      "pros": [
+        "Global optical networking leader with major AI R&D presence",
+        "Structured co-op cohort starting in January 2027",
+        "Competitive Canadian hourly wage"
+      ],
+      "cons": [
+        "Requires Canadian co-op visa paperwork and relocation to Ottawa"
+      ],
+      "missing_or_bridge_skills": [
+        "Telecommunications metrics (SNR, Q-factor, packet jitter): Read an overview of optical transport network monitoring."
+      ],
+      "date_identified": "2026-10-02",
+      "last_audited": "2026-10-02"
+    },
+    {
+      "id": "opp-57-eq-bank-lending-ai-engineer-winter-2027",
+      "numeric_id": 57,
+      "company": "EQ Bank",
+      "role": "Intern - Commercial Lending AI Engineer - Winter 2027",
+      "tier": "Tier 4: International Co-op & Global Hubs",
+      "location": "Toronto, Ontario, Canada",
+      "work_arrangement": "4-Month Winter 2027 Co-op (January - April 2027)",
+      "hours_per_week": "37.5 - 40",
+      "compensation": "$30 - $38 CAD/hr",
+      "realistic_success_ratio": "55% - 60%",
+      "success_ratio_min": 0.55,
+      "success_ratio_max": 0.6,
+      "success_ratio_justification": "EQ Bank is Canada's premier digital challenger bank, aggressively automating commercial lending with generative AI agents and document intelligence.",
+      "urgency": "High (Winter 2027 Active)",
+      "strategic_action": "Apply via Lever (Fintech & Agents CV)",
+      "source_repo": "https://raw.githubusercontent.com/SimplifyJobs/Summer2027-Internships/dev/README-Off-Season.md",
+      "apply_url": "https://jobs.lever.co/eqbank/54045eae-334a-4486-8e97-96e49e6a1487",
+      "file_reference": "",
+      "vault_note": "",
+      "status": "eligible",
+      "application_status": "pending_tailoring",
+      "key_points_to_highlight": [
+        "Document Intelligence & RAG: Highlight parsing complex financial balance sheets, unstructured PDFs, and structured data extraction.",
+        "Agent Tool-Calling: Showcase experience with autonomous agentic decision loops and prompt engineering.",
+        "Testing & Accuracy: Feature 630 pytest tests proving zero-tolerance for financial calculation errors."
+      ],
+      "key_considerations": [
+        "Starts January 2027 in Toronto, Canada; supports Canadian co-op work permits."
+      ],
+      "pros": [
+        "Cutting-edge GenAI applications in commercial banking",
+        "Toronto downtown fintech hub exposure",
+        "Winter 2027 term alignment"
+      ],
+      "cons": [
+        "Canadian winter climate and relocation requirement"
+      ],
+      "missing_or_bridge_skills": [
+        "Commercial lending terms (DSCR, LTV, EBITDA): Familiarize with commercial debt evaluation basics."
+      ],
+      "date_identified": "2026-10-02",
+      "last_audited": "2026-10-02"
+    },
+    {
+      "id": "opp-58-jane-street-quant-trader-summer-london-2027",
+      "numeric_id": 58,
+      "company": "Jane Street",
+      "role": "Quantitative Trader Summer Internship",
+      "tier": "Tier 3: Moderate Viability — US & International Elite Sponsoring Tech / Quant",
+      "location": "London, United Kingdom (or New York City, NY)",
+      "work_arrangement": "Summer 2027 Internship (10-12 weeks)",
+      "hours_per_week": "40 (Summer)",
+      "compensation": "Elite Quant Tier (~£85,000 - £100,000 annualized pro-rated + 100% All-Paid Flights & Luxury Housing)",
+      "realistic_success_ratio": "20% - 25%",
+      "success_ratio_min": 0.2,
+      "success_ratio_max": 0.25,
+      "success_ratio_justification": "Jane Street is the pinnacle of global quantitative finance. They cover 100% of international travel, provide private corporate apartments in central London, and handle all visa sponsorship. Diego's pure mathematics background, competitive academic performance, and probability intuition provide the essential raw horsepower.",
+      "urgency": "High (Summer 2027 Active)",
+      "strategic_action": "Apply via Jane Street Portal (Probability & Pure Math CV)",
+      "source_repo": "https://raw.githubusercontent.com/speedyapply/2027-AI-College-Jobs/main/INTERN_INTL.md",
+      "apply_url": "https://www.janestreet.com/join-jane-street/position/8474407002",
+      "file_reference": "",
+      "vault_note": "",
+      "status": "eligible",
+      "application_status": "pending_tailoring",
+      "key_points_to_highlight": [
+        "Pure Mathematics & Probability: Highlight 94/100 GPA, TELMEX Scholar, and PARA Academic Honors at Tec de Monterrey.",
+        "Algorithmic Decision Making: Emphasize reinforcement learning (Ape-X DQN) and game theory reasoning under uncertainty.",
+        "Mental Math & Combinatorics: Highlight fast quantitative reasoning, risk evaluation, and Bayesian updating."
+      ],
+      "key_considerations": [
+        "All flights (business/roundtrip), luxury accommodation in London, and UK Tier 5 visa fully sponsored.",
+        "Intense interview process centered on mental math, probability theory, and market making games."
+      ],
+      "pros": [
+        "Unrivaled all-expenses-paid international travel and luxury London housing",
+        "Highest compensation in the global internship market",
+        "World-class peer group and lifelong prestige"
+      ],
+      "cons": [
+        "Ultra-competitive selection rate (< 1.5% offer rate)"
+      ],
+      "missing_or_bridge_skills": [
+        "Mental math speed and market making game strategy: Practice mental arithmetic drills (Zetamac, Jane Street estimation games)."
+      ],
+      "date_identified": "2026-10-02",
+      "last_audited": "2026-10-02"
+    },
+    {
+      "id": "opp-59-stripe-data-analyst-intern-summer-2027",
+      "numeric_id": 59,
+      "company": "Stripe",
+      "role": "Data Analyst - Intern (Summer 2027)",
+      "tier": "Tier 3: Moderate Viability — US & International Elite Sponsoring Tech / Quant",
+      "location": "New York City, NY (or San Francisco, CA)",
+      "work_arrangement": "Summer 2027 Internship (12 weeks)",
+      "hours_per_week": "40 (Summer)",
+      "compensation": "$55 - $65/hr USD (~$9,500/mo) + Roundtrip Flights & Corporate Housing Stipend",
+      "realistic_success_ratio": "35% - 40%",
+      "success_ratio_min": 0.35,
+      "success_ratio_max": 0.4,
+      "success_ratio_justification": "Stripe is the world's premier payments infrastructure company. Stripe provides comprehensive relocation: roundtrip flights, corporate housing stipend ($2,000+/mo), and J-1 visa sponsorship. Diego's financial data modeling and rigorous SQL skills make him a very competitive candidate.",
+      "urgency": "Immediate (Posted 1d ago!)",
+      "strategic_action": "Apply via Stripe Careers (Fintech & Data Infrastructure CV)",
+      "source_repo": "https://raw.githubusercontent.com/speedyapply/2027-AI-College-Jobs/main/README.md",
+      "apply_url": "https://stripe.com/jobs/search?gh_jid=8194291",
+      "file_reference": "",
+      "vault_note": "",
+      "status": "eligible",
+      "application_status": "pending_tailoring",
+      "key_points_to_highlight": [
+        "Financial Data Infrastructure: Highlight experience from Databricks Sun Holdings challenge building automated financial telemetry pipelines.",
+        "Advanced SQL & Metric Architecture: Feature Aristor Consultoría data warehousing and complex query optimization.",
+        "Mathematical Precision: Highlight dual major in Data Science & Mathematics with 94/100 GPA."
+      ],
+      "key_considerations": [
+        "Summer 2027 cohort (May - August 2027); full J-1 visa sponsorship and relocation stipend covered."
+      ],
+      "pros": [
+        "All-paid relocation: roundtrip airfare + substantial corporate housing stipend",
+        "Elite tech brand reputation and industry-standard payment engineering",
+        "High return offer conversion for new grad roles"
+      ],
+      "cons": [
+        "Rigorous technical SQL and analytics screen"
+      ],
+      "missing_or_bridge_skills": [
+        "Payment dispute metrics & chargeback lifecycle: Review Stripe's documentation on interchange fees and fraud mitigation."
+      ],
+      "date_identified": "2026-10-02",
+      "last_audited": "2026-10-02"
+    },
+    {
+      "id": "opp-60-nvidia-deep-learning-internship-summer-2027",
+      "numeric_id": 60,
+      "company": "NVIDIA",
+      "role": "NVIDIA 2027 Internships: Deep Learning",
+      "tier": "Tier 3: Moderate Viability — US & International Elite Sponsoring Tech / Quant",
+      "location": "Santa Clara, CA (Silicon Valley)",
+      "work_arrangement": "Summer 2027 Internship (12 weeks)",
+      "hours_per_week": "40 (Summer)",
+      "compensation": "$55 - $65/hr USD + Roundtrip Airfare & Corporate Housing Stipend ($2,500/mo)",
+      "realistic_success_ratio": "35% - 40%",
+      "success_ratio_min": 0.35,
+      "success_ratio_max": 0.4,
+      "success_ratio_justification": "NVIDIA is the hardware and AI foundation of the entire AI era. NVIDIA offers full relocation flights, corporate housing allowances ($2,500/mo), and J-1 visa sponsorship. Diego's distributed reinforcement learning implementation (Ape-X 3,700 FPS) and low-level C++/PyTorch experience showcase high-performance ML capability.",
+      "urgency": "High (Summer 2027 Active)",
+      "strategic_action": "Apply via NVIDIA Careers (PyTorch & High-Performance Compute CV)",
+      "source_repo": "https://raw.githubusercontent.com/speedyapply/2027-AI-College-Jobs/main/README.md",
+      "apply_url": "https://nvidia.wd5.myworkdayjobs.com/en-US/nvidiaexternalcareersite/job/US-CA-Santa-Clara/NVIDIA-2027-Internships--Deep-Learning_JR2023497-1",
+      "file_reference": "",
+      "vault_note": "",
+      "status": "eligible",
+      "application_status": "pending_tailoring",
+      "key_points_to_highlight": [
+        "High-Throughput Distributed ML: Highlight Ape-X DQN distributed RL engine achieving 3,700 FPS with multi-core IPC queues.",
+        "Edge AI & Computer Vision: Feature DAVE real-time inference using ONNX runtime and hardware acceleration.",
+        "Algorithmic Mathematics: Detail 94/100 GPA in Data Science & Mathematics, numerical optimization, and linear algebra."
+      ],
+      "key_considerations": [
+        "Summer 2027 cohort in Santa Clara, CA; roundtrip airfare, housing allowance, and J-1 visa sponsored."
+      ],
+      "pros": [
+        "Direct access to frontier GPU clusters (H100/B200) and CUDA/TensorRT engineering",
+        "Comprehensive travel and housing stipend package",
+        "Gold standard AI resume credential"
+      ],
+      "cons": [
+        "Demanding technical interviews covering CUDA concepts and PyTorch internals"
+      ],
+      "missing_or_bridge_skills": [
+        "CUDA kernel basics and TensorRT optimization: Complete introductory NVIDIA Deep Learning Institute (DLI) modules on TensorRT."
+      ],
+      "date_identified": "2026-10-02",
+      "last_audited": "2026-10-02"
+    },
+    {
+      "id": "opp-61-hilton-worldwide-corporate-tech-summer-2027",
+      "numeric_id": 61,
+      "company": "Hilton Worldwide",
+      "role": "2027 Corporate Summer Internship - Technology (Software Engineering & Cyber)",
+      "tier": "Tier 3: Moderate Viability — US & International Elite Sponsoring Tech / Quant",
+      "location": "Dallas, TX / McLean, VA (Travel & Hospitality Tech)",
+      "work_arrangement": "Summer 2027 Internship (10 weeks)",
+      "hours_per_week": "40 (Summer)",
+      "compensation": "$25 - $32/hr USD + Relocation / Travel Assistance & Corporate Housing Support",
+      "realistic_success_ratio": "60% - 65%",
+      "success_ratio_min": 0.6,
+      "success_ratio_max": 0.65,
+      "success_ratio_justification": "Direct match for travel and hospitality technology! Hilton is a premier global hospitality enterprise engineering worldwide reservation, loyalty, and guest intelligence platforms. Provides corporate housing and travel support for incoming interns.",
+      "urgency": "Active (Posted 7d ago)",
+      "strategic_action": "Apply via Oracle Cloud (Cloud & Travel Tech CV)",
+      "source_repo": "https://raw.githubusercontent.com/SimplifyJobs/Summer2027-Internships/dev/README.md",
+      "apply_url": "https://efet.fa.us2.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1009/job/218257",
+      "file_reference": "",
+      "vault_note": "",
+      "status": "eligible",
+      "application_status": "pending_tailoring",
+      "key_points_to_highlight": [
+        "Travel & Booking Infrastructure: Highlight high-availability software architectures, REST APIs, and database transactions.",
+        "Data Analytics & Customer Intelligence: Showcase predictive modeling from Databricks challenge and Aristor Consultoría.",
+        "Software Quality & Testing: Emphasize 630 pytest unit tests in LEIA, proving disciplined engineering standards."
+      ],
+      "key_considerations": [
+        "Summer 2027 timing (June - August 2027); corporate housing support provided."
+      ],
+      "pros": [
+        "Global hospitality giant with worldwide employee travel perks",
+        "All-paid relocation and housing support included",
+        "Substantial enterprise technology footprint"
+      ],
+      "cons": [
+        "Hospitality industry IT scale rather than pure frontier AI research"
+      ],
+      "missing_or_bridge_skills": [
+        "Global Distribution Systems (GDS) and hospitality booking APIs: Review travel reservation system architectures."
+      ],
+      "date_identified": "2026-10-02",
+      "last_audited": "2026-10-02"
+    }
+  ]
+}
