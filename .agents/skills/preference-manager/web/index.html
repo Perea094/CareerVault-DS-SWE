@@ -3,54 +3,497 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Diego Perea León — Preference Manager</title>
-  <style>
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      margin: 0;
-      padding: 2rem;
-      background-color: #0f172a;
-      color: #f8fafc;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 80vh;
-    }
-    .card {
-      background: #1e293b;
-      border: 1px solid #334155;
-      border-radius: 12px;
-      padding: 2rem;
-      max-width: 600px;
-      text-align: center;
-      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
-    }
-    h1 {
-      margin-top: 0;
-      color: #38bdf8;
-    }
-    p {
-      color: #94a3b8;
-      line-height: 1.6;
-    }
-    .badge {
-      display: inline-block;
-      padding: 0.25rem 0.75rem;
-      background: #0284c7;
-      color: white;
-      border-radius: 9999px;
-      font-size: 0.85rem;
-      font-weight: 600;
-      margin-top: 1rem;
-    }
-  </style>
+  <title>Diego Perea León — Career & Working Preferences Portal</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220%22%3E<text y=%2226%22 font-size=%2224%22>⚡</text></svg>">
 </head>
 <body>
-  <div class="card">
-    <h1>Preference Manager</h1>
-    <p>Diego Perea León — Career & Working Preferences Portal</p>
-    <div class="badge">REST API & Web Server Active</div>
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <div class="app-container">
+    <!-- Top Header -->
+    <header class="app-header">
+      <div class="header-top">
+        <div class="header-title-group">
+          <h1>
+            <span>⚡ Diego Perea León</span>
+          </h1>
+          <div class="header-subtitle">
+            <span>Career Preferences & Availability Portal</span>
+            <span class="vault-badge">001-background/preferences.md</span>
+          </div>
+        </div>
+        <div class="header-meta">
+          <div class="status-badge" id="vault-status-badge">
+            <span class="dot"></span> Active Vault
+          </div>
+          <div class="last-updated-badge" id="last-updated-display">
+            Updated: Loading...
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="section-grid">
+      <!-- Section 1: Weekly Availability Calendar -->
+      <section class="card-section" id="availability-section">
+        <div class="card-section-header">
+          <div class="card-title-group">
+            <div class="card-icon emerald">📅</div>
+            <div>
+              <h2 class="card-title">Weekly Availability & University Schedule</h2>
+              <div class="card-subtitle">7-Day calendar grid with interactive brush painting & instant KPI feedback</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Real-Time KPI Banner -->
+        <div class="kpi-row">
+          <div class="kpi-card">
+            <div class="kpi-info">
+              <h4>Work Availability</h4>
+              <div class="kpi-value" id="kpi-work-hours">30 <span class="unit">hrs/wk</span></div>
+            </div>
+            <div class="card-icon emerald">💼</div>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-info">
+              <h4>Tec De Monterrey Load</h4>
+              <div class="kpi-value" id="kpi-class-hours">16 <span class="unit">hrs/wk</span></div>
+            </div>
+            <div class="card-icon blue">🎓</div>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-info">
+              <h4>Target Status</h4>
+              <div class="kpi-value" id="kpi-status-container">
+                <span class="kpi-chip optimal" id="kpi-status-badge">Optimal (20-30h)</span>
+              </div>
+            </div>
+            <div class="card-icon coral">🎯</div>
+          </div>
+        </div>
+
+        <!-- Interactive Brush Toolbar -->
+        <div class="brush-toolbar">
+          <div class="brush-selectors">
+            <span class="brush-label">Brush Tool:</span>
+            <button type="button" class="brush-btn active" data-brush="available" id="brush-available">
+              <span class="color-indicator"></span>
+              <span>🟢 Available for Work</span>
+            </button>
+            <button type="button" class="brush-btn" data-brush="classes" id="brush-classes">
+              <span class="color-indicator"></span>
+              <span>🔵 University Classes</span>
+            </button>
+            <button type="button" class="brush-btn" data-brush="busy" id="brush-busy">
+              <span class="color-indicator"></span>
+              <span>⚪ Busy / Personal</span>
+            </button>
+          </div>
+
+          <div class="grid-presets">
+            <span class="brush-label">Presets:</span>
+            <button type="button" class="preset-btn" id="preset-standard">Standard Week</button>
+            <button type="button" class="preset-btn" id="preset-afternoons">All Afternoons</button>
+            <button type="button" class="preset-btn" id="preset-clear">Clear All</button>
+          </div>
+        </div>
+
+        <!-- 7x7 Grid Calendar Table -->
+        <div class="calendar-wrapper" id="calendar-wrapper">
+          <div class="availability-grid" id="availability-grid">
+            <!-- Populated dynamically by app.js -->
+          </div>
+        </div>
+
+        <!-- Target Hours & Schedule Notes -->
+        <div class="grid-footer-notes">
+          <div class="target-hours-inputs">
+            <label>
+              Min Target:
+              <input type="number" id="target-hours-min" min="0" max="60" value="20"> hrs
+            </label>
+            <label>
+              Max Target:
+              <input type="number" id="target-hours-max" min="0" max="60" value="30"> hrs
+            </label>
+            <label>
+              Max Manageable:
+              <input type="number" id="max-manageable-hours" min="0" max="80" value="40"> hrs
+            </label>
+          </div>
+
+          <div style="flex: 1; min-width: 280px;">
+            <input type="text" class="form-input" id="schedule-notes-input" placeholder="Schedule notes (e.g. Morning lectures at Tec de Monterrey; available weekday afternoons)">
+          </div>
+        </div>
+      </section>
+
+      <!-- Two Column Layout: Section 2 & 3 -->
+      <div class="two-col-grid">
+        <!-- Section 2: Work Modality & Mobility -->
+        <section class="card-section" id="modality-section">
+          <div class="card-section-header">
+            <div class="card-title-group">
+              <div class="card-icon">🌍</div>
+              <div>
+                <h2 class="card-title">Work Modality & Mobility</h2>
+                <div class="card-subtitle">Arrangement preferences, location & relocation boundaries</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Work Modality Preference Priority Rank</label>
+            <div class="rank-order-list" id="modality-rank-list">
+              <!-- Rendered via JS -->
+            </div>
+            <div class="form-helper">Use Up/Down arrows to reorder priority. Top is primary preference.</div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="current-location">Current Location</label>
+            <input type="text" class="form-input" id="current-location" value="Querétaro, Mexico">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="us-work-auth">US Work Authorization</label>
+            <select class="form-select" id="us-work-auth">
+              <option value="None">None (Needs Visa Sponsorship / Remote)</option>
+              <option value="TN Visa Eligible">TN Visa Eligible (Mexican Citizen / Tech Degree)</option>
+              <option value="OPT/CPT">OPT / CPT Eligible</option>
+              <option value="Citizen / Green Card">US Citizen / Permanent Resident</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="relocation-willingness">Relocation Willingness</label>
+            <input type="text" class="form-input" id="relocation-willingness" value="Remote preferred; open to international relocation if visa sponsored">
+          </div>
+
+          <div class="toggle-switch-group">
+            <div>
+              <div class="toggle-switch-label">Travel Willingness</div>
+              <div class="toggle-switch-sub">Open to occasional business travel (hackathons, onsite syncs)</div>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="travel-willingness" checked>
+              <span class="slider"></span>
+            </label>
+          </div>
+
+          <div class="toggle-switch-group">
+            <div>
+              <div class="toggle-switch-label">Daily Hours Flexibility</div>
+              <div class="toggle-switch-sub">Able to shift hours across weekdays to accommodate deadlines</div>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="hours-flexibility" checked>
+              <span class="slider"></span>
+            </label>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="communication-style">Communication Style</label>
+            <input type="text" class="form-input" id="communication-style" value="Both async and sync acceptable">
+          </div>
+        </section>
+
+        <!-- Section 3: Compensation & Priorities -->
+        <section class="card-section" id="compensation-section">
+          <div class="card-section-header">
+            <div class="card-title-group">
+              <div class="card-icon emerald">💰</div>
+              <div>
+                <h2 class="card-title">Compensation & Priorities</h2>
+                <div class="card-subtitle">Hourly wage baseline, equity expectations & benefits ranking</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="minimum-hourly">Minimum Hourly Wage (USD)</label>
+            <div style="position: relative;">
+              <span style="position: absolute; left: 14px; top: 10px; color: var(--emerald); font-weight: 700; font-size: 1rem;">$</span>
+              <input type="number" class="form-input" id="minimum-hourly" min="0" step="1" value="20" style="padding-left: 32px; font-weight: 600; font-family: var(--font-family-mono); font-size: 1.1rem;">
+            </div>
+            <div class="form-helper">Floor rate for contract, co-op, or part-time roles ($20/hr baseline).</div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Benefits Priorities (Rank Order)</label>
+            <div class="tags-container" id="benefits-tags-container">
+              <!-- Filled by JS -->
+            </div>
+            <div class="tag-input-row">
+              <input type="text" class="form-input" id="new-benefit-input" placeholder="Add custom benefit (e.g. Wellness stipend)...">
+              <button type="button" class="btn-secondary" id="add-benefit-btn">+ Add</button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="equity-importance">Equity Importance</label>
+            <select class="form-select" id="equity-importance">
+              <option value="Don't care">Don't care (Cash priority)</option>
+              <option value="Nice to have">Nice to have (Minor upside)</option>
+              <option value="Important">Important (Meaningful grant expected)</option>
+              <option value="Critical">Critical (Early-stage core stakeholder)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="negotiation-flexibility">Negotiation Flexibility</label>
+            <select class="form-select" id="negotiation-flexibility">
+              <option value="Flexible">Flexible (No hard floor for stellar learning)</option>
+              <option value="Firm">Firm (Adhere strictly to baseline wage)</option>
+              <option value="Open">Open (Total compensation perspective)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="timezone-overlap">Timezone Overlap Preferences</label>
+            <input type="text" class="form-input" id="timezone-overlap" value="Flexible; prefers morning availability for classes">
+          </div>
+        </section>
+      </div>
+
+      <!-- Section 4: Technical Focus, Domains & Avoided Industries -->
+      <section class="card-section" id="technical-focus-section">
+        <div class="card-section-header">
+          <div class="card-title-group">
+            <div class="card-icon blue">🧠</div>
+            <div>
+              <h2 class="card-title">Technical Focus, Domains & Industry Filters</h2>
+              <div class="card-subtitle">Active domains of interest, skills to develop, and strict industry blacklist</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Domains of Interest (Click to toggle active)</label>
+          <div class="tags-container" id="domains-tags-container">
+            <!-- Rendered by JS -->
+          </div>
+          <div class="tag-input-row">
+            <input type="text" class="form-input" id="new-domain-input" placeholder="Add custom domain (e.g. Distributed Systems)...">
+            <button type="button" class="btn-secondary" id="add-domain-btn">+ Add Domain</button>
+          </div>
+        </div>
+
+        <div class="two-col-grid" style="margin-top: 1.5rem;">
+          <div class="form-group">
+            <label class="form-label">Industries to Avoid (Disqualifier Filter)</label>
+            <div class="tags-container" id="avoid-tags-container">
+              <!-- Rendered by JS with coral accents -->
+            </div>
+            <div class="tag-input-row">
+              <input type="text" class="form-input" id="new-avoid-input" placeholder="Add industry to avoid (e.g. Gambling)...">
+              <button type="button" class="btn-secondary" id="add-avoid-btn">+ Add Filter</button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Target Skills to Develop</label>
+            <div class="tags-container" id="skills-tags-container">
+              <!-- Rendered by JS with emerald accents -->
+            </div>
+            <div class="tag-input-row">
+              <input type="text" class="form-input" id="new-skill-input" placeholder="Add target skill (e.g. Triton, CUDA)...">
+              <button type="button" class="btn-secondary" id="add-skill-btn">+ Add Skill</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Two Column Layout: Section 5 & 6 -->
+      <div class="two-col-grid">
+        <!-- Section 5: Academic Context & Career Trajectory -->
+        <section class="card-section" id="academic-section">
+          <div class="card-section-header">
+            <div class="card-title-group">
+              <div class="card-icon">🎓</div>
+              <div>
+                <h2 class="card-title">Academic Context & Trajectory</h2>
+                <div class="card-subtitle">Current university standing, graduation timeline, and mentorship profile</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="academic-university">University</label>
+            <input type="text" class="form-input" id="academic-university" value="Tecnológico de Monterrey (Campus Querétaro)">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="academic-degree">Degree & Program</label>
+            <input type="text" class="form-input" id="academic-degree" value="B.S. Data Science & Mathematics">
+          </div>
+
+          <div class="two-col-grid" style="gap: 1rem; margin-bottom: 1.25rem;">
+            <div>
+              <label class="form-label" for="academic-semester">Current Semester</label>
+              <input type="text" class="form-input" id="academic-semester" value="4th semester">
+            </div>
+            <div>
+              <label class="form-label" for="academic-graduation">Expected Graduation</label>
+              <input type="text" class="form-input" id="academic-graduation" value="May 2028">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="career-trajectory">Career Trajectory</label>
+            <select class="form-select" id="career-trajectory">
+              <option value="Open">Open (IC, tech lead, research scientist, founder)</option>
+              <option value="AI / ML Engineer">AI / ML Engineer</option>
+              <option value="Research Scientist">Research Scientist</option>
+              <option value="MLOps / Infrastructure">MLOps / Infrastructure Engineer</option>
+              <option value="Quant Researcher">Quant Researcher / Trader</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="role-focus-ic">Role Focus (IC vs Lead)</label>
+            <select class="form-select" id="role-focus-ic">
+              <option value="IC preferred (not ready for lead)">IC preferred (not ready for lead)</option>
+              <option value="IC Only">IC Only</option>
+              <option value="Open to Tech Lead">Open to Tech Lead</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="mentorship-pref">Mentorship Expectation</label>
+            <select class="form-select" id="mentorship-pref">
+              <option value="Nice to have">Nice to have (Autonomous worker)</option>
+              <option value="Required">Required (Structured 1:1 guidance)</option>
+              <option value="Not important">Not important</option>
+            </select>
+          </div>
+        </section>
+
+        <!-- Section 6: Hard Dealbreakers & Disqualifiers -->
+        <section class="card-section" id="dealbreakers-section">
+          <div class="card-section-header">
+            <div class="card-title-group">
+              <div class="card-icon coral">🛑</div>
+              <div>
+                <h2 class="card-title">Hard Dealbreakers & Disqualifiers</h2>
+                <div class="card-subtitle">Non-negotiable constraints, automatic audit disqualifiers, and red flags</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Hard Constraints (Non-Negotiable)</label>
+            <div class="dealbreaker-list" id="hard-constraints-list">
+              <!-- Rendered by JS -->
+            </div>
+            <div class="tag-input-row">
+              <input type="text" class="form-input" id="new-constraint-input" placeholder="Add hard constraint...">
+              <button type="button" class="btn-secondary" id="add-constraint-btn">+ Add</button>
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-top: 1.5rem;">
+            <label class="form-label">Automatic Disqualifiers (Instant Reject in AI Audit)</label>
+            <div class="dealbreaker-list" id="auto-disqualifiers-list">
+              <!-- Rendered by JS -->
+            </div>
+            <div class="tag-input-row">
+              <input type="text" class="form-input" id="new-disqualifier-input" placeholder="Add automatic disqualifier...">
+              <button type="button" class="btn-secondary" id="add-disqualifier-btn">+ Add</button>
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-top: 1.5rem;">
+            <label class="form-label">Toxic Signals (Caution Flags)</label>
+            <div class="dealbreaker-list" id="toxic-signals-list">
+              <!-- Rendered by JS -->
+            </div>
+            <div class="tag-input-row">
+              <input type="text" class="form-input" id="new-toxic-input" placeholder="Add toxic signal flag...">
+              <button type="button" class="btn-secondary" id="add-toxic-btn">+ Add</button>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
   </div>
+
+  <!-- Sticky Bottom Action Bar -->
+  <footer class="sticky-action-bar">
+    <div class="action-bar-content">
+      <div class="action-bar-left">
+        <div class="save-status-text" id="save-status-text">
+          <span class="save-status-indicator"></span>
+          <span>Ready to sync with Obsidian vault</span>
+        </div>
+      </div>
+      <div class="action-bar-right">
+        <button type="button" class="btn-secondary" id="btn-reset-defaults">
+          ↺ Reset to Vault Defaults
+        </button>
+        <button type="button" class="btn-primary" id="btn-save-preferences">
+          💾 Save Preferences
+        </button>
+        <button type="button" class="btn-audit" id="btn-save-audit">
+          ⚡ Save & Run AI Opportunity Audit
+        </button>
+      </div>
+    </div>
+  </footer>
+
+  <!-- AI Opportunity Audit Modal -->
+  <div class="modal-overlay" id="audit-modal-overlay">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3><span>⚡ AI Opportunity Audit Results</span></h3>
+        <button type="button" class="modal-close-btn" id="modal-close-btn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="audit-kpi-grid">
+          <div class="audit-kpi-box blue">
+            <h5>Total Analyzed</h5>
+            <div class="num" id="modal-total-analyzed">0</div>
+          </div>
+          <div class="audit-kpi-box emerald">
+            <h5>Direct Matches</h5>
+            <div class="num" id="modal-direct-matches">0</div>
+          </div>
+          <div class="audit-kpi-box warning">
+            <h5>Caution Flags</h5>
+            <div class="num" id="modal-caution-matches">0</div>
+          </div>
+          <div class="audit-kpi-box coral">
+            <h5>Disqualified</h5>
+            <div class="num" id="modal-disqualified">0</div>
+          </div>
+        </div>
+
+        <div class="audit-tabs">
+          <button type="button" class="audit-tab-btn active" data-tab="matches" id="tab-btn-matches">Direct Matches</button>
+          <button type="button" class="audit-tab-btn" data-tab="caution" id="tab-btn-caution">Caution Roles</button>
+          <button type="button" class="audit-tab-btn" data-tab="disqualified" id="tab-btn-disqualified">Disqualified</button>
+        </div>
+
+        <div id="audit-tab-content">
+          <div class="audit-items-list" id="modal-audit-list">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <div style="font-size: 0.8rem; color: var(--text-secondary);">
+          Report: <code style="font-family: var(--font-family-mono); color: var(--purple-accent);">004-work-opportunities/opportunities-preference-audit.md</code>
+        </div>
+        <button type="button" class="btn-secondary" id="modal-done-btn">Close Audit</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
 </body>
 </html>

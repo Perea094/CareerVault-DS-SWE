@@ -9,7 +9,7 @@ Preference Manager static web UI and exposes REST API endpoints for:
 """
 
 import argparse
-import http.client
+from datetime import datetime
 from http.server import HTTPServer, SimpleHTTPRequestHandler
 import json
 import os
@@ -102,8 +102,11 @@ class PreferenceRequestHandler(SimpleHTTPRequestHandler):
 
         if path == "/api/preferences":
             pref_path = getattr(self.server, "preferences_path", DEFAULT_PREFERENCES_JSON)
-            pref_data = load_preferences_json(pref_path)
-            self._send_json_response(200, pref_data)
+            try:
+                pref_data = load_preferences_json(pref_path)
+                self._send_json_response(200, pref_data)
+            except Exception as e:
+                self._send_json_response(500, {"success": False, "error": f"Error loading preferences: {str(e)}"})
         elif path.startswith("/api/"):
             self._send_json_response(404, {"success": False, "error": f"API endpoint '{parsed_url.path}' not found"})
         else:
@@ -149,6 +152,11 @@ class PreferenceRequestHandler(SimpleHTTPRequestHandler):
         pref_path = getattr(self.server, "preferences_path", DEFAULT_PREFERENCES_JSON)
         md_path = getattr(self.server, "markdown_path", DEFAULT_PREFERENCES_MD)
 
+        today = datetime.now().strftime("%Y-%m-%d")
+        payload["updated"] = today
+        if "metadata" in payload and isinstance(payload["metadata"], dict):
+            payload["metadata"]["updated"] = today
+
         try:
             save_preferences_json(payload, pref_path)
             sync_to_markdown(payload, md_path)
@@ -183,7 +191,11 @@ class PreferenceRequestHandler(SimpleHTTPRequestHandler):
         audit_md_path = getattr(self.server, "audit_report_path", DEFAULT_AUDIT_MD)
 
         if pref_data is None:
-            pref_data = load_preferences_json(pref_path)
+            try:
+                pref_data = load_preferences_json(pref_path)
+            except Exception as e:
+                self._send_json_response(500, {"success": False, "error": f"Error loading preferences: {str(e)}"})
+                return
 
         if os.path.exists(opps_path):
             try:

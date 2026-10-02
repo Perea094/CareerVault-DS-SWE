@@ -47,9 +47,13 @@ class TestPreferenceServer(unittest.TestCase):
         self.web_dir = os.path.join(self.test_dir.name, "web")
         os.makedirs(self.web_dir, exist_ok=True)
 
-        # Create dummy index.html in web dir
+        # Create dummy index.html, style.css, and app.js in web dir
         with open(os.path.join(self.web_dir, "index.html"), "w", encoding="utf-8") as f:
             f.write("<!DOCTYPE html><html><body><h1>Preference Manager</h1></body></html>")
+        with open(os.path.join(self.web_dir, "style.css"), "w", encoding="utf-8") as f:
+            f.write("/* CSS */ body { background: #1e1e24; }")
+        with open(os.path.join(self.web_dir, "app.js"), "w", encoding="utf-8") as f:
+            f.write("// JS\nconsole.log('App loaded');")
 
         # Initial mock preferences
         self.sample_preferences = {
@@ -245,6 +249,52 @@ class TestPreferenceServer(unittest.TestCase):
         status, headers, body = self._http_request("GET", "/index.html")
         self.assertEqual(status, 200)
         self.assertIn("Preference Manager", body)
+
+        status, headers, body = self._http_request("GET", "/style.css")
+        self.assertEqual(status, 200)
+        self.assertIn("#1e1e24", body)
+
+        status, headers, body = self._http_request("GET", "/app.js")
+        self.assertEqual(status, 200)
+        self.assertIn("App loaded", body)
+
+    def test_serves_real_web_assets(self):
+        """Test that default web assets exist and are served properly with HTTP 200."""
+        from preference_server import DEFAULT_WEB_DIR
+        real_server, real_thread = create_server(port=0, host="127.0.0.1", directory=DEFAULT_WEB_DIR)
+        try:
+            port = real_server.server_address[1]
+            conn = http.client.HTTPConnection("127.0.0.1", port, timeout=5)
+
+            # Check index.html
+            conn.request("GET", "/")
+            res = conn.getresponse()
+            self.assertEqual(res.status, 200)
+            index_content = res.read().decode("utf-8")
+            self.assertIn("Diego Perea León", index_content)
+            self.assertIn("Weekly Availability", index_content)
+
+            # Check style.css
+            conn.request("GET", "/style.css")
+            res = conn.getresponse()
+            self.assertEqual(res.status, 200)
+            css_content = res.read().decode("utf-8")
+            self.assertIn("--bg-base", css_content)
+            self.assertIn("#1e1e24", css_content)
+
+            # Check app.js
+            conn.request("GET", "/app.js")
+            res = conn.getresponse()
+            self.assertEqual(res.status, 200)
+            js_content = res.read().decode("utf-8")
+            self.assertIn("renderAvailabilityGrid", js_content)
+            self.assertIn("loadPreferences", js_content)
+
+            conn.close()
+        finally:
+            real_server.shutdown()
+            real_server.server_close()
+            real_thread.join(timeout=2.0)
 
     def test_not_found_endpoint(self):
         """Test non-existent API endpoint returns 404."""
