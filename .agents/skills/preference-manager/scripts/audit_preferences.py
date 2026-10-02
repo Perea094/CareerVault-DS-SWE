@@ -1,6 +1,6 @@
 """AI Opportunity Audit Engine.
 
-Audits job and internship opportunities against Diego Perea León's career preferences,
+Audits job and internship opportunities against candidate career preferences,
 availability calendar, location constraints, visa status, and deal-breakers.
 Generates structured audit results and Obsidian-compliant markdown reports.
 """
@@ -106,6 +106,7 @@ def audit_opportunities_against_preferences(
         "matches": matches,
         "caution": caution,
         "disqualified": disqualified,
+        "preferences": pref_data,
     }
 
 
@@ -335,6 +336,28 @@ def generate_markdown_audit_report(
 
     today_str = datetime.now().strftime("%Y-%m-%d")
 
+    pref_info = audit_result.get("preferences", {})
+    cand_info = pref_info.get("candidate", {})
+    cand_name = cand_info.get("name", "Candidate")
+    cand_degree = cand_info.get("degree", "Degree")
+    cand_univ = cand_info.get("university", "University")
+
+    loc_visa = pref_info.get("location_visa", {})
+    cand_loc = loc_visa.get("current_location", "Location")
+    us_work_auth = loc_visa.get("us_work_authorization", "None")
+
+    cal_info = pref_info.get("availability_calendar", {})
+    h_min = cal_info.get("target_weekly_hours_min", 20)
+    h_max = cal_info.get("target_weekly_hours_max", 30)
+    target_hrs = f"{h_min}-{h_max} hrs/week"
+    sched_notes = cal_info.get("schedule_notes", "weekday afternoons/evenings")
+
+    deal_breakers = pref_info.get("deal_breakers", {})
+    hard_constraints_list = deal_breakers.get("hard_constraints", [])
+    hard_constraints_str = ", ".join(hard_constraints_list) if hard_constraints_list else "None specified"
+    auto_disq_list = deal_breakers.get("automatic_disqualifiers", [])
+    auto_disq_str = ", ".join(auto_disq_list) if auto_disq_list else "None specified"
+
     # Flat YAML frontmatter
     frontmatter = f"""---
 created: "{today_str}"
@@ -349,10 +372,10 @@ total_analyzed: {total}
 direct_matches: {direct_matches_count}
 caution_or_summer: {caution_count}
 disqualified: {disq_count}
-candidate_name: "Diego Perea León"
-candidate_location: "Querétaro, Mexico"
-target_weekly_hours: "20-30 hrs/week"
-us_work_authorization: "None"
+candidate_name: "{cand_name}"
+candidate_location: "{cand_loc}"
+target_weekly_hours: "{target_hrs}"
+us_work_authorization: "{us_work_auth}"
 ---"""
 
     # Top Immediate Matches Table
@@ -455,20 +478,20 @@ us_work_authorization: "None"
 
 ## Executive Summary
 
-This automated audit systematically evaluates active job and internship requisitions against the verified career preferences, temporal availability, and deal-breakers of **Diego Perea León** (B.S. Data Science & Mathematics, Tecnológico de Monterrey).
+This automated audit systematically evaluates active job and internship requisitions against the verified career preferences, temporal availability, and deal-breakers of **{cand_name}** ({cand_degree}, {cand_univ}).
 
 **Active Context & Constraints**:
-- **Location**: Based in Querétaro, Mexico. Local or remote arrangements preferred.
-- **US Work Authorization**: None (requires J-1/TN visa sponsorship for US onsite/hybrid relocation; or W-8BEN international contractor onboarding for remote roles).
-- **Academic Term Schedule**: 4th semester morning classes; target commitment is **20–30 hours/week** (weekday afternoons/evenings). 40 hours/week is reserved for Summer breaks or requires schedule flexibility.
-- **Deal-Breakers**: Crypto/Web3 exclusion, no mandatory 5-day onsite during semester, and automatic exclusion of roles mandating US citizenship.
+- **Location**: Based in {cand_loc}. Local or remote arrangements preferred.
+- **US Work Authorization**: {us_work_auth} (requires visa sponsorship for onsite/hybrid relocation; or international contractor onboarding for remote roles).
+- **Academic Term Schedule**: Target commitment is **{target_hrs}** ({sched_notes}). Full-time 40 hours/week is reserved for summer breaks or requires schedule flexibility.
+- **Deal-Breakers**: Hard constraints ({hard_constraints_str}) and automatic disqualifiers ({auto_disq_str}).
 
 ### Audit Summary Metrics
 
 | Metric | Count | Proportion | Strategic Recommendation |
 | :--- | :---: | :---: | :--- |
 | **Top Immediate Matches** | **{direct_matches_count}** | {f"{(direct_matches_count / total * 100):.1f}%" if total else "0%"} | Immediate application; directly aligns with current semester schedule |
-| **Summer / International Caution** | **{caution_count}** | {f"{(caution_count / total * 100):.1f}%" if total else "0%"} | Summer 2027 target pipeline & J-1 visa sponsorship verification |
+| **Summer / International Caution** | **{caution_count}** | {f"{(caution_count / total * 100):.1f}%" if total else "0%"} | Summer target pipeline & visa sponsorship verification |
 | **Disqualified Opportunities** | **{disq_count}** | {f"{(disq_count / total * 100):.1f}%" if total else "0%"} | Excluded due to hard deal-breakers |
 | **Total Opportunities Evaluated** | **{total}** | 100% | Evaluated against `001-background/preferences.json` |
 
@@ -476,7 +499,7 @@ This automated audit systematically evaluates active job and internship requisit
 
 ## Table of Top Immediate Matches (Semester Viable: 20–30 hrs/week)
 
-These requisitions feature **direct legal and schedule compatibility** with current semester studies. They offer part-time loads (20–30 hrs/week) or flexible student arrangements, with local Mexican corporate entities or global remote frameworks.
+These requisitions feature **direct legal and schedule compatibility** with current semester studies. They offer part-time loads (20–30 hrs/week) or flexible student arrangements, with local corporate entities or global remote frameworks.
 
 {matches_table}
 
@@ -485,9 +508,9 @@ These requisitions feature **direct legal and schedule compatibility** with curr
 ## Table of Summer / International Caution Opportunities (40 hrs/week & Visa Sponsorship)
 
 These requisitions represent high-tier opportunities that require **temporal or immigration alignment**:
-1. **Schedule**: 40 hrs/week commitment suitable for Summer 2027 breaks, or requiring university agreement (*convenio de prácticas*).
-2. **Immigration**: US or Canadian onsite/hybrid locations requiring J-1 / co-op visa sponsorship.
-3. **Payroll**: US-remote postings requiring confirmation of international contractor (W-8BEN) hiring.
+1. **Schedule**: 40 hrs/week commitment suitable for summer breaks, or requiring university agreement.
+2. **Immigration**: Locations requiring visa sponsorship (e.g. J-1 or work permits).
+3. **Payroll**: Remote postings requiring confirmation of international contractor (W-8BEN) hiring.
 
 {caution_table}
 

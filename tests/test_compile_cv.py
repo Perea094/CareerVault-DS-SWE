@@ -23,7 +23,7 @@ class TestCompileCv(unittest.TestCase):
         out_dir = Path("002-cv/dist")
         cmd = compile_cv.build_compile_command(
             compiler="pdflatex",
-            tex_file=Path("002-cv/Diego_Perea_Resume.tex"),
+            tex_file=Path("002-cv/template.tex"),
             output_dir=out_dir
         )
         self.assertIn("pdflatex", cmd[0])
@@ -34,7 +34,7 @@ class TestCompileCv(unittest.TestCase):
         out_dir = Path("002-cv/dist")
         cmd = compile_cv.build_compile_command(
             compiler="tectonic",
-            tex_file=Path("002-cv/Diego_Perea_Resume.tex"),
+            tex_file=Path("002-cv/template.tex"),
             output_dir=out_dir
         )
         self.assertIn("tectonic", cmd[0])

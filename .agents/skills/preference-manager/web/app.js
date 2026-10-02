@@ -1,5 +1,5 @@
 /**
- * Diego Perea León — Preference Manager Web UI
+ * Career Vault — Preference Manager Web UI
  * Interactive Weekly Availability Grid & Obsidian Vault Synchronization
  */
 
@@ -104,30 +104,30 @@ let state = {
   updated: new Date().toISOString().slice(0, 10),
   status: "active",
   candidate: {
-    name: "Diego Perea León",
-    university: "Tecnológico de Monterrey (Campus Querétaro)",
-    degree: "B.S. Data Science & Mathematics",
-    current_semester: "4th semester",
-    expected_graduation: "May 2028",
-    email_contact: "diego.perea@tec.mx"
+    name: "Candidate",
+    university: "University",
+    degree: "B.S. in Computer Science / Data Science",
+    current_semester: "Junior",
+    expected_graduation: "May 2027",
+    email_contact: "candidate@example.com"
   },
   metadata: {
-    created: "2026-07-01",
+    created: "2026-10-02",
     updated: new Date().toISOString().slice(0, 10),
     type: "preferences",
     tags: ["background", "preferences", "constraints"],
     status: "active",
     version: "1.1",
-    source: "User interview via opencode session",
-    privacy: "Contains personal work preferences — not for public sharing"
+    source: "Career Vault Onboarding / Preference Manager",
+    privacy: "Configure with your personal preferences"
   },
   academic_context: {
-    university: "Tecnológico de Monterrey (Campus Querétaro)",
-    program: "B.S. Data Science & Mathematics",
-    term: "4th semester",
-    expected_graduation: "May 2028",
-    class_schedule_status: "Morning classes likely; schedule TBD",
-    focus_areas: ["Machine Learning", "Mathematics", "Optimization"]
+    university: "University",
+    program: "B.S. in Computer Science / Data Science",
+    term: "Junior",
+    expected_graduation: "May 2027",
+    class_schedule_status: "Coursework in progress",
+    focus_areas: ["Machine Learning", "Software Engineering", "Data Systems"]
   },
   availability_calendar: {
     time_slots: TIME_SLOTS,
@@ -135,7 +135,7 @@ let state = {
     target_weekly_hours_min: 20,
     target_weekly_hours_max: 30,
     max_manageable_hours: 40,
-    schedule_notes: "Morning lectures at Tec de Monterrey; available weekday afternoons and evenings."
+    schedule_notes: "Available weekday afternoons and evenings."
   },
   work_arrangement: {
     preference_rank: ["Remote", "Hybrid", "Onsite"],
@@ -146,7 +146,7 @@ let state = {
     scheduling_constraints: "Morning classes likely; schedule TBD"
   },
   location_visa: {
-    current_location: "Querétaro, Mexico",
+    current_location: "City, Country",
     us_work_authorization: "None",
     relocation_willingness: "Remote preferred; open to international relocation if visa sponsored",
     travel_willingness: true
@@ -928,7 +928,7 @@ function syncFormFieldsFromState() {
 
   // Location & Visa
   const loc = state.location_visa || {};
-  document.getElementById('current-location').value = loc.current_location || 'Querétaro, Mexico';
+  document.getElementById('current-location').value = loc.current_location || 'City, Country';
   document.getElementById('us-work-auth').value = loc.us_work_authorization || 'None';
   document.getElementById('relocation-willingness').value = loc.relocation_willingness || 'Remote preferred; open to international relocation if visa sponsored';
   document.getElementById('travel-willingness').checked = loc.travel_willingness !== false;
@@ -941,10 +941,10 @@ function syncFormFieldsFromState() {
 
   // Academic Context
   const acad = state.academic_context || {};
-  document.getElementById('academic-university').value = acad.university || 'Tecnológico de Monterrey (Campus Querétaro)';
-  document.getElementById('academic-degree').value = acad.program || acad.degree || 'B.S. Data Science & Mathematics';
-  document.getElementById('academic-semester').value = acad.term || acad.current_semester || '4th semester';
-  document.getElementById('academic-graduation').value = acad.expected_graduation || 'May 2028';
+  document.getElementById('academic-university').value = acad.university || 'University';
+  document.getElementById('academic-degree').value = acad.program || acad.degree || 'B.S. in Computer Science / Data Science';
+  document.getElementById('academic-semester').value = acad.term || acad.current_semester || 'Junior';
+  document.getElementById('academic-graduation').value = acad.expected_graduation || 'May 2027';
 
   // Learning & Growth
   const learn = state.learning_growth || {};
@@ -1003,7 +1003,7 @@ function syncStateFromFormFields() {
   state.role_responsibilities.ic_vs_lead = document.getElementById('role-focus-ic').value;
 
   // Candidate mirror
-  state.candidate.name = "Diego Perea León";
+  state.candidate.name = state.candidate?.name || "Candidate";
   state.candidate.university = state.academic_context.university;
   state.candidate.degree = state.academic_context.program;
   state.candidate.current_semester = state.academic_context.term;

@@ -61,12 +61,12 @@ class TestPreferenceServer(unittest.TestCase):
             "updated": "2026-10-02",
             "status": "active",
             "candidate": {
-                "name": "Diego Perea León",
-                "university": "Tecnológico de Monterrey (Campus Querétaro)",
-                "degree": "B.S. Data Science & Mathematics",
-                "current_semester": "4th semester",
-                "expected_graduation": "May 2028",
-                "email_contact": "diego.perea@tec.mx",
+                "name": "Candidate",
+                "university": "University",
+                "degree": "B.S. in Computer Science / Data Science",
+                "current_semester": "Junior",
+                "expected_graduation": "May 2027",
+                "email_contact": "candidate@example.com",
             },
             "availability_calendar": {
                 "target_weekly_hours_min": 20,
@@ -74,9 +74,9 @@ class TestPreferenceServer(unittest.TestCase):
                 "weekly_available_hours": 30.0,
             },
             "location_visa": {
-                "current_location": "Querétaro, Mexico",
+                "current_location": "City, Country",
                 "us_work_authorization": "None",
-                "preferred_arrangements": ["Remote", "Hybrid (Querétaro / CDMX)"],
+                "preferred_arrangements": ["Remote", "Hybrid"],
             },
             "deal_breakers": {
                 "hard_constraints": ["No onsite 5 days/week during academic semester"],
@@ -166,7 +166,7 @@ class TestPreferenceServer(unittest.TestCase):
 
         data = json.loads(body)
         self.assertIn("candidate", data)
-        self.assertEqual(data["candidate"]["name"], "Diego Perea León")
+        self.assertEqual(data["candidate"]["name"], "Candidate")
         self.assertIn("availability_calendar", data)
         self.assertEqual(data["availability_calendar"]["target_weekly_hours_max"], 30)
 
@@ -196,7 +196,7 @@ class TestPreferenceServer(unittest.TestCase):
         # Verify JSON file on disk was updated
         with open(self.pref_json_path, "r", encoding="utf-8") as f:
             saved_json = json.load(f)
-        self.assertEqual(saved_json["candidate"]["name"], "Diego Perea León")
+        self.assertEqual(saved_json["candidate"]["name"], "Candidate")
         self.assertEqual(saved_json["availability_calendar"]["target_weekly_hours_max"], 25)
         self.assertEqual(saved_json["compensation_benefits"]["minimum_hourly"], 35)
 
@@ -206,7 +206,7 @@ class TestPreferenceServer(unittest.TestCase):
             md_content = f.read()
         self.assertIn("minimum_hourly: 35", md_content)
         self.assertIn('hours_per_week: "15-25 (part-time)"', md_content)
-        self.assertIn("B.S. Data Science & Mathematics", md_content)
+        self.assertIn("B.S. in Computer Science / Data Science", md_content)
 
     def test_post_audit_triggers_audit_and_returns_result(self):
         """Test POST /api/audit runs audit against opportunities and generates report."""
@@ -271,7 +271,7 @@ class TestPreferenceServer(unittest.TestCase):
             res = conn.getresponse()
             self.assertEqual(res.status, 200)
             index_content = res.read().decode("utf-8")
-            self.assertIn("Diego Perea León", index_content)
+            self.assertIn("Career Vault", index_content)
             self.assertIn("Weekly Availability", index_content)
 
             # Check style.css

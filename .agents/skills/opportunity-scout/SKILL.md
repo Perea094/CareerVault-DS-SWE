@@ -5,7 +5,7 @@ description: Automated daily scout and recruiter evaluation for tech internships
 
 # opportunity-scout
 
-Automates the ingestion, multi-source deduplication, and senior technical recruitment evaluation of software engineering, AI/ML, data science, and quant job postings for **Diego Perea León**.
+Automates the ingestion, multi-source deduplication, and senior technical recruitment evaluation of software engineering, AI/ML, data science, and quant job postings.
 
 ## Target Vault Paths
 - **Scanner Script:** `004-work-opportunities/scripts/scan_opportunities.py`
@@ -35,18 +35,18 @@ Inspect `004-work-opportunities/database/pending_scan.json`:
 
 ### Step 3: Senior Recruiter Evaluation (via `expert-recruiter`)
 For each opportunity in `pending_scan.json`:
-1. **Dynamic Constraints Check**: Read `001-background/preferences.md` to ensure compliance with active work arrangements, location/visa rules, hours (20–30 hrs/week target during semester), and compensation floor.
-2. **Ground Truth CV Highlights**: Map 3–4 bullet points directly to verified background assets in `001-background/` (e.g., DAVE for edge computer vision, Ape-X DQN for reinforcement learning, Aristor for spatial SQL analytics, Databricks Challenge for data pipelines, LEIA 630 pytest unit tests).
-3. **Realistic Success Ratio**: Assign a concrete percentage range (e.g. `85% - 90%` for Tier 1 Mexico/Remote, `40% - 50%` for US top sponsors) with recruiter justification.
-4. **Key Considerations**: Note legal requirements (J-1 sponsorship, Mexican entity, Tec de Monterrey *convenio de prácticas*), graduation alignment (May 2028), and schedule compatibility.
+1. **Dynamic Constraints Check**: Read `001-background/preferences.md` to ensure compliance with active work arrangements, location/visa rules, hours (target weekly hours), and compensation floor.
+2. **Ground Truth CV Highlights**: Map 3–4 bullet points directly to verified background assets in `001-background/`.
+3. **Realistic Success Ratio**: Assign a concrete percentage range (e.g. `85% - 90%` for Tier 1 local/remote, `40% - 50%` for high-competition sponsors) with recruiter justification.
+4. **Key Considerations**: Note legal requirements (visa sponsorship, local entity), graduation alignment, and schedule compatibility.
 5. **Pros & Cons**: Assess brand prestige, compensation, remote flexibility vs commute, and risks.
 6. **Skills Gap Analysis**: Pinpoint missing technical keywords or tools and prescribe exact bridging actions.
 
 ### Step 4: Vault Synchronization & Reporting
-1. **Append to JSON Database**: Add the structured records to `004-work-opportunities/database/opportunities.json` and mirror to `004-work-opportunities/opportunities-database.json`.
+1. **Append to JSON Database**: Add the structured records to `004-work-opportunities/database/opportunities.json`.
 2. **Sync CSV**: Regenerate `004-work-opportunities/database/opportunities.csv`.
 3. **Update Monthly Audit Note**: Append or update `004-work-opportunities/opportunities-audit-YYYY-MM.md` (e.g., `opportunities-audit-2026-10.md`), updating the Priority Matrix table and adding the opportunity sections.
    - **Obsidian Frontmatter Invariants**:
      - **Valid String Tags Only**: Never use pure numbers for tags (e.g., use `summer-2027` or `cycle-2027`, NEVER `2027`). Obsidian requires at least one letter in every tag; pure numeric tags cause Obsidian property validation warnings (`⚠️`).
      - **Flat Properties Only**: Never write nested YAML objects/dictionaries (e.g., use `candidate_profile_ref: "001-background/preferences.md"`, never nested `candidate_profile: {degree: ...}` which Obsidian flags with an unsupported type `?`).
-4. **User Briefing**: Deliver a 3-bullet summary to Diego highlighting newly discovered Tier 1 (Mexico) and Remote Part-Time roles. (Ensure response starts with `Hello Perea,`).
+4. **User Briefing**: Deliver a 3-bullet summary highlighting newly discovered Tier 1 and Remote Part-Time roles.

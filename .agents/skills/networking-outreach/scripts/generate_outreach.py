@@ -78,10 +78,10 @@ def build_outreach_templates(
     role = role_info.get("role", "[Role]")
     key_skill = role_info.get("key_skill", "Distributed Systems & Machine Learning")
 
-    cand_name = candidate_info.get("name", "Diego Perea León")
-    cand_school = candidate_info.get("school", "Tecnológico de Monterrey")
+    cand_name = candidate_info.get("name", "Candidate")
+    cand_school = candidate_info.get("school", "University")
     cand_highlight = candidate_info.get(
-        "highlight", "Achieved 3,700 FPS distributed RL training pipeline"
+        "highlight", "delivered high-throughput distributed systems & ML pipelines"
     )
 
     alumni_salutation = f"Hi {alumni_name}," if alumni_name else "Hi [Alumni Name],"

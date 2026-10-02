@@ -15,7 +15,7 @@ An open-source, agentic personal career operating system built on top of **Obsid
 The vault is structured into four functional layers designed for separation of concerns, zero hallucinations, and temporal traceability:
 
 ```
-Curriculum/
+CareerVault-DS-SWE/
 ├── 001-background/               # Ground Truth Layer
 │   ├── candidate_profile.py      # Dynamic profile loader
 │   ├── preferences.json / .md    # Living career constraints & availability
@@ -71,8 +71,8 @@ Follow these steps to set up your personal Career Vault:
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/your-username/Curriculum.git
-cd Curriculum
+git clone https://github.com/Perea094/CareerVault-DS-SWE.git
+cd CareerVault-DS-SWE
 ```
 
 ### 2. Run the Interactive Setup Wizard
@@ -100,13 +100,13 @@ python 004-work-opportunities/scripts/scan_opportunities.py
 ### 5. Compile Your Resume
 Build an ATS-optimized, publication-ready PDF from LaTeX and generate an Obsidian image preview:
 ```bash
-python 002-cv/scripts/compile_cv.py 002-cv/Diego_Perea_Resume.tex
+python 002-cv/scripts/compile_cv.py 002-cv/template.tex
 ```
 
 ### 6. Audit ATS Parseability
 Inspect the compiled PDF with `pdfplumber` to ensure 100% ATS machine readability, single-page compliance, and contact link extraction:
 ```bash
-python 002-cv/scripts/validate_ats.py 002-cv/Diego_Perea_Resume.pdf
+python 002-cv/scripts/validate_ats.py 002-cv/template.pdf
 ```
 
 ---

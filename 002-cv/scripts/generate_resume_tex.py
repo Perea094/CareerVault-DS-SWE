@@ -144,8 +144,8 @@ def main():
     parser.add_argument(
         "--output",
         type=str,
-        default=str(Path(__file__).resolve().parent.parent / "Diego_Perea_Resume.tex"),
-        help="Path to target .tex file (default: 002-cv/Diego_Perea_Resume.tex)"
+        default=str(Path(__file__).resolve().parent.parent / "Candidate_Resume.tex"),
+        help="Path to target .tex file (default: 002-cv/Candidate_Resume.tex)"
     )
     parser.add_argument(
         "--profile",

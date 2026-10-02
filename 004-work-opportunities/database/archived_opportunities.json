@@ -1,59 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "Curriculum Archived Opportunities Registry",
+  "title": "Career Vault Archived Opportunities Registry",
   "description": "Archived, closed, expired, or passed opportunities retained for deduplication and audit history.",
   "last_updated": "2026-10-02",
-  "total_archived": 1,
-  "opportunities": [
-    {
-      "id": "opp-38-amazon-sde-intern-guadalajara-mexico",
-      "numeric_id": 38,
-      "company": "Amazon",
-      "role": "Software Development Engineer Intern (SDE Intern)",
-      "tier": "Tier 1: Maximum Viability — Mexico & LATAM (Direct Legal Match)",
-      "location": "Guadalajara, Jalisco, Mexico (Amazon MDC)",
-      "work_arrangement": "Summer / Fall Internship (Convenio Tec de Monterrey)",
-      "hours_per_week": "40 (Flexible scheduling available)",
-      "compensation": "Standard Amazon Tech Intern (~$30,000 - $40,000 MXN/mo)",
-      "realistic_success_ratio": "80% - 85%",
-      "success_ratio_min": 0.8,
-      "success_ratio_max": 0.85,
-      "success_ratio_justification": "Amazon Mexico hires dozens of interns every cycle via standard university agreements (Convenio Tec). Diego's distributed Ape-X DQN RL project (multi-process queues, 3,700 FPS) demonstrates high-concurrency systems programming well beyond typical undergraduate coursework.",
-      "urgency": "Active (Fall/Summer Cohort)",
-      "strategic_action": "Immediate Submit via Amazon Jobs (Convenio Tec)",
-      "source_repo": "https://github.com/Proyecto-Nutria/MX-Internships",
-      "apply_url": "https://www.amazon.jobs/en/jobs/2459010/software-development-engineer-intern",
-      "file_reference": "004-work-opportunities/opportunities/Amazon - SDE Intern Guadalajara.htm",
-      "vault_note": "",
-      "status": "archived",
-      "application_status": "closed",
-      "key_points_to_highlight": [
-        "Distributed Systems & IPC: Emphasize Ape-X DQN distributed RL architecture handling multi-actor process queues and high throughput.",
-        "Clean Code & Architecture: Highlight 630 pytest unit tests in LEIA, showing Amazon Leadership Principles (High Standards, Customer Obsession).",
-        "C++ & Python OOP: Feature C++ game development and Python backend microservices.",
-        "Academic Excellence: Highlight TELMEX Scholar status and 94/100 GPA in Data Science & Mathematics."
-      ],
-      "key_considerations": [
-        "Amazon Mexico requires an active student status and signing of the Tec de Monterrey internship agreement (convenio).",
-        "Online Assessment (OA) requires passing 2 algorithmic questions on HackerRank."
-      ],
-      "pros": [
-        "Tier-1 global cloud & e-commerce titan",
-        "Standardized pipeline to full-time SDE return offer upon graduation",
-        "High intern hiring volume in Guadalajara tech center"
-      ],
-      "cons": [
-        "Standardized corporate OA filter; requires sharp LeetCode medium prep",
-        "Guadalajara hybrid office presence"
-      ],
-      "missing_or_bridge_skills": [
-        "Amazon Leadership Principles behavioral storytelling: Structure STAR stories for 'Customer Obsession', 'Ownership', and 'Invent and Simplify'."
-      ],
-      "date_identified": "2026-10-01",
-      "last_audited": "2026-10-01",
-      "original_application_status": "pending_tailoring",
-      "archived_date": "2026-10-02",
-      "archive_reason": "Dead Link (HTTP 404)"
-    }
-  ]
+  "total_archived": 0,
+  "opportunities": []
 }

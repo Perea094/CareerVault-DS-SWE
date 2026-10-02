@@ -206,7 +206,7 @@ def main():
     parser.add_argument("--output", help="Write report to file")
     args = parser.parse_args()
 
-    pdf_target = args.pdf or args.pdf_positional or "002-cv/Diego_Perea_Resume.pdf"
+    pdf_target = args.pdf or args.pdf_positional or "002-cv/resume.pdf"
     target_path = Path(pdf_target)
 
     if not target_path.exists():

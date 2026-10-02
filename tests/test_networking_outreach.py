@@ -13,8 +13,8 @@ class TestNetworkingOutreach(unittest.TestCase):
             "key_skill": "Lakehouse & Spark Optimization"
         }
         candidate_info = {
-            "name": "Diego Perea León",
-            "school": "Tecnológico de Monterrey",
+            "name": "Candidate Name",
+            "school": "University",
             "highlight": "Achieved 3,700 FPS distributed RL training pipeline"
         }
         
@@ -24,7 +24,7 @@ class TestNetworkingOutreach(unittest.TestCase):
         self.assertIn("recruiter", outreach)
         self.assertIn("hiring_manager", outreach)
         
-        self.assertIn("Tecnológico de Monterrey", outreach["alumni"])
+        self.assertIn("University", outreach["alumni"])
         self.assertIn("Databricks", outreach["recruiter"])
         self.assertIn("3,700 FPS", outreach["hiring_manager"])
 
@@ -35,8 +35,8 @@ class TestNetworkingOutreach(unittest.TestCase):
             "key_skill": "C++ & Real-time Edge AI"
         }
         candidate_info = {
-            "name": "Diego Perea León",
-            "school": "Tecnológico de Monterrey",
+            "name": "Candidate Name",
+            "school": "University",
             "highlight": "Engineered Hailo-8 NPU pipeline at 30 FPS"
         }
         md = generate_outreach.format_outreach_markdown(role_info, candidate_info)
@@ -53,8 +53,8 @@ class TestNetworkingOutreach(unittest.TestCase):
             "key_skill": "Distributed Systems"
         }
         candidate_info = {
-            "name": "Diego Perea León",
-            "school": "Tecnológico de Monterrey",
+            "name": "Candidate Name",
+            "school": "University",
             "highlight": "Developed high-throughput queue"
         }
         outreach = generate_outreach.build_outreach_templates(

@@ -45,7 +45,7 @@ The scanner monitors **19 high-volume feeds** across seven community aggregation
 
 ## 3. Dynamic Viability & Triage Engine
 
-Every job posting is evaluated against the constraints in [`001-background/preferences.md`](file:///c:/Users/Diego%20Perea/Desktop/Curriculum/001-background/preferences.md):
+Every job posting is evaluated against the constraints in [`001-background/preferences.md`](../../001-background/preferences.md):
 - **Hard Disqualifiers**:
   - `sponsorship_notes` containing "US Citizenship Required" or "No Visa Sponsorship" on US onsite roles.
   - Strict PhD-only or Master's-only requisitions (unless undergraduate applicants are explicitly welcome).
@@ -77,13 +77,13 @@ python 004-work-opportunities/scripts/scan_opportunities.py --source simplify-su
 python 004-work-opportunities/scripts/scan_opportunities.py --all
 ```
 
-Outputs are automatically deduplicated against [`004-work-opportunities/database/opportunities.json`](file:///c:/Users/Diego%20Perea/Desktop/Curriculum/004-work-opportunities/database/opportunities.json) and exported to [`004-work-opportunities/database/pending_scan.json`](file:///c:/Users/Diego%20Perea/Desktop/Curriculum/004-work-opportunities/database/pending_scan.json).
+Outputs are automatically deduplicated against [`004-work-opportunities/database/opportunities.json`](../database/opportunities.json) and exported to [`004-work-opportunities/database/pending_scan.json`](../database/pending_scan.json).
 
 ---
 
 ## 5. Pruning & Archival Engine (`prune_opportunities.py`)
 
-Maintains database freshness by sweeping expired, dead, or passed opportunities into [`004-work-opportunities/database/archived_opportunities.json`](file:///c:/Users/Diego%20Perea/Desktop/Curriculum/004-work-opportunities/database/archived_opportunities.json) while preserving deduplication memory:
+Maintains database freshness by sweeping expired, dead, or passed opportunities into [`004-work-opportunities/database/archived_opportunities.json`](../database/archived_opportunities.json) while preserving deduplication memory:
 
 ```powershell
 # Probe ATS URLs concurrently to detect 404s and closed positions (Dry run preview)

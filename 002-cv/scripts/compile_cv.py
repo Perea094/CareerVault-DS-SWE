@@ -117,7 +117,7 @@ def compile_resume(tex_file: Path, output_dir: Path = None, generate_png: bool =
 
 def main():
     parser = argparse.ArgumentParser(description="Compile LaTeX Resume to PDF and PNG preview")
-    parser.add_argument("tex_file", nargs="?", default="002-cv/Diego_Perea_Resume.tex", help="Path to .tex file")
+    parser.add_argument("tex_file", nargs="?", default="002-cv/template.tex", help="Path to .tex file")
     parser.add_argument("--output-dir", "-o", default=None, help="Directory to place PDF and PNG")
     parser.add_argument("--no-preview", action="store_true", help="Skip PNG preview generation")
     parser.add_argument("--dpi", type=int, default=150, help="DPI for PNG preview (default: 150)")

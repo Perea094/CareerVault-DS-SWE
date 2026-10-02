@@ -56,22 +56,22 @@ class TestGenerateResumeTex(unittest.TestCase):
         template_file = Path(__file__).resolve().parent.parent / "002-cv" / "template.tex"
         self.assertTrue(template_file.exists())
         profile = {
-            "name": "Diego Perea León",
-            "location": "Querétaro, Mexico",
-            "email": "a01708350@tec.mx",
-            "phone": "+52 442 2713186",
-            "linkedin": "https://www.linkedin.com/in/diego-perea-le%C3%B3n-bbba81335/",
-            "github": "https://github.com/Perea094",
-            "school": "Tecnológico de Monterrey, Campus Querétaro",
+            "name": "Candidate Name",
+            "location": "City, Country",
+            "email": "candidate@example.com",
+            "phone": "+1 555 0100",
+            "linkedin": "https://linkedin.com/in/candidate",
+            "github": "https://github.com/candidate",
+            "school": "University of Technology",
             "degree": "B.S. in Data Science & Mathematics",
             "graduation": "Aug 2024 -- May 2028 (Expected)"
         }
         with tempfile.TemporaryDirectory() as tmpdir:
-            out_file = Path(tmpdir) / "Diego_Perea_Resume.tex"
+            out_file = Path(tmpdir) / "Candidate_Resume.tex"
             generate_resume_tex.generate_resume(template_file, out_file, profile)
             self.assertTrue(out_file.exists())
             rendered = out_file.read_text(encoding="utf-8")
-            self.assertIn("Diego Perea", rendered)
+            self.assertIn("Candidate Name", rendered)
             self.assertIn("Data Science \\& Mathematics", rendered)
             self.assertNotIn("<<NAME>>", rendered)
             self.assertNotIn("<<DEGREE>>", rendered)

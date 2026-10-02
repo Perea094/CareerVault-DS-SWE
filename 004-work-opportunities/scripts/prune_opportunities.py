@@ -231,7 +231,7 @@ def main():
     # 4. Commit to Archive
     archive_data = load_json(ARCHIVE_PATH, {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
-        "title": "Curriculum Archived Opportunities Registry",
+        "title": "Career Vault Archived Opportunities Registry",
         "description": "Archived, closed, expired, or passed opportunities retained for deduplication and audit history.",
         "last_updated": datetime.now().strftime("%Y-%m-%d"),
         "total_archived": 0,

@@ -1,6 +1,6 @@
 """Preference Data Models and Bi-Directional Markdown Synchronizer.
 
-Provides structured data modeling for Diego Perea León's career and working
+Provides structured data modeling for candidate career and working
 preferences, availability calendar calculations, JSON persistence, and
 synchronization with flat Obsidian YAML frontmatter and narrative context notes.
 """
@@ -91,15 +91,15 @@ DEFAULT_PREFERENCES: Dict[str, Any] = {
     "updated": "2026-10-02",
     "status": "active",
     "candidate": {
-        "name": "Diego Perea León",
-        "university": "Tecnológico de Monterrey (Campus Querétaro)",
-        "degree": "B.S. Data Science & Mathematics",
-        "current_semester": "4th semester",
-        "expected_graduation": "May 2028",
-        "email_contact": "diego.perea@tec.mx",
+        "name": "Candidate",
+        "university": "University",
+        "degree": "B.S. in Computer Science / Data Science",
+        "current_semester": "Junior",
+        "expected_graduation": "May 2027",
+        "email_contact": "candidate@example.com",
     },
     "metadata": {
-        "created": "2026-07-01",
+        "created": "2026-10-02",
         "updated": "2026-10-02",
         "type": "preferences",
         "tags": [
@@ -109,16 +109,16 @@ DEFAULT_PREFERENCES: Dict[str, Any] = {
         ],
         "status": "active",
         "version": "1.1",
-        "source": "User interview via opencode session",
-        "privacy": "Contains personal work preferences — not for public sharing",
+        "source": "Career Vault Onboarding / Preference Manager",
+        "privacy": "Configure with your personal preferences",
     },
     "academic_context": {
-        "university": "Tecnológico de Monterrey (Campus Querétaro)",
-        "program": "B.S. Data Science & Mathematics",
-        "term": "4th semester",
-        "expected_graduation": "May 2028",
-        "class_schedule_status": "Morning classes likely; schedule TBD",
-        "focus_areas": ["Machine Learning", "Mathematics", "Optimization"],
+        "university": "University",
+        "program": "B.S. in Computer Science / Data Science",
+        "term": "Junior",
+        "expected_graduation": "May 2027",
+        "class_schedule_status": "Coursework in progress",
+        "focus_areas": ["Machine Learning", "Software Engineering", "Data Systems"],
     },
     "availability_calendar": {
         "time_slots": TIME_SLOTS,
@@ -126,7 +126,7 @@ DEFAULT_PREFERENCES: Dict[str, Any] = {
         "target_weekly_hours_min": 20,
         "target_weekly_hours_max": 30,
         "max_manageable_hours": 40,
-        "schedule_notes": "Morning lectures at Tec de Monterrey; available weekday afternoons and evenings.",
+        "schedule_notes": "Available weekday afternoons and evenings.",
     },
     "work_arrangement": {
         "preference_rank": [
@@ -141,7 +141,7 @@ DEFAULT_PREFERENCES: Dict[str, Any] = {
         "scheduling_constraints": "Morning classes likely; schedule TBD",
     },
     "location_visa": {
-        "current_location": "Querétaro, Mexico",
+        "current_location": "City, Country",
         "us_work_authorization": "None",
         "relocation_willingness": "Remote preferred; open to international relocation if visa sponsored",
         "travel_willingness": True,

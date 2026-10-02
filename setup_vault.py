@@ -173,7 +173,7 @@ def interactive_wizard() -> Dict[str, Any]:
     school = input("University / Institution: ").strip() or "University"
     degree = input("Degree / Major (e.g. B.S. in Data Science): ").strip() or "B.S. in Data Science"
     graduation = input("Expected Graduation (e.g. May 2027): ").strip() or "May 2027"
-    location = input("Current Location (City, Country): ").strip() or "Querétaro, Mexico"
+    location = input("Current Location (City, Country): ").strip() or "City, Country"
     visa = input("Work Authorization / Visa Status: ").strip() or "Needs Sponsorship"
     email = input("Contact Email: ").strip() or "candidate@example.com"
     phone = input("Contact Phone: ").strip() or "+1 555 0100"

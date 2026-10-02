@@ -1,5 +1,33 @@
-/superpowers
-/.claude
-/.venv/
+# Python & Virtual Environments
 __pycache__/
-*.pyc
+*.py[cod]
+*$py.class
+.venv/
+env/
+venv/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Local agents / auxiliary dirs
+/superpowers/
+/.claude/
+
+# LaTeX auxiliary build files and compiled outputs
+*.aux
+*.log
+*.out
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+*.toc
+002-cv/*.pdf
+002-cv/*.png
+002-cv/Custom/*.pdf
+002-cv/Custom/*.png
+
+# OS / Editor temporary files
+.DS_Store
+Thumbs.db
+*.swp
+*.swo

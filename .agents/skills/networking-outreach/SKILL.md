@@ -5,7 +5,7 @@ description: Generate targeted 3-tier cold outreach, referral requests, and netw
 
 # networking-outreach
 
-Generates tailored, high-conversion cold outreach and referral messages across three distinct tiers (Alumni, Recruiter, Hiring Manager) for opportunities in the Curriculum career vault.
+Generates tailored, high-conversion cold outreach and referral messages across three distinct tiers (Alumni, Recruiter, Hiring Manager) for opportunities in the Career Vault.
 
 ---
 
@@ -14,16 +14,16 @@ Generates tailored, high-conversion cold outreach and referral messages across t
 - When applying to target companies and seeking internal referrals or informational interviews.
 - When cold emailing or messaging on LinkedIn / GitHub / Email.
 - When engaging with:
-  1. **Alumni**: Shared university connection (e.g., Tecnológico de Monterrey), warm networking, and culture insights.
+  1. **Alumni**: Shared university connection, warm networking, and culture insights.
   2. **Recruiters**: Campus, technical, or executive recruiters to highlight candidacy and ask about screening timelines.
-  3. **Hiring Managers**: Engineering managers and tech leads to showcase deep technical alignment and high-impact metrics (e.g., 3,700 FPS RL pipeline, Hailo-8 NPU at 30 FPS).
+  3. **Hiring Managers**: Engineering managers and tech leads to showcase deep technical alignment and high-impact metrics (e.g., high-throughput systems, latency optimizations).
 
 ---
 
 ## The 3-Tier Strategy
 
 ### 1. Tier 1: Alumni Outreach
-- **Audience**: Alumni from candidate's university (Tecnológico de Monterrey) currently working at target company.
+- **Audience**: Alumni from candidate's university currently working at target company.
 - **Tone**: Warm, conversational, respectful of time, seeking advice rather than direct job demands.
 - **Goal**: Establish rapport, learn about team culture, and secure internal referrals organically.
 - **Call-to-Action**: Low-friction 10-15 minute coffee chat or advice exchange.
@@ -44,7 +44,7 @@ Generates tailored, high-conversion cold outreach and referral messages across t
 
 ## CLI & Script Usage
 
-The helper script [`generate_outreach.py`](file:///c:/Users/Diego%20Perea/Desktop/Curriculum/.agents/skills/networking-outreach/scripts/generate_outreach.py) automates template generation:
+The helper script [`generate_outreach.py`](.agents/skills/networking-outreach/scripts/generate_outreach.py) automates template generation:
 
 ```bash
 # Basic generation to stdout

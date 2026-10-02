@@ -11,11 +11,11 @@ class TestValidateAts(unittest.TestCase):
     def test_extract_text_and_metrics(self):
         mock_page = MagicMock()
         mock_page.extract_text.return_value = (
-            "Diego Perea León\n"
-            "Querétaro, Mexico • a01708350@tec.mx • +52 442 2713186\n"
-            "EDUCATION\nTecnológico de Monterrey\n"
-            "EXPERIENCE\nDatabricks Challenge\n"
-            "PROJECTS\nDAVE Hailo-8 Edge AI\n"
+            "Candidate Name\n"
+            "City, Country • candidate@example.com • +1 555 123 4567\n"
+            "EDUCATION\nUniversity of Technology\n"
+            "EXPERIENCE\nData Science Experience\n"
+            "PROJECTS\nMachine Learning Pipeline\n"
             "SKILLS\nPython, C++, PyTorch\n"
         )
         mock_page.width = 612.0
@@ -91,8 +91,8 @@ class TestValidateAts(unittest.TestCase):
         mock_page = MagicMock()
         mock_page.extract_text.return_value = (
             "Candidate\n"
-            "test@tec.mx • +52 442 1234567\n"
-            "EDUCATION\nTec\n"
+            "candidate@example.com • +1 555 0100\n"
+            "EDUCATION\nUniversity\n"
             "EXPERIENCE\nCompany\n"
             "PROJECTS\nProject\n"
             "SKILLS\nPython\n"

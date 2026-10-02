@@ -1,17 +1,16 @@
 # Opportunities Database & Triage Registry
 
 ## 1. Overview
-This database serves as the structured registry for all evaluated job, internship, and co-op opportunities for **Diego Perea León**. It bridges the raw scrape feeds from GitHub curation repositories (e.g. `2027-AI-College-Jobs` and `2027-SWE-College-Jobs`) with the candidate profile and ground truth constraints in `001-background/preferences.md`.
+This database serves as the structured registry for all evaluated job, internship, and co-op opportunities. It bridges the raw scrape feeds from GitHub curation repositories (e.g. `2027-AI-College-Jobs` and `2027-SWE-College-Jobs`) with the candidate profile and ground truth constraints in `001-background/preferences.md`.
 
-- **JSON Master File:** [`004-work-opportunities/database/opportunities.json`](file:///c:/Users/Diego%20Perea/Desktop/Curriculum/004-work-opportunities/database/opportunities.json) (Root mirror: [`004-work-opportunities/opportunities-database.json`](file:///c:/Users/Diego%20Perea/Desktop/Curriculum/004-work-opportunities/opportunities-database.json))
-- **Archived Registry:** [`004-work-opportunities/database/archived_opportunities.json`](file:///c:/Users/Diego%20Perea/Desktop/Curriculum/004-work-opportunities/database/archived_opportunities.json)
-- **CSV Export:** [`004-work-opportunities/database/opportunities.csv`](file:///c:/Users/Diego%20Perea/Desktop/Curriculum/004-work-opportunities/database/opportunities.csv)
-- **Monthly Audit Synthesis:** [`004-work-opportunities/opportunities-audit-YYYY-MM.md`](file:///c:/Users/Diego%20Perea/Desktop/Curriculum/004-work-opportunities/)
+- **JSON Master File:** [`004-work-opportunities/database/opportunities.json`](opportunities.json)
+- **Archived Registry:** [`004-work-opportunities/database/archived_opportunities.json`](archived_opportunities.json)
+- **CSV Export:** [`004-work-opportunities/database/opportunities.csv`](opportunities.csv)
 
 ---
 
 ## 2. Candidate Constraints & Dynamic Baseline
-All candidate evaluation criteria must dynamically respect [`001-background/preferences.md`](file:///c:/Users/Diego%20Perea/Desktop/Curriculum/001-background/preferences.md).
+All candidate evaluation criteria must dynamically respect [`001-background/preferences.md`](../../001-background/preferences.md).
 
 > [!NOTE] Dynamic Source of Truth
 > Never duplicate or hardcode evaluation rules or static constraints here. Always inspect `001-background/preferences.md` directly at runtime for current career goals, degree standing, work arrangements, location & visa constraints, compensation floors, domain interests, and dealbreakers. When preferences are updated in the future, all downstream opportunity triaging and database records dynamically adapt to reflect those changes.
@@ -80,5 +79,5 @@ flowchart TD
     E --> F["Formulate Key Points, Success Ratio, Pros/Cons, Missing Skills"]
     F --> G["Append / Update opportunities-audit-YYYY-MM.md"]
     F --> H["Update database/opportunities.json & database/opportunities.csv"]
-    H --> I["Notify Diego Perea with High-Priority Matches (Tier 1 & Remote)"]
+    H --> I["Notify Candidate with High-Priority Matches (Tier 1 & Remote)"]
 ```

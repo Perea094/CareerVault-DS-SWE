@@ -61,7 +61,7 @@ class TestPreferenceModels(unittest.TestCase):
             self.assertIn("work_preference_rank:", content)
             self.assertIn("- Remote", content)
             self.assertIn("minimum_hourly: 20", content)
-            self.assertIn("current_location: \"Querétaro, Mexico\"", content)
+            self.assertIn("current_location: \"City, Country\"", content)
             frontmatter = content.split("---")[1]
             self.assertNotIn("work_arrangement:", frontmatter)
             self.assertNotIn("location_visa:", frontmatter)
@@ -79,7 +79,7 @@ class TestPreferenceModels(unittest.TestCase):
             reloaded = load_preferences_from_markdown(temp_md_path, base_data=DEFAULT_PREFERENCES)
             self.assertEqual(reloaded["work_arrangement"]["preference_rank"], ["Remote", "Hybrid", "Onsite"])
             self.assertEqual(reloaded["compensation_benefits"]["minimum_hourly"], 20)
-            self.assertEqual(reloaded["location_visa"]["current_location"], "Querétaro, Mexico")
+            self.assertEqual(reloaded["location_visa"]["current_location"], "City, Country")
             self.assertEqual(reloaded["version"], "1.1")
             self.assertEqual(reloaded["status"], "active")
             self.assertIn("weekly_grid", reloaded["availability_calendar"])

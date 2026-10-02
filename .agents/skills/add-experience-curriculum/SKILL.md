@@ -1,15 +1,15 @@
 ---
 name: add-experience-curriculum
-description: Use when adding, ingesting, or documenting a professional experience, project, startup, internship, or university challenge (from a GitHub/local repo, narrative, or notes) into the Curriculum career vault.
+description: Use when adding, ingesting, or documenting a professional experience, project, startup, internship, or university challenge (from a GitHub/local repo, narrative, or notes) into the career vault.
 ---
 
 # add-experience-curriculum
 
-Automates documenting professional experiences, industry challenges, and technical projects into Diego Perea León's central career vault (`Curriculum`) from any project or workspace globally.
+Automates documenting professional experiences, industry challenges, and technical projects into the central career vault (`Career Vault`) from any project or workspace globally.
 
 ## Target Vault Paths
 The skill operates using paths relative to the vault root (or detected workspace root):
-- **Vault Root:** `.` (Curriculum workspace root)
+- **Vault Root:** `.` (Career Vault workspace root)
 - **Experiences Directory:** `001-background/experiences/`
 - **Consolidated Findings:** `001-background/findings/consolidated-findings.md`
 
@@ -35,7 +35,7 @@ The skill operates using paths relative to the vault root (or detected workspace
 
 3. **Temporal Snapshot & History Preservation**
    - Find the latest `experiences-YYYY-MM-DD.md` in `001-background/experiences/`.
-   - Read the existing file in full. **Never drop past history** (AB-Tec, Aristor, LEIA, FNVAC, etc.)—new snapshots are cumulative.
+   - Read the existing file in full. **Never drop past history**—new snapshots are cumulative.
    - Create `experiences-YYYY-MM-DD.md` using today's date with YAML frontmatter:
      ```yaml
      ---

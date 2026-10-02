@@ -281,7 +281,7 @@ def create_server(
 
 def main() -> None:
     """CLI entrypoint supporting --port, --host, and --open."""
-    parser = argparse.ArgumentParser(description="Diego Perea León — Preference Web Server & API")
+    parser = argparse.ArgumentParser(description="Career Vault — Preference Web Server & API")
     parser.add_argument("--port", "-p", type=int, default=8765, help="Port to run server on (default: 8765)")
     parser.add_argument("--host", default="127.0.0.1", help="Host address (default: 127.0.0.1)")
     parser.add_argument("--open", "-o", action="store_true", help="Automatically open web browser UI")

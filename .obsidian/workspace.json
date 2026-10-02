@@ -118,7 +118,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "002-cv/general-cv.md",
+                "file": "001-background/preferences.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               },
@@ -161,7 +161,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "002-cv/general-cv.md",
+                "file": "001-background/preferences.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
@@ -202,47 +202,8 @@
   },
   "active": "e51a47718f338636",
   "lastOpenFiles": [
-    "001-background/projects/projects-2026-09-15.md",
-    "docs/superpowers/plans/2026-10-02-career-vault-expansion.md",
-    "tests/__pycache__/test_preference_server.cpython-311-pytest-9.1.1.pyc",
-    "tests/__pycache__/test_preference_models.cpython-311-pytest-9.1.1.pyc",
-    "tests/__pycache__/test_audit_preferences.cpython-311-pytest-9.1.1.pyc",
-    "scratch_update_audit_md.py",
-    "scratch_ingest_scouted.py",
-    "scratch_ug_rank.py",
-    "scratch_rank.py",
-    "scratch_categorized.json",
-    "scratch_deep_scout.py",
-    "scratch_print.py",
-    "004-work-opportunities/opportunities-preference-audit.md",
-    "001-background/preferences_test.md",
-    "docs/superpowers/plans/2026-10-02-dynamic-preferences-form-and-audit.md",
-    "superpowers/CLAUDE.md",
-    "superpowers/CODE_OF_CONDUCT.md",
-    "superpowers/GEMINI.md",
-    "superpowers/AGENTS.md",
-    "GEMINI.md",
-    "handoff.md",
-    "session-ses_0e09.md",
-    "004-work-opportunities/opportunities-audit-2026-09-20.md",
-    "004-work-opportunities/opportunities-audit-2026-10.md",
-    "003-extra/prompts/daily-opportunities-audit-prompt.md",
-    "004-work-opportunities/mba-internship.md",
-    "004-work-opportunities/Intern-Generative AI Research Engineer.md",
-    "004-work-opportunities/opportunities/2027 Intern - Machine Learning Engineer_files/logo_QlYL.png",
-    "004-work-opportunities/opportunities/2027 Intern - Machine Learning Engineer_files/banner_QlYL.png",
-    "004-work-opportunities/opportunities/2027 Intern - Machine Learning Engineer_files/5818c49e5b271001b6b21dc26ee20000_QlYL.png",
-    "004-work-opportunities/opportunities/AI & Data Platform Engineering Intern (Undergraduate)_files/logo_yK_r.png",
-    "004-work-opportunities/opportunities/AI & Data Platform Engineering Intern (Undergraduate)_files/banner_yK_r.png",
-    "004-work-opportunities/opportunities/AI & Data Platform Engineering Intern (Undergraduate)_files/08d6a193210101020d36aef5b7770000_yK_r.png",
-    "001-background/findings/consolidated-findings.md",
-    "004-work-opportunities/scripts/README.md",
-    "001-background/experiences/experiences-2026-10-01.md",
-    "003-extra/prompts.md",
-    "002-cv/general-cv.md",
-    "004-work-opportunities/database/README.md",
-    "002-cv/evaluations/2026-09-18-general-cv-audit.md",
-    "001-background/findings/2026-09-15/expansion-findings-2026-09-15.md",
-    "001-background/findings/2026-09-15/background-and-cv-audit.md"
+    "001-background/preferences.md",
+    "README.md",
+    "004-work-opportunities/application-pipeline.md"
   ]
 }

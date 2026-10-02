@@ -26,13 +26,13 @@ from audit_preferences import (
 class TestAuditPreferences(unittest.TestCase):
     def setUp(self):
         self.mock_preferences = {
-            "candidate": {"name": "Diego Perea León"},
+            "candidate": {"name": "Candidate"},
             "availability_calendar": {
                 "target_weekly_hours_max": 30,
                 "target_weekly_hours_min": 20,
             },
             "location_visa": {
-                "current_location": "Querétaro, Mexico",
+                "current_location": "City, Country",
                 "us_work_authorization": "None",
             },
             "industry_domain": {
