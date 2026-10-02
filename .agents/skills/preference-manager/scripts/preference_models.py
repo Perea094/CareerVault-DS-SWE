@@ -8,107 +8,45 @@ synchronization with flat Obsidian YAML frontmatter and narrative context notes.
 import copy
 import json
 import os
-import re
+from datetime import datetime
 from typing import Any, Dict, List, Optional, Union
 
+DAYS = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
 
-DAYS_OF_WEEK = [
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
-    "Sunday",
+TIME_SLOTS = [
+    {"id": "08_10", "label": "08:00 - 10:00", "hours": 2},
+    {"id": "10_12", "label": "10:00 - 12:00", "hours": 2},
+    {"id": "12_14", "label": "12:00 - 14:00", "hours": 2},
+    {"id": "14_16", "label": "14:00 - 16:00", "hours": 2},
+    {"id": "16_18", "label": "16:00 - 18:00", "hours": 2},
+    {"id": "18_20", "label": "18:00 - 20:00", "hours": 2},
+    {"id": "20_22", "label": "20:00 - 22:00", "hours": 2},
 ]
 
-TIME_BLOCKS = [
-    "08:00-10:00",
-    "10:00-12:00",
-    "12:00-14:00",
-    "14:00-16:00",
-    "16:00-18:00",
-    "18:00-20:00",
-    "20:00-22:00",
-]
-
-# Standard 2-hour schedule grid:
-# Weekday afternoons (14:00-20:00) available = 6 hrs/day * 5 days = 30 hrs/wk
-# Weekday mornings reserved for classes; late evenings flexible
-# Weekends flexible for projects / assignments
-DEFAULT_WEEKLY_GRID: Dict[str, Dict[str, str]] = {
-    "Monday": {
-        "08:00-10:00": "classes",
-        "10:00-12:00": "classes",
-        "12:00-14:00": "unavailable",
-        "14:00-16:00": "available",
-        "16:00-18:00": "available",
-        "18:00-20:00": "available",
-        "20:00-22:00": "flexible",
-    },
-    "Tuesday": {
-        "08:00-10:00": "classes",
-        "10:00-12:00": "classes",
-        "12:00-14:00": "unavailable",
-        "14:00-16:00": "available",
-        "16:00-18:00": "available",
-        "18:00-20:00": "available",
-        "20:00-22:00": "flexible",
-    },
-    "Wednesday": {
-        "08:00-10:00": "classes",
-        "10:00-12:00": "classes",
-        "12:00-14:00": "unavailable",
-        "14:00-16:00": "available",
-        "16:00-18:00": "available",
-        "18:00-20:00": "available",
-        "20:00-22:00": "flexible",
-    },
-    "Thursday": {
-        "08:00-10:00": "classes",
-        "10:00-12:00": "classes",
-        "12:00-14:00": "unavailable",
-        "14:00-16:00": "available",
-        "16:00-18:00": "available",
-        "18:00-20:00": "available",
-        "20:00-22:00": "flexible",
-    },
-    "Friday": {
-        "08:00-10:00": "classes",
-        "10:00-12:00": "classes",
-        "12:00-14:00": "unavailable",
-        "14:00-16:00": "available",
-        "16:00-18:00": "available",
-        "18:00-20:00": "available",
-        "20:00-22:00": "flexible",
-    },
-    "Saturday": {
-        "08:00-10:00": "unavailable",
-        "10:00-12:00": "flexible",
-        "12:00-14:00": "flexible",
-        "14:00-16:00": "flexible",
-        "16:00-18:00": "flexible",
-        "18:00-20:00": "unavailable",
-        "20:00-22:00": "unavailable",
-    },
-    "Sunday": {
-        "08:00-10:00": "unavailable",
-        "10:00-12:00": "flexible",
-        "12:00-14:00": "flexible",
-        "14:00-16:00": "flexible",
-        "16:00-18:00": "flexible",
-        "18:00-20:00": "unavailable",
-        "20:00-22:00": "unavailable",
-    },
-}
+# Generate default grid: Mon-Thu mornings are classes, Mon-Fri afternoons are available, others busy
+DEFAULT_GRID: Dict[str, Dict[str, str]] = {}
+for d in DAYS:
+    DEFAULT_GRID[d] = {}
+    for slot in TIME_SLOTS:
+        slot_id = slot["id"]
+        if d in ["monday", "tuesday", "wednesday", "thursday"] and slot_id in ["08_10", "10_12"]:
+            DEFAULT_GRID[d][slot_id] = "classes"
+        elif d in ["monday", "tuesday", "wednesday", "thursday", "friday"] and slot_id in ["14_16", "16_18", "18_20"]:
+            DEFAULT_GRID[d][slot_id] = "available"
+        else:
+            DEFAULT_GRID[d][slot_id] = "busy"
 
 DEFAULT_PREFERENCES: Dict[str, Any] = {
+    "version": "1.1",
+    "updated": "2026-10-02",
+    "status": "active",
     "candidate": {
         "name": "Diego Perea León",
-        "university": "Tecnológico de Monterrey",
+        "university": "Tecnológico de Monterrey (Campus Querétaro)",
         "degree": "B.S. Data Science & Mathematics",
         "current_semester": "4th semester",
-        "expected_graduation": "2027",
+        "expected_graduation": "May 2028",
+        "email_contact": "diego.perea@tec.mx",
     },
     "metadata": {
         "created": "2026-07-01",
@@ -125,17 +63,20 @@ DEFAULT_PREFERENCES: Dict[str, Any] = {
         "privacy": "Contains personal work preferences — not for public sharing",
     },
     "academic_context": {
-        "university": "Tecnológico de Monterrey",
+        "university": "Tecnológico de Monterrey (Campus Querétaro)",
         "program": "B.S. Data Science & Mathematics",
         "term": "4th semester",
-        "expected_graduation": "2027",
+        "expected_graduation": "May 2028",
         "class_schedule_status": "Morning classes likely; schedule TBD",
         "focus_areas": ["Machine Learning", "Mathematics", "Optimization"],
     },
     "availability_calendar": {
-        "preferred_hours_per_week": "20-30",
-        "maximum_hours_per_week": 40,
-        "weekly_grid": DEFAULT_WEEKLY_GRID,
+        "time_slots": TIME_SLOTS,
+        "weekly_grid": DEFAULT_GRID,
+        "target_weekly_hours_min": 20,
+        "target_weekly_hours_max": 30,
+        "max_manageable_hours": 40,
+        "schedule_notes": "Morning lectures at Tec de Monterrey; available weekday afternoons and evenings.",
     },
     "work_arrangement": {
         "preference_rank": [
@@ -218,21 +159,6 @@ DEFAULT_PREFERENCES: Dict[str, Any] = {
 }
 
 
-def _parse_slot_hours(slot_str: str) -> float:
-    """Calculate slot duration in hours from a time slot string like '08:00-10:00'."""
-    try:
-        parts = slot_str.split("-")
-        if len(parts) == 2:
-            s_h, s_m = map(int, parts[0].strip().split(":"))
-            e_h, e_m = map(int, parts[1].strip().split(":"))
-            duration = (e_h * 60 + e_m - (s_h * 60 + s_m)) / 60.0
-            if duration > 0:
-                return duration
-    except Exception:
-        pass
-    return 2.0
-
-
 class PreferenceModel:
     """Structured representation of candidate career and working preferences."""
 
@@ -246,31 +172,30 @@ class PreferenceModel:
         else:
             raise TypeError("data must be a dict or PreferenceModel instance")
 
-    def calculate_available_hours(self, include_flexible: bool = False) -> float:
+    def calculate_available_hours(self) -> float:
         """Calculate total weekly available hours from availability_calendar.weekly_grid."""
         grid = self.data.get("availability_calendar", {}).get("weekly_grid", {})
-        total_hours = 0.0
-        allowed_statuses = {"available", "open"}
-        if include_flexible:
-            allowed_statuses.update({"flexible", "preferred"})
+        total = 0.0
+        slots_ref = self.data.get("availability_calendar", {}).get("time_slots", TIME_SLOTS)
+        slot_hours = {s["id"]: s["hours"] for s in slots_ref} if isinstance(slots_ref, list) and slots_ref and isinstance(slots_ref[0], dict) else {}
 
         for day, slots in grid.items():
             if isinstance(slots, dict):
-                for slot_key, status in slots.items():
+                for slot_id, status in slots.items():
                     if isinstance(status, dict):
                         stat_val = str(status.get("status", "")).lower()
                     else:
                         stat_val = str(status).lower()
 
-                    if stat_val in allowed_statuses:
-                        total_hours += _parse_slot_hours(slot_key)
+                    if stat_val == "available":
+                        total += slot_hours.get(slot_id, 2.0)
             elif isinstance(slots, list):
                 for item in slots:
                     if isinstance(item, dict):
                         stat_val = str(item.get("status", "")).lower()
-                        if stat_val in allowed_statuses or (not stat_val and item.get("available") is True):
-                            total_hours += item.get("hours", _parse_slot_hours(item.get("slot", "")))
-        return total_hours
+                        if stat_val == "available" or (not stat_val and item.get("available") is True):
+                            total += item.get("hours", 2.0)
+        return total
 
     def to_dict(self) -> Dict[str, Any]:
         """Return a deep copy of the underlying preferences dictionary."""
@@ -283,6 +208,8 @@ class PreferenceModel:
 
 def load_preferences_json(path: str) -> Dict[str, Any]:
     """Load preference dictionary from JSON file."""
+    if not os.path.exists(path):
+        return copy.deepcopy(DEFAULT_PREFERENCES)
     with open(path, "r", encoding="utf-8") as f:
         return json.load(f)
 
@@ -365,11 +292,11 @@ def format_flat_yaml_frontmatter(data: Dict[str, Any]) -> str:
 
     properties = [
         ("created", get_val(meta, "created", default="2026-07-01")),
-        ("updated", get_val(meta, "updated", default="2026-10-02")),
+        ("updated", get_val(meta, "updated", default=data.get("updated", "2026-10-02"))),
         ("type", get_val(meta, "type", default="preferences")),
         ("tags", get_val(meta, "tags", default=["background", "preferences", "constraints"])),
-        ("status", get_val(meta, "status", default="active")),
-        ("version", get_val(meta, "version", default="1.1")),
+        ("status", get_val(meta, "status", default=data.get("status", "active"))),
+        ("version", get_val(meta, "version", default=data.get("version", "1.1"))),
         ("source", get_val(meta, "source", default="User interview via opencode session")),
         ("privacy", get_val(meta, "privacy", default="Contains personal work preferences — not for public sharing")),
         ("work_preference_rank", get_val(wa, "preference_rank", "work_preference_rank", ["Remote", "Hybrid", "Onsite"])),
@@ -422,7 +349,7 @@ def generate_narrative_context(data: Dict[str, Any]) -> str:
     university = cand.get("university", "Tecnológico de Monterrey")
 
     wa = data.get("work_arrangement", {})
-    hours = wa.get("hours_per_week", "20-30 hours/week")
+    cal = data.get("availability_calendar", {})
 
     lv = data.get("location_visa", {})
     loc = lv.get("current_location", "Querétaro, Mexico")

@@ -1,10 +1,14 @@
 {
+  "version": "1.1",
+  "updated": "2026-10-02",
+  "status": "active",
   "candidate": {
     "name": "Diego Perea León",
-    "university": "Tecnológico de Monterrey",
+    "university": "Tecnológico de Monterrey (Campus Querétaro)",
     "degree": "B.S. Data Science & Mathematics",
     "current_semester": "4th semester",
-    "expected_graduation": "2027"
+    "expected_graduation": "May 2028",
+    "email_contact": "diego.perea@tec.mx"
   },
   "metadata": {
     "created": "2026-07-01",
@@ -21,10 +25,10 @@
     "privacy": "Contains personal work preferences — not for public sharing"
   },
   "academic_context": {
-    "university": "Tecnológico de Monterrey",
+    "university": "Tecnológico de Monterrey (Campus Querétaro)",
     "program": "B.S. Data Science & Mathematics",
     "term": "4th semester",
-    "expected_graduation": "2027",
+    "expected_graduation": "May 2028",
     "class_schedule_status": "Morning classes likely; schedule TBD",
     "focus_areas": [
       "Machine Learning",
@@ -33,73 +37,112 @@
     ]
   },
   "availability_calendar": {
-    "preferred_hours_per_week": "20-30",
-    "maximum_hours_per_week": 40,
-    "weekly_grid": {
-      "Monday": {
-        "08:00-10:00": "classes",
-        "10:00-12:00": "classes",
-        "12:00-14:00": "unavailable",
-        "14:00-16:00": "available",
-        "16:00-18:00": "available",
-        "18:00-20:00": "available",
-        "20:00-22:00": "flexible"
+    "time_slots": [
+      {
+        "id": "08_10",
+        "label": "08:00 - 10:00",
+        "hours": 2
       },
-      "Tuesday": {
-        "08:00-10:00": "classes",
-        "10:00-12:00": "classes",
-        "12:00-14:00": "unavailable",
-        "14:00-16:00": "available",
-        "16:00-18:00": "available",
-        "18:00-20:00": "available",
-        "20:00-22:00": "flexible"
+      {
+        "id": "10_12",
+        "label": "10:00 - 12:00",
+        "hours": 2
       },
-      "Wednesday": {
-        "08:00-10:00": "classes",
-        "10:00-12:00": "classes",
-        "12:00-14:00": "unavailable",
-        "14:00-16:00": "available",
-        "16:00-18:00": "available",
-        "18:00-20:00": "available",
-        "20:00-22:00": "flexible"
+      {
+        "id": "12_14",
+        "label": "12:00 - 14:00",
+        "hours": 2
       },
-      "Thursday": {
-        "08:00-10:00": "classes",
-        "10:00-12:00": "classes",
-        "12:00-14:00": "unavailable",
-        "14:00-16:00": "available",
-        "16:00-18:00": "available",
-        "18:00-20:00": "available",
-        "20:00-22:00": "flexible"
+      {
+        "id": "14_16",
+        "label": "14:00 - 16:00",
+        "hours": 2
       },
-      "Friday": {
-        "08:00-10:00": "classes",
-        "10:00-12:00": "classes",
-        "12:00-14:00": "unavailable",
-        "14:00-16:00": "available",
-        "16:00-18:00": "available",
-        "18:00-20:00": "available",
-        "20:00-22:00": "flexible"
+      {
+        "id": "16_18",
+        "label": "16:00 - 18:00",
+        "hours": 2
       },
-      "Saturday": {
-        "08:00-10:00": "unavailable",
-        "10:00-12:00": "flexible",
-        "12:00-14:00": "flexible",
-        "14:00-16:00": "flexible",
-        "16:00-18:00": "flexible",
-        "18:00-20:00": "unavailable",
-        "20:00-22:00": "unavailable"
+      {
+        "id": "18_20",
+        "label": "18:00 - 20:00",
+        "hours": 2
       },
-      "Sunday": {
-        "08:00-10:00": "unavailable",
-        "10:00-12:00": "flexible",
-        "12:00-14:00": "flexible",
-        "14:00-16:00": "flexible",
-        "16:00-18:00": "flexible",
-        "18:00-20:00": "unavailable",
-        "20:00-22:00": "unavailable"
+      {
+        "id": "20_22",
+        "label": "20:00 - 22:00",
+        "hours": 2
       }
-    }
+    ],
+    "weekly_grid": {
+      "monday": {
+        "08_10": "classes",
+        "10_12": "classes",
+        "12_14": "busy",
+        "14_16": "available",
+        "16_18": "available",
+        "18_20": "available",
+        "20_22": "busy"
+      },
+      "tuesday": {
+        "08_10": "classes",
+        "10_12": "classes",
+        "12_14": "busy",
+        "14_16": "available",
+        "16_18": "available",
+        "18_20": "available",
+        "20_22": "busy"
+      },
+      "wednesday": {
+        "08_10": "classes",
+        "10_12": "classes",
+        "12_14": "busy",
+        "14_16": "available",
+        "16_18": "available",
+        "18_20": "available",
+        "20_22": "busy"
+      },
+      "thursday": {
+        "08_10": "classes",
+        "10_12": "classes",
+        "12_14": "busy",
+        "14_16": "available",
+        "16_18": "available",
+        "18_20": "available",
+        "20_22": "busy"
+      },
+      "friday": {
+        "08_10": "busy",
+        "10_12": "busy",
+        "12_14": "busy",
+        "14_16": "available",
+        "16_18": "available",
+        "18_20": "available",
+        "20_22": "busy"
+      },
+      "saturday": {
+        "08_10": "busy",
+        "10_12": "busy",
+        "12_14": "busy",
+        "14_16": "busy",
+        "16_18": "busy",
+        "18_20": "busy",
+        "20_22": "busy"
+      },
+      "sunday": {
+        "08_10": "busy",
+        "10_12": "busy",
+        "12_14": "busy",
+        "14_16": "busy",
+        "16_18": "busy",
+        "18_20": "busy",
+        "20_22": "busy"
+      }
+    },
+    "target_weekly_hours_min": 20,
+    "target_weekly_hours_max": 30,
+    "max_manageable_hours": 40,
+    "schedule_notes": "Morning lectures at Tec de Monterrey; available weekday afternoons and evenings."
   },
   "work_arrangement": {
     "preference_rank": [
