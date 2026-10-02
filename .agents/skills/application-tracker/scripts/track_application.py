@@ -132,3 +132,37 @@ tags: [pipeline, kanban, applications]
             md += "\n"
             
     return md
+
+def main():
+    import argparse
+    parser = argparse.ArgumentParser(description="Application Pipeline Tracker")
+    parser.add_argument("--db", default="004-work-opportunities/database/opportunities.json", help="Path to opportunities.json")
+    parser.add_argument("--dashboard", action="store_true", help="Generate application pipeline dashboard markdown")
+    parser.add_argument("--output", default="004-work-opportunities/application-pipeline.md", help="Output path for dashboard")
+    parser.add_argument("--update", action="store_true", help="Update opportunity status")
+    parser.add_argument("--id", help="Opportunity ID or company name")
+    parser.add_argument("--status", choices=VALID_STATUSES, help="New pipeline status")
+    parser.add_argument("--date", help="Application date (YYYY-MM-DD)")
+    parser.add_argument("--notes", help="Application notes")
+    args = parser.parse_args()
+
+    db_path = Path(args.db)
+    if args.dashboard:
+        db = load_database(db_path)
+        md = generate_pipeline_dashboard(db)
+        out_path = Path(args.output)
+        out_path.parent.mkdir(parents=True, exist_ok=True)
+        with open(out_path, "w", encoding="utf-8") as f:
+            f.write(md)
+        print(f"[OK] Generated dashboard at {out_path}")
+    elif args.update:
+        if not args.id or not args.status:
+            print("Error: --update requires --id and --status", file=sys.stderr)
+            sys.exit(1)
+        db = load_database(db_path)
+        update_opportunity_pipeline(db, args.id, args.status, date_applied=args.date, notes=args.notes)
+        save_database(db, db_path, mirror_path="004-work-opportunities/opportunities-database.json", csv_path="004-work-opportunities/database/opportunities.csv")
+        print(f"[OK] Updated '{args.id}' to '{args.status}'")
+
+if __name__ == "__main__":
+    main()
