@@ -1,0 +1,182 @@
+{
+  "candidate": {
+    "name": "Diego Perea León",
+    "university": "Tecnológico de Monterrey",
+    "degree": "B.S. Data Science & Mathematics",
+    "current_semester": "4th semester",
+    "expected_graduation": "2027"
+  },
+  "metadata": {
+    "created": "2026-07-01",
+    "updated": "2026-10-02",
+    "type": "preferences",
+    "tags": [
+      "background",
+      "preferences",
+      "constraints"
+    ],
+    "status": "active",
+    "version": "1.1",
+    "source": "User interview via opencode session",
+    "privacy": "Contains personal work preferences — not for public sharing"
+  },
+  "academic_context": {
+    "university": "Tecnológico de Monterrey",
+    "program": "B.S. Data Science & Mathematics",
+    "term": "4th semester",
+    "expected_graduation": "2027",
+    "class_schedule_status": "Morning classes likely; schedule TBD",
+    "focus_areas": [
+      "Machine Learning",
+      "Mathematics",
+      "Optimization"
+    ]
+  },
+  "availability_calendar": {
+    "preferred_hours_per_week": "20-30",
+    "maximum_hours_per_week": 40,
+    "weekly_grid": {
+      "Monday": {
+        "08:00-10:00": "classes",
+        "10:00-12:00": "classes",
+        "12:00-14:00": "unavailable",
+        "14:00-16:00": "available",
+        "16:00-18:00": "available",
+        "18:00-20:00": "available",
+        "20:00-22:00": "flexible"
+      },
+      "Tuesday": {
+        "08:00-10:00": "classes",
+        "10:00-12:00": "classes",
+        "12:00-14:00": "unavailable",
+        "14:00-16:00": "available",
+        "16:00-18:00": "available",
+        "18:00-20:00": "available",
+        "20:00-22:00": "flexible"
+      },
+      "Wednesday": {
+        "08:00-10:00": "classes",
+        "10:00-12:00": "classes",
+        "12:00-14:00": "unavailable",
+        "14:00-16:00": "available",
+        "16:00-18:00": "available",
+        "18:00-20:00": "available",
+        "20:00-22:00": "flexible"
+      },
+      "Thursday": {
+        "08:00-10:00": "classes",
+        "10:00-12:00": "classes",
+        "12:00-14:00": "unavailable",
+        "14:00-16:00": "available",
+        "16:00-18:00": "available",
+        "18:00-20:00": "available",
+        "20:00-22:00": "flexible"
+      },
+      "Friday": {
+        "08:00-10:00": "classes",
+        "10:00-12:00": "classes",
+        "12:00-14:00": "unavailable",
+        "14:00-16:00": "available",
+        "16:00-18:00": "available",
+        "18:00-20:00": "available",
+        "20:00-22:00": "flexible"
+      },
+      "Saturday": {
+        "08:00-10:00": "unavailable",
+        "10:00-12:00": "flexible",
+        "12:00-14:00": "flexible",
+        "14:00-16:00": "flexible",
+        "16:00-18:00": "flexible",
+        "18:00-20:00": "unavailable",
+        "20:00-22:00": "unavailable"
+      },
+      "Sunday": {
+        "08:00-10:00": "unavailable",
+        "10:00-12:00": "flexible",
+        "12:00-14:00": "flexible",
+        "14:00-16:00": "flexible",
+        "16:00-18:00": "flexible",
+        "18:00-20:00": "unavailable",
+        "20:00-22:00": "unavailable"
+      }
+    }
+  },
+  "work_arrangement": {
+    "preference_rank": [
+      "Remote",
+      "Hybrid",
+      "Onsite"
+    ],
+    "hours_per_week": "20-30 (40 manageable but not preferred)",
+    "hours_flexibility": true,
+    "timezone_overlap": "Flexible; prefers morning availability for classes",
+    "communication_style": "Both async and sync acceptable",
+    "scheduling_constraints": "Morning classes likely; schedule TBD"
+  },
+  "location_visa": {
+    "current_location": "Querétaro, Mexico",
+    "us_work_authorization": "None",
+    "relocation_willingness": "Remote preferred; open to international relocation if visa sponsored",
+    "travel_willingness": true
+  },
+  "compensation_benefits": {
+    "minimum_hourly": 20,
+    "equity_importance": "Don't care",
+    "benefits_priorities": [
+      "PTO",
+      "Health insurance",
+      "Learning budget",
+      "Hardware stipend",
+      "401k"
+    ],
+    "negotiation_flexibility": "Flexible"
+  },
+  "industry_domain": {
+    "target_industries": [
+      "Any (no strong preference)"
+    ],
+    "domains_of_interest": [
+      "GenAI/LLMs",
+      "RL",
+      "Computer Vision",
+      "NLP",
+      "MLOps",
+      "Research",
+      "Applied ML"
+    ],
+    "industries_to_avoid": [
+      "Crypto"
+    ]
+  },
+  "learning_growth": {
+    "mentorship": "Nice to have",
+    "tech_depth_vs_breadth": "No preference",
+    "conference_training_budget_expectation": "None",
+    "career_trajectory": "Open",
+    "skills_to_develop": [
+      "Cloud ML",
+      "LLM fine-tuning"
+    ]
+  },
+  "deal_breakers": {
+    "hard_constraints": [
+      "No onsite 5 days/week",
+      "No unpaid overtime culture",
+      "Must sponsor visa for relocation"
+    ],
+    "toxic_signals": [
+      "Vague equity promises",
+      "Hero culture"
+    ],
+    "automatic_disqualifiers": [
+      "Full-time only (no part-time/internship)",
+      "Onsite required",
+      "No remote option"
+    ]
+  },
+  "role_responsibilities": {
+    "ic_vs_lead": "IC preferred (not ready for lead)",
+    "research_vs_engineering": "No preference",
+    "team_size": "No preference"
+  }
+}
