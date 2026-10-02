@@ -61,6 +61,26 @@ const PRESET_SKILLS = [
 ];
 
 // ============================================================================
+// Security & Formatting Utilities
+// ============================================================================
+
+function escapeHtml(str) {
+  if (str === null || str === undefined) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+function isValidUrl(url) {
+  if (!url || typeof url !== 'string') return false;
+  const trimmed = url.trim().toLowerCase();
+  return trimmed.startsWith('http://') || trimmed.startsWith('https://');
+}
+
+// ============================================================================
 // Application State
 // ============================================================================
 
@@ -199,9 +219,28 @@ function initDefaultGrid() {
 // ============================================================================
 
 document.addEventListener('DOMContentLoaded', () => {
-  // Global mouse handlers for drag-painting
+  // Global mouse and touch handlers for drag-painting
   window.addEventListener('mouseup', () => { isMouseDown = false; });
   window.addEventListener('touchend', () => { isMouseDown = false; });
+  window.addEventListener('touchcancel', () => { isMouseDown = false; });
+
+  // Mobile touchmove drag painting support via elementFromPoint
+  const calendarWrapper = document.getElementById('calendar-wrapper');
+  if (calendarWrapper) {
+    calendarWrapper.addEventListener('touchmove', (e) => {
+      if (!isMouseDown) return;
+      const touch = e.touches[0];
+      if (!touch) return;
+      const target = document.elementFromPoint(touch.clientX, touch.clientY);
+      if (target && target.classList && target.classList.contains('grid-slot-cell')) {
+        const dayId = target.dataset.day;
+        const slotId = target.dataset.slot;
+        if (dayId && slotId) {
+          paintSlot(target, dayId, slotId);
+        }
+      }
+    }, { passive: true });
+  }
 
   // Brush toolbar buttons
   setupBrushButtons();
@@ -448,7 +487,7 @@ function renderModalityRanking() {
     item.innerHTML = `
       <div class="rank-item-info">
         <span class="rank-number">${index + 1}</span>
-        <span class="rank-title">${modality}</span>
+        <span class="rank-title">${escapeHtml(modality)}</span>
       </div>
       <div class="rank-actions">
         <button type="button" class="btn-icon-tiny btn-rank-up" title="Move Up" ${index === 0 ? 'disabled' : ''}>▲</button>
@@ -492,7 +531,7 @@ function renderBenefitsTags() {
     const pill = document.createElement('div');
     pill.className = 'tag-pill active emerald';
     pill.innerHTML = `
-      <span>${index + 1}. ${benefit}</span>
+      <span>${index + 1}. ${escapeHtml(benefit)}</span>
       <span class="remove-tag" title="Remove">&times;</span>
     `;
 
@@ -522,7 +561,7 @@ function renderDomainPills() {
     const pill = document.createElement('div');
     pill.className = `tag-pill ${isActive ? 'active' : ''}`;
     pill.innerHTML = `
-      <span>${domain}</span>
+      <span>${escapeHtml(domain)}</span>
       <span class="remove-tag" title="Delete tag">&times;</span>
     `;
 
@@ -564,7 +603,7 @@ function renderAvoidPills() {
     const pill = document.createElement('div');
     pill.className = `tag-pill ${isActive ? 'active coral' : ''}`;
     pill.innerHTML = `
-      <span>${item}</span>
+      <span>${escapeHtml(item)}</span>
       <span class="remove-tag" title="Delete">&times;</span>
     `;
 
@@ -604,7 +643,7 @@ function renderSkillsPills() {
     const pill = document.createElement('div');
     pill.className = `tag-pill ${isActive ? 'active emerald' : ''}`;
     pill.innerHTML = `
-      <span>${skill}</span>
+      <span>${escapeHtml(skill)}</span>
       <span class="remove-tag" title="Delete">&times;</span>
     `;
 
@@ -674,7 +713,7 @@ function renderListItems(containerId, items, onRemove, extraClass = '') {
     const row = document.createElement('div');
     row.className = `dealbreaker-item ${extraClass}`;
     row.innerHTML = `
-      <span>${item}</span>
+      <span>${escapeHtml(item)}</span>
       <button type="button" class="remove-item-btn" title="Remove">&times;</button>
     `;
 
@@ -1135,30 +1174,38 @@ function renderAuditTabContent() {
     const card = document.createElement('div');
     card.className = 'audit-opportunity-card';
 
+    const company = escapeHtml(opp.company || 'Unknown');
+    const role = escapeHtml(opp.role || 'Role');
+    const tier = escapeHtml(opp.tier || 'Opportunity');
+    const location = escapeHtml(opp.location || 'Location');
+    const hours = escapeHtml(opp.hours_per_week || 'Hours');
+    const score = escapeHtml(opp.score || 100);
+
     let extraBadge = '';
     if (currentAuditTab === 'matches') {
-      extraBadge = `<span class="audit-opp-tag" style="border-color: var(--emerald); color: var(--emerald);">Match Score: ${opp.score || 100}%</span>`;
+      extraBadge = `<span class="audit-opp-tag" style="border-color: var(--emerald); color: var(--emerald);">Match Score: ${score}%</span>`;
     } else if (currentAuditTab === 'caution') {
       const reason = opp.caution_reasons ? opp.caution_reasons.join(', ') : 'Caution: hours or relocation';
-      extraBadge = `<div class="audit-opp-caution">⚠️ ${reason}</div>`;
+      extraBadge = `<div class="audit-opp-caution">⚠️ ${escapeHtml(reason)}</div>`;
     } else {
       const reason = opp.disqualify_reason || 'Deal-breaker triggered';
-      extraBadge = `<div class="audit-opp-reason">🛑 ${reason}</div>`;
+      extraBadge = `<div class="audit-opp-reason">🛑 ${escapeHtml(reason)}</div>`;
     }
 
-    const applyBtn = opp.apply_url ? `
-      <a href="${opp.apply_url}" target="_blank" rel="noopener" class="btn-apply-link">
+    const applyUrl = (opp.apply_url && isValidUrl(opp.apply_url)) ? escapeHtml(opp.apply_url.trim()) : null;
+    const applyBtn = applyUrl ? `
+      <a href="${applyUrl}" target="_blank" rel="noopener noreferrer" class="btn-apply-link">
         Apply ↗
       </a>
     ` : '';
 
     card.innerHTML = `
       <div class="audit-opp-info">
-        <h4>${opp.company || 'Unknown'} — ${opp.role || 'Role'}</h4>
+        <h4>${company} — ${role}</h4>
         <div class="audit-opp-meta">
-          <span class="audit-opp-tag">${opp.tier || 'Opportunity'}</span>
-          <span>📍 ${opp.location || 'Location'}</span>
-          <span>⏱ ${opp.hours_per_week || 'Hours'}</span>
+          <span class="audit-opp-tag">${tier}</span>
+          <span>📍 ${location}</span>
+          <span>⏱ ${hours}</span>
         </div>
         ${extraBadge}
       </div>
@@ -1186,7 +1233,7 @@ function showToast(message, type = 'info', duration = 3800) {
 
   toast.innerHTML = `
     <span>${icon}</span>
-    <div style="flex: 1;">${message}</div>
+    <div style="flex: 1;">${escapeHtml(message)}</div>
   `;
 
   container.appendChild(toast);
