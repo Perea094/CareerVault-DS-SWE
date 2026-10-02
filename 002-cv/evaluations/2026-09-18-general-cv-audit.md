@@ -69,7 +69,7 @@ tags:
   - High leadership signal. To avoid redundancy with the DAVE entry, emphasize LEIA's growth, research roadmap, and curriculum delivery rather than repeating the Expo Ingenierías award here.
 - **AB-Tec**:
   - **Critical Recruiter Flag**: Formulating antibacterial gel and direct sales does not support an AI, Machine Learning, or Data Science engineering profile. It takes up 4 vertical lines. 
-  - **Action**: Move to a compact single-line mention under "Leadership & Activities" or replace it with a technical software/data project (e.g., the C# 3D Procedural Labyrinth engine or SHA-256 Collision Cryptography project from `001-background/proyects/proyects-2026-09-15.md`).
+  - **Action**: Move to a compact single-line mention under "Leadership & Activities" or replace it with a technical software/data project (e.g., the C# 3D Procedural Labyrinth engine or SHA-256 Collision Cryptography project from `001-background/projects/projects-2026-09-15.md`).
 
 ### 4.4 Projects
 - **Street Fighter II Distributed RL Agent**:
@@ -129,13 +129,13 @@ tags:
 
 ### Under-leveraged Assets in Vault:
 1. **Procedural 3D Labyrinth Game (C# / Raylib / .NET)**:
-   - Found in `001-background/proyects/proyects-2026-09-15.md` and `findings/consolidated-findings.md`.
+   - Found in `001-background/projects/projects-2026-09-15.md` and `findings/consolidated-findings.md`.
    - Demonstrates strong OOP architecture, state machines, pathfinding algorithms, and systems-level programming outside pure Python. If applying to software engineering or graphics/gaming AI roles, this is vastly superior to AB-Tec.
 2. **SHA-256 Collision Attack (`MySHA6` / Pytest)**:
-   - Found in `001-background/proyects/proyects-2026-09-15.md`.
+   - Found in `001-background/projects/projects-2026-09-15.md`.
    - Proves deep algorithmic rigor and discrete math application (birthday paradox collision search, precomputed lookup tables).
 3. **Automotive Datasets (DMD, UTA-RLDD)**:
-   - Mentioned in `001-background/proyects/proyects-2026-09-15.md`. Validating your neural networks on established academic datasets demonstrates research maturity.
+   - Mentioned in `001-background/projects/projects-2026-09-15.md`. Validating your neural networks on established academic datasets demonstrates research maturity.
 
 ### Items to Prune / Reallocate:
 - **AB-Tec**: Demote to a 1-line item in "Leadership & Activities" (e.g. *Co-founder of AB-Tec, campus hygiene startup*) to reclaim 3-4 lines of prime real estate in the Experience section for deeper Databricks or Aristor metrics.
