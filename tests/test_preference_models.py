@@ -11,6 +11,7 @@ from preference_models import (
     load_preferences_json,
     save_preferences_json,
     sync_to_markdown,
+    load_preferences_from_markdown,
     DEFAULT_PREFERENCES
 )
 
@@ -30,6 +31,7 @@ class TestPreferenceModels(unittest.TestCase):
         hours = model.calculate_available_hours()
         self.assertIsInstance(hours, (int, float))
         self.assertGreaterEqual(hours, 0)
+        self.assertEqual(hours, 30.0)
 
     def test_json_roundtrip(self):
         with tempfile.NamedTemporaryFile("w+", delete=False, suffix=".json") as f:
@@ -61,6 +63,25 @@ class TestPreferenceModels(unittest.TestCase):
             self.assertNotIn("work_arrangement:", frontmatter)
             self.assertNotIn("location_visa:", frontmatter)
             self.assertIn("# Narrative Context", content)
+            self.assertIn("on team size", content)
+        finally:
+            if os.path.exists(temp_md_path):
+                os.remove(temp_md_path)
+
+    def test_markdown_roundtrip_preserves_data_and_calendar(self):
+        with tempfile.NamedTemporaryFile("w+", delete=False, suffix=".md", encoding="utf-8") as f:
+            temp_md_path = f.name
+        try:
+            sync_to_markdown(DEFAULT_PREFERENCES, temp_md_path)
+            reloaded = load_preferences_from_markdown(temp_md_path, base_data=DEFAULT_PREFERENCES)
+            self.assertEqual(reloaded["work_arrangement"]["preference_rank"], ["Remote", "Hybrid", "Onsite"])
+            self.assertEqual(reloaded["compensation_benefits"]["minimum_hourly"], 20)
+            self.assertEqual(reloaded["location_visa"]["current_location"], "Querétaro, Mexico")
+            self.assertEqual(reloaded["version"], "1.1")
+            self.assertEqual(reloaded["status"], "active")
+            self.assertIn("weekly_grid", reloaded["availability_calendar"])
+            self.assertEqual(reloaded["availability_calendar"]["weekly_grid"]["monday"]["14_16"], "available")
+            self.assertIn("# Narrative Context", reloaded.get("narrative_context", ""))
         finally:
             if os.path.exists(temp_md_path):
                 os.remove(temp_md_path)

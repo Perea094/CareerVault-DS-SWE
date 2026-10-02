@@ -251,6 +251,8 @@ def _format_frontmatter_value(key: str, val: Any) -> str:
     if isinstance(val, (int, float)):
         return f"{key}: {val}"
     if isinstance(val, list):
+        if not val:
+            return f"{key}: []"
         lines = [f"{key}:"]
         should_quote = key in QUOTED_LIST_KEYS
         for item in val:
@@ -409,7 +411,7 @@ Mentorship: **{ment}** (not required). No preference on tech depth vs. breadth. 
 **Automatic disqualifiers** (instant reject): {', '.join(a_d)}.
 
 ## Role & Responsibilities
-**{ic}**. **{r_vs_e}** on research-heavy vs. engineering-heavy. **{t_size} team size preference**."""
+**{ic}**. **{r_vs_e}** on research-heavy vs. engineering-heavy. **{t_size} on team size**."""
 
 
 def sync_to_markdown(data: Union[Dict[str, Any], PreferenceModel], md_path: str) -> None:
@@ -429,7 +431,7 @@ def sync_to_markdown(data: Union[Dict[str, Any], PreferenceModel], md_path: str)
         f.write(content)
 
 
-def load_preferences_from_markdown(md_path: str) -> Dict[str, Any]:
+def load_preferences_from_markdown(md_path: str, base_data: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
     """Parse flat Obsidian YAML frontmatter and narrative context from Markdown file."""
     with open(md_path, "r", encoding="utf-8") as f:
         content = f.read()
@@ -449,7 +451,9 @@ def load_preferences_from_markdown(md_path: str) -> Dict[str, Any]:
         if not trimmed or trimmed.startswith("#"):
             continue
         if trimmed.startswith("- ") and current_list_key:
-            val = trimmed[2:].strip().strip('"').strip("'")
+            val = trimmed[2:].strip()
+            if len(val) >= 2 and ((val.startswith('"') and val.endswith('"')) or (val.startswith("'") and val.endswith("'"))):
+                val = val[1:-1]
             parsed_props[current_list_key].append(val)
             continue
 
@@ -462,10 +466,10 @@ def load_preferences_from_markdown(md_path: str) -> Dict[str, Any]:
                 parsed_props[k] = []
                 current_list_key = k
             else:
-                if v.startswith('"') and v.endswith('"'):
+                if len(v) >= 2 and ((v.startswith('"') and v.endswith('"')) or (v.startswith("'") and v.endswith("'"))):
                     parsed_props[k] = v[1:-1]
-                elif v.startswith("'") and v.endswith("'"):
-                    parsed_props[k] = v[1:-1]
+                elif v == "[]":
+                    parsed_props[k] = []
                 elif v.lower() == "true":
                     parsed_props[k] = True
                 elif v.lower() == "false":
@@ -475,51 +479,69 @@ def load_preferences_from_markdown(md_path: str) -> Dict[str, Any]:
                 else:
                     parsed_props[k] = v
 
-    data = copy.deepcopy(DEFAULT_PREFERENCES)
+    data = copy.deepcopy(base_data if base_data is not None else DEFAULT_PREFERENCES)
+
+    # Sync top-level version, updated, status
+    if "version" in parsed_props:
+        data["version"] = parsed_props["version"]
+        if "metadata" in data and isinstance(data["metadata"], dict):
+            data["metadata"]["version"] = parsed_props["version"]
+    if "updated" in parsed_props:
+        data["updated"] = parsed_props["updated"]
+        if "metadata" in data and isinstance(data["metadata"], dict):
+            data["metadata"]["updated"] = parsed_props["updated"]
+    if "status" in parsed_props:
+        data["status"] = parsed_props["status"]
+        if "metadata" in data and isinstance(data["metadata"], dict):
+            data["metadata"]["status"] = parsed_props["status"]
 
     # Sync metadata
-    for k in ["created", "updated", "type", "tags", "status", "version", "source", "privacy"]:
+    for k in ["created", "type", "tags", "source", "privacy"]:
         if k in parsed_props:
-            data["metadata"][k] = parsed_props[k]
+            data.setdefault("metadata", {})[k] = parsed_props[k]
 
     # Sync work arrangement
     if "work_preference_rank" in parsed_props:
-        data["work_arrangement"]["preference_rank"] = parsed_props["work_preference_rank"]
+        data.setdefault("work_arrangement", {})["preference_rank"] = parsed_props["work_preference_rank"]
     for k in ["hours_per_week", "hours_flexibility", "timezone_overlap", "communication_style", "scheduling_constraints"]:
         if k in parsed_props:
-            data["work_arrangement"][k] = parsed_props[k]
+            data.setdefault("work_arrangement", {})[k] = parsed_props[k]
 
     # Sync location visa
     for k in ["current_location", "us_work_authorization", "relocation_willingness", "travel_willingness"]:
         if k in parsed_props:
-            data["location_visa"][k] = parsed_props[k]
+            data.setdefault("location_visa", {})[k] = parsed_props[k]
 
     # Sync compensation
     for k in ["minimum_hourly", "equity_importance", "benefits_priorities", "negotiation_flexibility"]:
         if k in parsed_props:
-            data["compensation_benefits"][k] = parsed_props[k]
+            data.setdefault("compensation_benefits", {})[k] = parsed_props[k]
 
     # Sync domain
     for k in ["target_industries", "domains_of_interest", "industries_to_avoid"]:
         if k in parsed_props:
-            data["industry_domain"][k] = parsed_props[k]
+            data.setdefault("industry_domain", {})[k] = parsed_props[k]
 
     # Sync learning growth
     for k in ["mentorship", "tech_depth_vs_breadth", "conference_training_budget_expectation", "career_trajectory", "skills_to_develop"]:
         if k in parsed_props:
-            data["learning_growth"][k] = parsed_props[k]
+            data.setdefault("learning_growth", {})[k] = parsed_props[k]
 
     # Sync deal breakers
     for k in ["hard_constraints", "toxic_signals", "automatic_disqualifiers"]:
         if k in parsed_props:
-            data["deal_breakers"][k] = parsed_props[k]
+            data.setdefault("deal_breakers", {})[k] = parsed_props[k]
 
     # Sync role responsibilities
     for k in ["ic_vs_lead", "research_vs_engineering", "team_size"]:
         if k in parsed_props:
-            data["role_responsibilities"][k] = parsed_props[k]
+            data.setdefault("role_responsibilities", {})[k] = parsed_props[k]
 
     if narrative_text:
         data["narrative_context"] = narrative_text
 
     return data
+
+
+# Provide alias for symmetry
+sync_from_markdown = load_preferences_from_markdown
