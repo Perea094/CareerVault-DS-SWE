@@ -1,4 +1,9 @@
-Initial Prompt for personal data findings:
+# Initial Prompt for personal data findings:
+
+> **Purpose**: Prompt external AIs that are outside this framework to provide further extensive background information.
+
+---
+
 
 Review our conversation history and any saved memories about me. Create a comprehensive summary file named `{AI name}-findings-{date YYYY-MM-DD}.md` that includes:
 
