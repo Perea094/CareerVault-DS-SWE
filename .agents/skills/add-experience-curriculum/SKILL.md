@@ -13,7 +13,6 @@ The skill operates using paths relative to the vault root (or detected workspace
 - **Experiences Directory:** `001-background/experiences/`
 - **Consolidated Findings:** `001-background/findings/consolidated-findings.md`
 
-
 ## Workflow
 
 1. **Extract Evidence (Factual Ground Truth)**
@@ -66,6 +65,6 @@ The skill operates using paths relative to the vault root (or detected workspace
    - Confirm file creation and links. Present brief summary with clickable `file://` links.
 
 ## Invariants
-- **Absolute Paths Only:** Never use relative paths like `../001-background`.
+- **Vault-Relative Paths:** Never use traversal paths like `../001-background`; resolve relative to the vault root.
 - **Cumulative Snapshots:** Always carry forward existing historical experiences.
 - **Factual Integrity:** Reject hallucinated metrics or unverified technologies.
