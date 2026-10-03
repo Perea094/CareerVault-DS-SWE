@@ -24,6 +24,18 @@ When NOT to use:
 - Editing specific lines or multi-line sections of existing notes (use `replace_file_content` instead).
 - Working in workspaces or directories that are not Obsidian vaults.
 
+## Graceful Fallback (When Obsidian CLI is Not Installed)
+
+The Career Vault is **100% Markdown-native and operates directly on standard flat files**. The Obsidian CLI (`obsidian`) is strictly an optional accelerator for users with Obsidian installed—it is **never** a hard dependency.
+
+If `obsidian` CLI is not installed or not in `PATH`, agents seamlessly fall back to native tools:
+- **Fast Search**: Use workspace search, regex, or ripgrep across `.md` and `.json` files.
+- **Reading Notes**: Use standard file viewing tools (`view_file`).
+- **Editing Notes**: Use standard block/line editing tools (`replace_file_content`).
+- **YAML Frontmatter**: Read and update frontmatter directly between the `---` delimiters at the top of `.md` files (always keep properties flat).
+- **Task Tracking**: Query open or completed tasks by matching `- [ ]` or `- [x]` in `.md` files.
+- **Core Workflows**: All other 10 vault skills (`opportunity-scout`, `tailored-cv`, `preference-manager`, `add-experience-curriculum`, etc.) interact directly with the filesystem and work identically without Obsidian CLI.
+
 ## Quick Reference
 
 | Command | Purpose | Example |

@@ -3,7 +3,7 @@
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/)
 [![Obsidian Vault](https://img.shields.io/badge/Obsidian-Vault-purple.svg)](https://obsidian.md/)
 [![ATS Validated](https://img.shields.io/badge/ATS-100%25%20Parseable-brightgreen.svg)]()
-[![Tests](https://img.shields.io/badge/pytest-71%20passing-success.svg)]()
+[![Tests](https://img.shields.io/badge/pytest-75%20passing-success.svg)]()
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 An open-source, agentic personal career operating system built on top of **Obsidian**, **LaTeX**, **Python**, and **Autonomous Agent Skills**. Designed for Data Science and Software Engineering candidates to autonomously scout opportunities, evaluate eligibility against live constraints, tailor ATS-optimized resumes with 100% factual integrity, manage application pipelines, and draft hyper-targeted outreach and interview dossiers.
@@ -28,12 +28,25 @@ git clone https://github.com/Perea094/CareerVault-DS-SWE.git
 cd CareerVault-DS-SWE
 ```
 
-### 2. Run the Starter Setup Wizard
-Initialize your candidate profile, set your university standing, degree, target domains, and generate a customized base LaTeX resume:
-```bash
-python setup_vault.py --interactive
-```
+### 2. Run the Starter Setup Wizard & Auto-Install Dependencies
+Initialize your candidate profile, set your degree and target domains, auto-create a virtual environment (`.venv`), and install dependencies with a single command:
+- **Windows (1-Click)**: Double-click `setup.bat` or run:
+  ```cmd
+  setup.bat
+  ```
+- **macOS / Linux (1-Command)**:
+  ```bash
+  chmod +x setup.sh && ./setup.sh
+  ```
+- **Direct Python**:
+  ```bash
+  python setup_vault.py --interactive --install-deps
+  ```
 *(Or non-interactively with a pre-filled JSON profile: `python setup_vault.py --json profile.json`)*
+
+> [!TIP]
+> **Zero-Dependency Markdown Core & Optional Obsidian CLI**:
+> Career Vault operates 100% on standard flat Markdown (`.md`) and JSON (`.json`) files. You do **not** need Obsidian or the Obsidian CLI installed to use this operating system—any AI agent can read, search, and edit files natively using standard tools. The Obsidian desktop app and Obsidian CLI are optional accelerators.
 
 ### 3. Open in Your Agentic AI Harness
 Open the `CareerVault-DS-SWE` folder inside your preferred agentic environment.
@@ -141,7 +154,7 @@ pytest tests/ -v
 
 *(On Windows systems using the Python launcher: `py -3.11 -m pytest tests/ -v`)*
 
-**71 test modules pass 100%**, covering:
+**75 unit & integration tests pass 100%**, covering:
 - Dynamic worldwide opportunity scanning and tiering (`test_scan_opportunities.py`)
 - Candidate profile resolution and multi-tier fallbacks (`test_candidate_profile.py`)
 - LaTeX escaping and template rendering (`test_generate_resume_tex.py`)

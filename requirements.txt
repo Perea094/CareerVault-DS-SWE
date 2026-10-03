@@ -1,0 +1,12 @@
+# Career Vault Dependencies
+# Standard requirements for PDF processing, resume compilation preview, and ATS validation
+
+# PDF parsing and ATS parseability validation
+pdfplumber>=0.10.0
+
+# PDF-to-PNG preview rendering for Obsidian vault
+pypdfium2>=4.26.0
+Pillow>=10.0.0
+
+# Automated test suite
+pytest>=8.0.0

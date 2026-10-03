@@ -44,9 +44,10 @@
 
 ---
 
-## 5. Obsidian CLI Guidelines
-The official `obsidian` CLI command is available in the terminal (`Obsidian.com`). Use it when helpful for vault-level actions:
-- **Search**: `obsidian search query="..."` or `obsidian search:context query="..."`
-- **Metadata**: `obsidian property:read` / `obsidian property:set`
-- **Tasks**: `obsidian tasks todo verbose` / `obsidian task done ref="..."`
-- **Tags**: `obsidian tags counts`
+## 5. Obsidian CLI Guidelines & Universality
+- **Optional Accelerator**: The official `obsidian` CLI command (`Obsidian.com`) is an optional tool for vaults open in the Obsidian desktop application. When available, use it for convenient indexed actions:
+  - **Search**: `obsidian search query="..."` or `obsidian search:context query="..."`
+  - **Metadata**: `obsidian property:read` / `obsidian property:set`
+  - **Tasks**: `obsidian tasks todo verbose` / `obsidian task done ref="..."`
+  - **Tags**: `obsidian tags counts`
+- **Native File-System Fallback**: If `obsidian` is not installed or not in `PATH`, agents operate 100% autonomously using standard file tools (`view_file`, `write_to_file`, `replace_file_content`, and grep). All vault skills and formats are completely Markdown-native and independent of Obsidian.

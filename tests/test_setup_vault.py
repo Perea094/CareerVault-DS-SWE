@@ -1,6 +1,6 @@
 import os
 import unittest
-from unittest.mock import patch
+from unittest.mock import patch, MagicMock
 import json
 import tempfile
 from pathlib import Path
@@ -112,5 +112,52 @@ class TestSetupVault(unittest.TestCase):
             self.assertEqual(saved["schedule"]["custom_rule"], "keep_intact")
             self.assertEqual(saved["modality"]["ranking"], ["onsite", "hybrid", "remote"])
 
+    def test_check_missing_dependencies(self):
+        def fake_import(name, *args, **kwargs):
+            if name == "pypdfium2":
+                raise ImportError("Mocked missing package")
+            return MagicMock()
+
+        with patch("builtins.__import__", side_effect=fake_import):
+            missing = setup_vault.check_missing_dependencies()
+            self.assertIn("pypdfium2", missing)
+
+    def test_get_venv_executables(self):
+        venv_path = Path("/mock/vault/.venv")
+        with patch("os.name", "nt"):
+            py_bin, pip_bin = setup_vault.get_venv_executables(venv_path)
+            self.assertEqual(py_bin, venv_path / "Scripts" / "python.exe")
+            self.assertEqual(pip_bin, venv_path / "Scripts" / "pip.exe")
+
+        with patch("os.name", "posix"):
+            py_bin, pip_bin = setup_vault.get_venv_executables(venv_path)
+            self.assertEqual(py_bin, venv_path / "bin" / "python")
+            self.assertEqual(pip_bin, venv_path / "bin" / "pip")
+
+    def test_auto_setup_environment_in_active_venv(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            vault_root = Path(tmpdir)
+            req_file = vault_root / "requirements.txt"
+            req_file.write_text("pytest\n", encoding="utf-8")
+
+            with patch("sys.prefix", "/custom/venv"), patch("sys.base_prefix", "/usr"):
+                with patch("subprocess.run") as mock_run:
+                    mock_run.return_value = MagicMock(returncode=0)
+                    success = setup_vault.auto_setup_environment(vault_root)
+                    self.assertTrue(success)
+                    mock_run.assert_called_once()
+                    cmd = mock_run.call_args[0][0]
+                    self.assertIn("pip", cmd)
+                    self.assertIn(str(req_file), cmd)
+
+    def test_auto_setup_environment_handles_failure(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            vault_root = Path(tmpdir)
+            with patch("sys.prefix", "/custom/venv"), patch("sys.base_prefix", "/usr"):
+                with patch("subprocess.run", side_effect=Exception("Pip network failure")):
+                    success = setup_vault.auto_setup_environment(vault_root)
+                    self.assertFalse(success)
+
 if __name__ == "__main__":
     unittest.main()
+

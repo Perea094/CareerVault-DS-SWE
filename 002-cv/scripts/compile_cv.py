@@ -142,7 +142,7 @@ def compile_resume(
             png_path = generate_preview_image(pdf_path, dpi=dpi)
             print(f"[SUCCESS] PNG preview generated at: {png_path}")
         except Exception as e:
-            print(f"[WARN] Failed to generate PNG preview: {e}", file=sys.stderr)
+            print(f"[INFO] Skipping optional PNG preview ({e}). PDF compilation succeeded.", file=sys.stderr)
             
     return pdf_path, png_path
 
@@ -168,12 +168,19 @@ def main():
             else:
                 print(f"[ERROR] PDF not found: {pdf_path}", file=sys.stderr)
             sys.exit(1)
-        png = generate_preview_image(pdf_path, dpi=args.dpi)
-        if args.json:
-            print(json.dumps({"success": True, "preview_png": str(png.resolve())}))
-        else:
-            print(f"[SUCCESS] Preview saved to: {png}")
-        sys.exit(0)
+        try:
+            png = generate_preview_image(pdf_path, dpi=args.dpi)
+            if args.json:
+                print(json.dumps({"success": True, "preview_png": str(png.resolve())}))
+            else:
+                print(f"[SUCCESS] Preview saved to: {png}")
+            sys.exit(0)
+        except Exception as e:
+            if args.json:
+                print(json.dumps({"success": False, "error": str(e)}))
+            else:
+                print(f"[ERROR] Failed to generate PNG preview: {e}", file=sys.stderr)
+            sys.exit(1)
         
     try:
         pdf_path, png_path = compile_resume(

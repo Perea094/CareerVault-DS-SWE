@@ -10,6 +10,7 @@ import sys
 import json
 import re
 import argparse
+import subprocess
 from pathlib import Path
 from typing import Dict, Any
 
@@ -198,14 +199,106 @@ def interactive_wizard() -> Dict[str, Any]:
         "target_domains": ["Software Engineering", "Machine Learning", "Data Platforms"]
     }
 
+RECOMMENDED_PACKAGES = ["pdfplumber", "pypdfium2", "pytest"]
+
+def check_missing_dependencies() -> list:
+    """Checks which recommended third-party packages are missing from the current Python environment."""
+    missing = []
+    for pkg in RECOMMENDED_PACKAGES:
+        try:
+            __import__(pkg)
+        except ImportError:
+            missing.append(pkg)
+    return missing
+
+def get_venv_executables(venv_dir: Path) -> tuple:
+    """Returns the (python_path, pip_path) for a virtual environment across Windows and POSIX."""
+    if os.name == "nt":
+        py_bin = venv_dir / "Scripts" / "python.exe"
+        pip_bin = venv_dir / "Scripts" / "pip.exe"
+    else:
+        py_bin = venv_dir / "bin" / "python"
+        pip_bin = venv_dir / "bin" / "pip"
+    return py_bin, pip_bin
+
+def auto_setup_environment(vault_root: Path) -> bool:
+    """
+    Creates a .venv if not present, and installs dependencies from requirements.txt.
+    Returns True if successfully installed.
+    """
+    venv_dir = vault_root / ".venv"
+    req_file = vault_root / "requirements.txt"
+    
+    print("\n--------------------------------------------------------")
+    print("  SETTING UP VIRTUAL ENVIRONMENT & DEPENDENCIES         ")
+    print("--------------------------------------------------------")
+    
+    in_venv = (sys.prefix != sys.base_prefix)
+    
+    if in_venv:
+        print("[INFO] Already running inside an active virtual environment.")
+        pip_cmd = [sys.executable, "-m", "pip", "install"]
+    else:
+        if not venv_dir.exists():
+            print(f"[1/2] Creating virtual environment at {venv_dir.name}...")
+            try:
+                subprocess.run([sys.executable, "-m", "venv", str(venv_dir)], check=True)
+                print("      Virtual environment (.venv) created successfully.")
+            except Exception as e:
+                print(f"[ERROR] Failed to create virtual environment: {e}", file=sys.stderr)
+                return False
+        else:
+            print(f"[INFO] Existing virtual environment found at {venv_dir.name}.")
+            
+        py_bin, pip_bin = get_venv_executables(venv_dir)
+        if not py_bin.exists():
+            print(f"[ERROR] Python binary not found at {py_bin}", file=sys.stderr)
+            return False
+        pip_cmd = [str(py_bin), "-m", "pip", "install"]
+
+    print("[2/2] Installing requirements from requirements.txt...")
+    try:
+        if req_file.exists():
+            subprocess.run(pip_cmd + ["-r", str(req_file)], check=True)
+        else:
+            subprocess.run(pip_cmd + RECOMMENDED_PACKAGES, check=True)
+        print("\n[SUCCESS] Dependencies installed successfully!")
+        if not in_venv:
+            if os.name == "nt":
+                print("  To activate in PowerShell: .\\.venv\\Scripts\\Activate.ps1")
+                print("  To activate in CMD:        .\\.venv\\Scripts\\activate.bat")
+            else:
+                print("  To activate in terminal:   source .venv/bin/activate")
+        print("--------------------------------------------------------\n")
+        return True
+    except Exception as e:
+        print(f"[ERROR] Failed to install dependencies via pip: {e}", file=sys.stderr)
+        return False
+
 def main():
     parser = argparse.ArgumentParser(description="Career Vault Onboarding Wizard")
     parser.add_argument("--interactive", action="store_true", help="Run interactive prompt wizard")
     parser.add_argument("--json", help="Path to profile JSON input file")
     parser.add_argument("--dry-run", action="store_true", help="Simulate configuration without writing files")
+    parser.add_argument("--install-deps", action="store_true", help="Automatically create .venv and install dependencies")
+    parser.add_argument("--skip-deps", action="store_true", help="Skip checking or installing dependencies")
     args = parser.parse_args()
     
     vault_root = Path(__file__).resolve().parent
+    
+    # Auto-dependency setup check
+    if args.install_deps:
+        auto_setup_environment(vault_root)
+    elif not args.skip_deps and (args.interactive or len(sys.argv) == 1):
+        missing = check_missing_dependencies()
+        if missing:
+            print(f"\n[INFO] Missing recommended Python dependencies: {', '.join(missing)}")
+            try:
+                ans = input("Would you like to auto-create a virtual environment (.venv) and install dependencies? [Y/n]: ").strip().lower()
+                if ans not in ["n", "no"]:
+                    auto_setup_environment(vault_root)
+            except (EOFError, KeyboardInterrupt):
+                pass
     
     if args.json:
         with open(args.json, "r", encoding="utf-8") as f:

@@ -326,6 +326,18 @@ def main():
             result = scan_pdf_for_ats(target_path)
         else:
             result = scan_resume(target_path)
+    except ImportError as exc:
+        if args.json:
+            print(json.dumps({
+                "success": False,
+                "error": str(exc),
+                "suggestion": "Run 'pip install pdfplumber' or scan Markdown (.md) or LaTeX (.tex) sources directly with zero dependencies."
+            }))
+        else:
+            sys.stderr.write(f"\n[DEPENDENCY NOTE] {exc}\n")
+            sys.stderr.write("Tip: You can scan Markdown (.md) or LaTeX (.tex) resume sources directly with zero dependencies:\n")
+            sys.stderr.write("     python 002-cv/scripts/validate_ats.py 002-cv/template.tex\n\n")
+        sys.exit(1)
     except Exception as exc:
         sys.stderr.write(f"Error scanning resume: {exc}\n")
         sys.exit(1)
