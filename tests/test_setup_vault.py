@@ -158,6 +158,28 @@ class TestSetupVault(unittest.TestCase):
                     success = setup_vault.auto_setup_environment(vault_root)
                     self.assertFalse(success)
 
+    def test_launch_preferences_server(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            vault_root = Path(tmpdir)
+            script_path = vault_root / ".agents" / "skills" / "preference-manager" / "scripts" / "preference_server.py"
+            script_path.parent.mkdir(parents=True, exist_ok=True)
+            script_path.write_text("# Mock server", encoding="utf-8")
+
+            with patch("subprocess.run") as mock_run:
+                mock_run.return_value = MagicMock(returncode=0)
+                success = setup_vault.launch_preferences_server(vault_root, open_browser=True)
+                self.assertTrue(success)
+                mock_run.assert_called_once()
+                cmd = mock_run.call_args[0][0]
+                self.assertIn(str(script_path), cmd)
+                self.assertIn("--open", cmd)
+
+    def test_launch_preferences_server_missing_script(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            vault_root = Path(tmpdir)
+            success = setup_vault.launch_preferences_server(vault_root, open_browser=True)
+            self.assertFalse(success)
+
 if __name__ == "__main__":
     unittest.main()
 

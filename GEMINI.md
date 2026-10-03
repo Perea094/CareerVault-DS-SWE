@@ -28,6 +28,15 @@
 
 ## 4. Flexible Workflows
 
+### Workflow 0: Onboarding & Kickoff ("Hi, I already ran the setup script, what is the next step?")
+When the candidate initiates the session with this kickoff prompt:
+1. Inspect `001-background/preferences.json` and `001-background/preferences.md` to confirm the configured profile, target domains, and availability.
+2. Verify that the starter LaTeX resume exists in `002-cv/` and run `002-cv/scripts/validate_ats.py` to confirm the baseline ATS score.
+3. Present the candidate with the 3 immediate actionable next steps:
+   - **Path A: Ingest Verified Background**: Add past projects, GitHub repositories, or internships to `001-background/` using `add-experience-curriculum`.
+   - **Path B: Scout Global Tech Opportunities**: Run `opportunity-scout` to search 19 tech feeds and evaluate listings against their active constraints.
+   - **Path C: Tailor for a Target Role**: If they have a specific job description or link ready, immediately draft a tailored 1-page CV using `tailored-cv`.
+
 ### Workflow 1: Opportunity Intake & Triage
 1. Save the job description in Markdown under `004-work-opportunities/` with YAML frontmatter tracking temporality and metadata (e.g., `date`, `company`, `role`, `status`, `tags`).
 2. Review the role against the active criteria in `001-background/preferences.md`.

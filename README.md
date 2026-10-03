@@ -3,7 +3,7 @@
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/)
 [![Obsidian Vault](https://img.shields.io/badge/Obsidian-Vault-purple.svg)](https://obsidian.md/)
 [![ATS Validated](https://img.shields.io/badge/ATS-100%25%20Parseable-brightgreen.svg)]()
-[![Tests](https://img.shields.io/badge/pytest-75%20passing-success.svg)]()
+[![Tests](https://img.shields.io/badge/pytest-77%20passing-success.svg)]()
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 An open-source, agentic personal career operating system built on top of **Obsidian**, **LaTeX**, **Python**, and **Autonomous Agent Skills**. Designed for Data Science and Software Engineering candidates to autonomously scout opportunities, evaluate eligibility against live constraints, tailor ATS-optimized resumes with 100% factual integrity, manage application pipelines, and draft hyper-targeted outreach and interview dossiers.
@@ -28,8 +28,8 @@ git clone https://github.com/Perea094/CareerVault-DS-SWE.git
 cd CareerVault-DS-SWE
 ```
 
-### 2. Run the Starter Setup Wizard & Auto-Install Dependencies
-Initialize your candidate profile, set your degree and target domains, auto-create a virtual environment (`.venv`), and install dependencies with a single command:
+### 2. Run the Starter Setup Wizard & Interactive Preference Portal
+Initialize your candidate profile, auto-create a virtual environment (`.venv`), install dependencies, generate your starter resume, and configure your live career constraints:
 - **Windows (1-Click)**: Double-click `setup.bat` or run:
   ```cmd
   setup.bat
@@ -42,18 +42,34 @@ Initialize your candidate profile, set your degree and target domains, auto-crea
   ```bash
   python setup_vault.py --interactive --install-deps
   ```
-*(Or non-interactively with a pre-filled JSON profile: `python setup_vault.py --json profile.json`)*
+
+During setup:
+1. The wizard asks 10 guided profile questions with **concrete format examples and defaults** (full name, degree, graduation term, location, visa status, links).
+2. It generates your personalized LaTeX resume in `002-cv/` and syncs `001-background/preferences.json` and `preferences.md`.
+3. It automatically launches the **Preference Manager Web Portal** (`http://127.0.0.1:8765/`) in your browser so you can visually configure your 7-day availability calendar, work modality rankings (remote/hybrid/onsite), and compensation floor.
 
 > [!TIP]
 > **Zero-Dependency Markdown Core & Optional Obsidian CLI**:
 > Career Vault operates 100% on standard flat Markdown (`.md`) and JSON (`.json`) files. You do **not** need Obsidian or the Obsidian CLI installed to use this operating system—any AI agent can read, search, and edit files natively using standard tools. The Obsidian desktop app and Obsidian CLI are optional accelerators.
 
 ### 3. Open in Your Agentic AI Harness
-Open the `CareerVault-DS-SWE` folder inside your preferred agentic environment.
+Open the `CareerVault-DS-SWE` folder inside your preferred agentic environment (Google Antigravity, Claude Code, Cursor, OpenCode, etc.).
 
-The agent will automatically load the workspace instructions and register the 11 autonomous skills under `.agents/skills/`.
+The agent will automatically load the workspace instructions (`AGENTS.md` / `GEMINI.md`) and register the 11 autonomous skills under `.agents/skills/`.
 
-### 4. Instruct Your Agent Using Skills
+### 4. Kick Off Your First Agent Session
+Once inside your harness, start by sending your agent this exact kickoff prompt:
+
+```text
+Hi, I already ran the setup script, what is the next step?
+```
+
+Your agent will inspect your personalized profile in `001-background/`, check your starter LaTeX resume in `002-cv/`, and walk you through your high-impact next steps:
+1. **Ingest Verified Projects & Experiences**: Adding your GitHub repositories, internships, and university challenges into `001-background/` via `add-experience-curriculum`.
+2. **Scout & Triage Live Opportunities**: Running `opportunity-scout` to search 19 tech feeds and evaluate roles against your live preferences.
+3. **Tailor ATS Resumes & Track Applications**: Generating tailored 1-page resumes with `tailored-cv` and managing your 8-stage Kanban pipeline with `application-tracker`.
+
+### 5. Instruct Your Agent Using Skills
 Simply chat with your agent. Instruct it to perform career tasks, and it will execute the appropriate skills and internal scripts behind the scenes:
 
 | Desired Action | Example Agent Prompt | Activated Skill(s) | Internal Agent Actions |
@@ -154,7 +170,7 @@ pytest tests/ -v
 
 *(On Windows systems using the Python launcher: `py -3.11 -m pytest tests/ -v`)*
 
-**75 unit & integration tests pass 100%**, covering:
+**77 unit & integration tests pass 100%**, covering:
 - Dynamic worldwide opportunity scanning and tiering (`test_scan_opportunities.py`)
 - Candidate profile resolution and multi-tier fallbacks (`test_candidate_profile.py`)
 - LaTeX escaping and template rendering (`test_generate_resume_tex.py`)

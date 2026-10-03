@@ -173,17 +173,21 @@ def configure_vault(vault_dir: Path, profile: Dict[str, Any], dry_run: bool = Fa
 def interactive_wizard() -> Dict[str, Any]:
     print("\n========================================================")
     print("  CAREER VAULT SETUP WIZARD (Data Science & SWE)        ")
-    print("========================================================\n")
-    name = input("Candidate Full Name: ").strip() or "Candidate"
-    school = input("University / Institution: ").strip() or "University"
-    degree = input("Degree / Major (e.g. B.S. in Data Science): ").strip() or "B.S. in Data Science"
-    graduation = input("Expected Graduation (e.g. May 2027): ").strip() or "May 2027"
-    location = input("Current Location (City, Country): ").strip() or "City, Country"
-    visa = input("Work Authorization / Visa Status: ").strip() or "Needs Sponsorship"
-    email = input("Contact Email: ").strip() or "candidate@example.com"
-    phone = input("Contact Phone: ").strip() or "+1 555 0100"
-    linkedin = input("LinkedIn URL: ").strip() or "https://linkedin.com"
-    github = input("GitHub URL: ").strip() or "https://github.com"
+    print("========================================================")
+    print("Please answer the following prompts to personalize your vault.")
+    print("Expected formats and examples are shown for each field.")
+    print("Press [Enter] to keep the default value shown in brackets.\n")
+    
+    name = input("1. Full Name (e.g. Alex Rivera) [Candidate]: ").strip() or "Candidate"
+    school = input("2. University / Institution (e.g. Stanford University, MIT, UNAM) [University]: ").strip() or "University"
+    degree = input("3. Degree & Major (e.g. B.S. in Computer Science / Data Science) [B.S. in Data Science]: ").strip() or "B.S. in Data Science"
+    graduation = input("4. Expected Graduation Term (e.g. May 2027, December 2026) [May 2027]: ").strip() or "May 2027"
+    location = input("5. Current Location [City, Country/State] (e.g. Austin, TX, USA or Berlin, Germany) [City, Country]: ").strip() or "City, Country"
+    visa = input("6. Work Authorization / Visa Status (e.g. US Citizen, F-1 OPT/CPT, Needs Sponsorship) [Needs Sponsorship]: ").strip() or "Needs Sponsorship"
+    email = input("7. Professional Email (e.g. alex.rivera@example.com) [candidate@example.com]: ").strip() or "candidate@example.com"
+    phone = input("8. Contact Phone [with country code] (e.g. +1 555 0100 or +44 20 7946 0919) [+1 555 0100]: ").strip() or "+1 555 0100"
+    linkedin = input("9. LinkedIn Profile URL (e.g. https://linkedin.com/in/alex-rivera) [https://linkedin.com]: ").strip() or "https://linkedin.com"
+    github = input("10. GitHub Profile URL (e.g. https://github.com/alexrivera) [https://github.com]: ").strip() or "https://github.com"
     
     return {
         "name": name,
@@ -198,6 +202,39 @@ def interactive_wizard() -> Dict[str, Any]:
         "github": github,
         "target_domains": ["Software Engineering", "Machine Learning", "Data Platforms"]
     }
+
+def launch_preferences_server(vault_root: Path, open_browser: bool = True) -> bool:
+    """Launches the Preference Manager web server and opens the browser UI."""
+    pref_server_script = vault_root / ".agents" / "skills" / "preference-manager" / "scripts" / "preference_server.py"
+    if not pref_server_script.exists():
+        print(f"[WARN] Preference server script not found at {pref_server_script}")
+        return False
+
+    venv_dir = vault_root / ".venv"
+    py_bin, _ = get_venv_executables(venv_dir)
+    python_exec = str(py_bin) if py_bin.exists() else sys.executable
+
+    print("\n========================================================")
+    print("  LAUNCHING PREFERENCES MANAGER WEB PORTAL               ")
+    print("========================================================")
+    print("Opening interactive preferences portal in your browser...")
+    print("You can configure your weekly availability schedule, hourly wage,")
+    print("work modalities (remote/hybrid/onsite), and location constraints.")
+    print("When you finish saving in the browser, return here and press Ctrl+C to complete setup.\n")
+
+    cmd = [python_exec, str(pref_server_script)]
+    if open_browser:
+        cmd.append("--open")
+
+    try:
+        subprocess.run(cmd)
+        return True
+    except KeyboardInterrupt:
+        print("\n[INFO] Preferences Manager closed.")
+        return True
+    except Exception as e:
+        print(f"[WARN] Could not launch preferences server: {e}")
+        return False
 
 RECOMMENDED_PACKAGES = ["pdfplumber", "pypdfium2", "pytest"]
 
@@ -282,6 +319,7 @@ def main():
     parser.add_argument("--dry-run", action="store_true", help="Simulate configuration without writing files")
     parser.add_argument("--install-deps", action="store_true", help="Automatically create .venv and install dependencies")
     parser.add_argument("--skip-deps", action="store_true", help="Skip checking or installing dependencies")
+    parser.add_argument("--skip-prefs", action="store_true", help="Skip launching the preference manager web portal")
     args = parser.parse_args()
     
     vault_root = Path(__file__).resolve().parent
@@ -314,6 +352,9 @@ def main():
     print(f"  - Preferences: {result.get('preferences_json')}")
     if result.get('resume_tex'):
         print(f"  - Starter LaTeX Resume: {result.get('resume_tex')}")
+
+    if not args.dry_run and not args.skip_prefs:
+        launch_preferences_server(vault_root, open_browser=True)
 
 if __name__ == "__main__":
     main()
