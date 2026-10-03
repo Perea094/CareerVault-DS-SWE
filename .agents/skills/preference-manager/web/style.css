@@ -1116,6 +1116,32 @@ input:checked + .slider:before {
   box-shadow: 0 6px 20px var(--emerald-glow);
 }
 
+.btn-quit {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+  border: none;
+  border-radius: var(--radius-md);
+  padding: 0.65rem 1.25rem;
+  font-size: 0.92rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  box-shadow: 0 4px 14px var(--emerald-glow);
+  transition: all var(--transition-fast);
+}
+
+.btn-quit:hover {
+  filter: brightness(1.1);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px var(--emerald-glow);
+}
+
+.btn-quit:active {
+  transform: translateY(0);
+}
+
 /* Toast Notifications */
 .toast-container {
   position: fixed;

@@ -3,7 +3,7 @@
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/)
 [![Obsidian Vault](https://img.shields.io/badge/Obsidian-Vault-purple.svg)](https://obsidian.md/)
 [![ATS Validated](https://img.shields.io/badge/ATS-100%25%20Parseable-brightgreen.svg)]()
-[![Tests](https://img.shields.io/badge/pytest-77%20passing-success.svg)]()
+[![Tests](https://img.shields.io/badge/pytest-79%20passing-success.svg)]()
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 An open-source, agentic personal career operating system built on top of **Obsidian**, **LaTeX**, **Python**, and **Autonomous Agent Skills**. Designed for Data Science and Software Engineering candidates to autonomously scout opportunities, evaluate eligibility against live constraints, tailor ATS-optimized resumes with 100% factual integrity, manage application pipelines, and draft hyper-targeted outreach and interview dossiers.
@@ -170,7 +170,7 @@ pytest tests/ -v
 
 *(On Windows systems using the Python launcher: `py -3.11 -m pytest tests/ -v`)*
 
-**77 unit & integration tests pass 100%**, covering:
+**79 unit & integration tests pass 100%**, covering:
 - Dynamic worldwide opportunity scanning and tiering (`test_scan_opportunities.py`)
 - Candidate profile resolution and multi-tier fallbacks (`test_candidate_profile.py`)
 - LaTeX escaping and template rendering (`test_generate_resume_tex.py`)

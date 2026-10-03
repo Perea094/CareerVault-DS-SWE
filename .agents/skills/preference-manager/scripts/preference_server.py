@@ -122,10 +122,24 @@ class PreferenceRequestHandler(SimpleHTTPRequestHandler):
             self._handle_save()
         elif path == "/api/audit":
             self._handle_audit()
+        elif path in ["/api/quit", "/api/shutdown"]:
+            self._handle_quit()
         elif path.startswith("/api/"):
             self._send_json_response(404, {"success": False, "error": f"API endpoint '{parsed_url.path}' not found"})
         else:
             self._send_json_response(404, {"success": False, "error": "Not Found"})
+
+    def _handle_quit(self) -> None:
+        """Handle POST /api/quit request to cleanly shutdown server."""
+        self._send_json_response(200, {
+            "success": True,
+            "message": "Preferences server shutting down...",
+        })
+        def _delayed_shutdown():
+            import time
+            time.sleep(0.3)
+            self.server.shutdown()
+        threading.Thread(target=_delayed_shutdown, daemon=True).start()
 
     def _handle_save(self) -> None:
         """Handle POST /api/save request."""
@@ -149,6 +163,8 @@ class PreferenceRequestHandler(SimpleHTTPRequestHandler):
             self._send_json_response(400, {"success": False, "error": "Payload must be a JSON dictionary"})
             return
 
+        should_quit = bool(payload.pop("quit", False))
+
         pref_path = getattr(self.server, "preferences_path", DEFAULT_PREFERENCES_JSON)
         md_path = getattr(self.server, "markdown_path", DEFAULT_PREFERENCES_MD)
 
@@ -165,7 +181,14 @@ class PreferenceRequestHandler(SimpleHTTPRequestHandler):
                 "message": "Preferences saved and synchronized to Markdown successfully",
                 "preferences_path": pref_path,
                 "markdown_path": md_path,
+                "server_quitting": should_quit,
             })
+            if should_quit:
+                def _delayed_shutdown():
+                    import time
+                    time.sleep(0.3)
+                    self.server.shutdown()
+                threading.Thread(target=_delayed_shutdown, daemon=True).start()
         except Exception as e:
             self._send_json_response(500, {"success": False, "error": f"Error saving preferences: {str(e)}"})
 

@@ -276,17 +276,33 @@ document.addEventListener('DOMContentLoaded', () => {
   setupPresetButtons();
 
   // Action Bar Buttons
-  document.getElementById('btn-reset-defaults').addEventListener('click', () => {
-    loadPreferences(true);
-  });
+  const resetBtn = document.getElementById('btn-reset-defaults');
+  if (resetBtn) {
+    resetBtn.addEventListener('click', () => {
+      loadPreferences(true);
+    });
+  }
 
-  document.getElementById('btn-save-preferences').addEventListener('click', () => {
-    savePreferences(true);
-  });
+  const saveBtn = document.getElementById('btn-save-preferences');
+  if (saveBtn) {
+    saveBtn.addEventListener('click', () => {
+      savePreferences(true, false);
+    });
+  }
 
-  document.getElementById('btn-save-audit').addEventListener('click', () => {
-    runAudit();
-  });
+  const quitBtn = document.getElementById('btn-save-quit');
+  if (quitBtn) {
+    quitBtn.addEventListener('click', () => {
+      saveAndQuit();
+    });
+  }
+
+  const auditBtn = document.getElementById('btn-save-audit');
+  if (auditBtn) {
+    auditBtn.addEventListener('click', () => {
+      runAudit();
+    });
+  }
 
   // Modal handlers
   setupModalHandlers();
@@ -1056,28 +1072,48 @@ async function loadPreferences(isReset = false) {
   }
 }
 
-async function savePreferences(showNotification = true) {
+async function savePreferences(showNotification = true, andQuit = false) {
   try {
     syncStateFromFormFields();
 
     const saveBtn = document.getElementById('btn-save-preferences');
-    const origText = saveBtn.innerHTML;
-    saveBtn.innerHTML = `<span class="spinner"></span> Saving...`;
-    saveBtn.disabled = true;
+    const quitBtn = document.getElementById('btn-save-quit');
+    const origSaveText = saveBtn ? saveBtn.innerHTML : '';
+    const origQuitText = quitBtn ? quitBtn.innerHTML : '';
+
+    if (andQuit && quitBtn) {
+      quitBtn.innerHTML = `<span class="spinner"></span> Saving &amp; Closing...`;
+      quitBtn.disabled = true;
+      if (saveBtn) saveBtn.disabled = true;
+    } else if (saveBtn) {
+      saveBtn.innerHTML = `<span class="spinner"></span> Saving...`;
+      saveBtn.disabled = true;
+    }
 
     document.getElementById('save-status-text').innerHTML = `
       <span class="save-status-indicator" style="background-color: var(--purple-accent);"></span>
       <span>Writing to 001-background/preferences.md & preferences.json...</span>
     `;
 
+    const payload = Object.assign({}, state);
+    if (andQuit) {
+      payload.quit = true;
+    }
+
     const res = await fetch('/api/save', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(state)
+      body: JSON.stringify(payload)
     });
 
-    saveBtn.innerHTML = origText;
-    saveBtn.disabled = false;
+    if (saveBtn) {
+      saveBtn.innerHTML = origSaveText;
+      saveBtn.disabled = false;
+    }
+    if (quitBtn) {
+      quitBtn.innerHTML = origQuitText;
+      quitBtn.disabled = false;
+    }
 
     if (!res.ok) {
       const errData = await res.json().catch(() => ({}));
@@ -1086,13 +1122,31 @@ async function savePreferences(showNotification = true) {
 
     const data = await res.json();
     document.getElementById('last-updated-display').textContent = `Updated: ${state.updated}`;
-    document.getElementById('save-status-text').innerHTML = `
-      <span class="save-status-indicator" style="background-color: var(--emerald);"></span>
-      <span>Preferences saved & synced to Obsidian</span>
-    `;
 
-    if (showNotification) {
-      showToast("Preferences successfully saved & synced to Obsidian vault!", "success");
+    if (andQuit) {
+      document.getElementById('save-status-text').innerHTML = `
+        <span class="save-status-indicator" style="background-color: var(--emerald);"></span>
+        <span>Saved! Server shutting down — return to your terminal to continue setup.</span>
+      `;
+      showToast("Preferences saved! Server stopped. Return to your terminal to continue setup.", "success", 8000);
+      if (saveBtn) saveBtn.disabled = true;
+      if (quitBtn) {
+        quitBtn.disabled = true;
+        quitBtn.innerHTML = `✅ Saved &amp; Closed`;
+      }
+      // Also notify quit endpoint
+      fetch('/api/quit', { method: 'POST' }).catch(() => {});
+      setTimeout(() => {
+        try { window.close(); } catch (e) {}
+      }, 1500);
+    } else {
+      document.getElementById('save-status-text').innerHTML = `
+        <span class="save-status-indicator" style="background-color: var(--emerald);"></span>
+        <span>Preferences saved & synced to Obsidian</span>
+      `;
+      if (showNotification) {
+        showToast("Preferences successfully saved & synced to Obsidian vault!", "success");
+      }
     }
 
     return data;
@@ -1105,6 +1159,10 @@ async function savePreferences(showNotification = true) {
     showToast(`Failed to save preferences: ${err.message}`, "error");
     throw err;
   }
+}
+
+async function saveAndQuit() {
+  return savePreferences(false, true);
 }
 
 async function runAudit() {

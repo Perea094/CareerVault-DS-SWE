@@ -19,4 +19,11 @@ fi
 "$PY_CMD" setup_vault.py --interactive --install-deps "$@"
 
 echo ""
-echo "[SUCCESS] Career Vault is ready! Open this directory in your AI harness or Obsidian."
+echo "========================================================"
+echo "  NEXT STEP:"
+echo "  Open this folder in your AI harness (Antigravity,"
+echo "  Claude Code, Cursor, OpenCode, etc.) and prompt your agent:"
+echo ""
+echo "    Hi, I already ran the setup script, what is the next step?"
+echo ""
+echo "========================================================"

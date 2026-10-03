@@ -334,6 +334,48 @@ class TestPreferenceServer(unittest.TestCase):
         thread.join(timeout=2.0)
         self.assertFalse(thread.is_alive())
 
+    def test_post_quit_endpoint(self):
+        """Test POST /api/quit cleanly responds and terminates the server."""
+        server, thread = create_server(port=0, host="127.0.0.1", directory=self.web_dir)
+        port = server.server_address[1]
+
+        conn = http.client.HTTPConnection("127.0.0.1", port, timeout=5)
+        conn.request("POST", "/api/quit", headers={"Content-Type": "application/json"})
+        resp = conn.getresponse()
+        self.assertEqual(resp.status, 200)
+        body = json.loads(resp.read().decode("utf-8"))
+        self.assertTrue(body.get("success"))
+        conn.close()
+
+        thread.join(timeout=2.0)
+        self.assertFalse(thread.is_alive())
+
+    def test_post_save_with_quit_flag(self):
+        """Test POST /api/save with quit=True saves preferences and terminates server."""
+        server, thread = create_server(
+            port=0,
+            host="127.0.0.1",
+            preferences_path=self.pref_json_path,
+            markdown_path=self.pref_md_path,
+            directory=self.web_dir,
+        )
+        port = server.server_address[1]
+
+        payload = dict(self.sample_preferences)
+        payload["quit"] = True
+
+        conn = http.client.HTTPConnection("127.0.0.1", port, timeout=5)
+        conn.request("POST", "/api/save", body=json.dumps(payload), headers={"Content-Type": "application/json"})
+        resp = conn.getresponse()
+        self.assertEqual(resp.status, 200)
+        body = json.loads(resp.read().decode("utf-8"))
+        self.assertTrue(body.get("success"))
+        self.assertTrue(body.get("server_quitting"))
+        conn.close()
+
+        thread.join(timeout=2.0)
+        self.assertFalse(thread.is_alive())
+        self.assertTrue(os.path.exists(self.pref_json_path))
 
 if __name__ == "__main__":
     unittest.main()

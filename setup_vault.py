@@ -220,7 +220,8 @@ def launch_preferences_server(vault_root: Path, open_browser: bool = True) -> bo
     print("Opening interactive preferences portal in your browser...")
     print("You can configure your weekly availability schedule, hourly wage,")
     print("work modalities (remote/hybrid/onsite), and location constraints.")
-    print("When you finish saving in the browser, return here and press Ctrl+C to complete setup.\n")
+    print("In the browser portal, click 'Save & Quit' to save and continue setup,")
+    print("or click 'Save Preferences' to keep testing. Press Ctrl+C anytime to exit.\n")
 
     cmd = [python_exec, str(pref_server_script)]
     if open_browser:
@@ -355,6 +356,18 @@ def main():
 
     if not args.dry_run and not args.skip_prefs:
         launch_preferences_server(vault_root, open_browser=True)
+
+    if not args.dry_run:
+        print("\n" + "=" * 65)
+        print(" CAREER VAULT SETUP COMPLETE!")
+        print("=" * 65)
+        print("\nNEXT STEP:")
+        print("Open this folder in your AI harness (Google Antigravity, Claude Code,")
+        print("Cursor Agent, OpenCode, etc.) and send your agent this kickoff prompt:\n")
+        print("  Hi, I already ran the setup script, what is the next step?\n")
+        print("Your agent will inspect your profile, verify your starter resume,")
+        print("and guide your career search across the 11 vault skills.")
+        print("=" * 65 + "\n")
 
 if __name__ == "__main__":
     main()
