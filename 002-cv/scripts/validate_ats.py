@@ -2,9 +2,10 @@
 """
 validate_ats.py - ATS Resume Parseability Scanner
 
-Validates compiled PDF resumes for ATS compliance, 1-page budget enforcement,
-standard section headers, contact information parseability, and density metrics.
-Uses pdfplumber to extract text and analyze layout structure.
+Validates compiled PDF resumes, LaTeX source files, or Markdown drafts for ATS compliance,
+single-page budget enforcement, standard section headers, contact information parseability,
+and text density metrics.
+Uses pdfplumber to extract text from PDFs or native parsers for LaTeX and Markdown.
 """
 
 import argparse
@@ -22,27 +23,28 @@ except ImportError:
 
 CORE_SECTIONS = ["education", "experience", "projects", "skills"]
 
+# Multilingual regex support for section header detection (English and Spanish)
 SECTION_PATTERNS = {
     "education": re.compile(
-        r"^\s*(?:[#•\-\d\.]+\s+)?(education|academic\s+background|education\s+&\s+honors|estudios|educaci[oó]n)\b",
+        r"^\s*(?:\\(?:cv)?section\*?\{)?(?:[#•\-\d\.]+\s+)?(education|academic\s+background|education\s+&\s+honors|estudios|educaci[oó]n)\b",
         re.IGNORECASE,
     ),
     "experience": re.compile(
-        r"^\s*(?:[#•\-\d\.]+\s+)?(experience|work\s+experience|professional\s+experience|employment\s+history|experiencia)\b",
+        r"^\s*(?:\\(?:cv)?section\*?\{)?(?:[#•\-\d\.]+\s+)?(experience|work\s+experience|professional\s+experience|employment\s+history|experiencia)\b",
         re.IGNORECASE,
     ),
     "projects": re.compile(
-        r"^\s*(?:[#•\-\d\.]+\s+)?(projects|technical\s+projects|academic\s+projects|key\s+projects|proyectos)\b",
+        r"^\s*(?:\\(?:cv)?section\*?\{)?(?:[#•\-\d\.]+\s+)?(projects|technical\s+projects|academic\s+projects|key\s+projects|proyectos)\b",
         re.IGNORECASE,
     ),
     "skills": re.compile(
-        r"^\s*(?:[#•\-\d\.]+\s+)?(technical\s+skills|skills|skills\s+&\s+tools|technologies|tools\s+&\s+technologies|habilidades)\b",
+        r"^\s*(?:\\(?:cv)?section\*?\{)?(?:[#•\-\d\.]+\s+)?(technical\s+skills|skills|skills\s+&\s+tools|technologies|tools\s+&\s+technologies|habilidades)\b",
         re.IGNORECASE,
     ),
 }
 
 EMAIL_PATTERN = re.compile(r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b")
-PHONE_PATTERN = re.compile(r"(?:\+?\d{1,3}[\s-]?)?\(?\d{2,4}\)?[\s.-]?\d{3,4}[\s.-]?\d{3,4}")
+PHONE_PATTERN = re.compile(r"(?:\+?\d{1,3}[\s-]?)?(?:\(?\d{2,4}\)?[\s.-]?)?\d{3,4}[\s.-]?\d{3,4}")
 GITHUB_PATTERN = re.compile(r"(?:https?://)?(?:www\.)?github\.com/[a-zA-Z0-9_\-]+|\bgithub\b", re.IGNORECASE)
 LINKEDIN_PATTERN = re.compile(r"(?:https?://)?(?:www\.)?linkedin\.com/(?:in/)?[a-zA-Z0-9_\-]+|\blinkedin\b", re.IGNORECASE)
 
@@ -91,6 +93,91 @@ def calculate_ats_score(is_single_page: bool, sections_found: List[str], has_con
             score += 15
 
     return min(100, max(0, score))
+
+
+def strip_resume_markup(text: str) -> str:
+    """
+    Strips LaTeX commands, Markdown markers, and YAML frontmatter
+    to extract plain selectable text for density analysis.
+    """
+    # Remove YAML frontmatter
+    text = re.sub(r'^---\s*\n.*?\n---\s*\n', '', text, flags=re.DOTALL)
+    # Remove LaTeX comments
+    text = re.sub(r'%.*$', '', text, flags=re.MULTILINE)
+    # Remove LaTeX preamble and macros
+    text = re.sub(r'\\(?:documentclass|usepackage|geometry|hypersetup|setlist|setlength|pagestyle|newcommand)\b.*?(\n|$)', '', text)
+    # Remove LaTeX commands like \textbf{...}, \textit{...}, \cvsection{...}
+    text = re.sub(r'\\[a-zA-Z]+(\[[^\]]*\])?\{([^}]*)\}', r'\2', text)
+    text = re.sub(r'\\[a-zA-Z]+', ' ', text)
+    # Remove Markdown headers and formatting
+    text = re.sub(r'^[#]+\s+', '', text, flags=re.MULTILINE)
+    text = re.sub(r'\*\*([^*]+)\*\*', r'\1', text)
+    text = re.sub(r'\*([^*]+)\*', r'\1', text)
+    text = re.sub(r'`([^`]+)`', r'\1', text)
+    text = re.sub(r'\[([^\]]+)\]\([^)]+\)', r'\1', text)
+    # Normalize whitespace
+    return re.sub(r'\s+', ' ', text).strip()
+
+
+def scan_text_for_ats(text: str, file_path: str = "") -> Dict[str, Any]:
+    """
+    Scans plain text, Markdown, or LaTeX resume source for ATS metrics,
+    sections, contact info, and estimated single-page budget.
+    """
+    clean_text = strip_resume_markup(text)
+    words = clean_text.split()
+    word_count = len(words)
+    char_count = len(clean_text)
+
+    # In standard ATS formats, 1 page is approximately 250 to 750 words
+    is_single_page = (word_count <= 800)
+    page_count = 1 if is_single_page else max(2, int(round(word_count / 600.0 + 0.49)))
+
+    sections_found = detect_sections(text)
+    sections_missing = [sec for sec in CORE_SECTIONS if sec not in sections_found]
+    has_contact_info = detect_contact_info(text)
+
+    warnings = []
+    if not is_single_page:
+        warnings.append(
+            f"Resume content word count ({word_count} words) likely exceeds 1 page. "
+            "Early career resumes must be strictly 1 page (recommended: 350-700 words)."
+        )
+
+    for missing in sections_missing:
+        warnings.append(f"Missing recommended core section: '{missing.capitalize()}'.")
+
+    if not has_contact_info["email"]:
+        warnings.append("Missing email contact information.")
+    if not has_contact_info["phone"]:
+        warnings.append("Missing phone number.")
+
+    if word_count < 100:
+        warnings.append(f"Low word count ({word_count} words). Resume may be sparse or empty.")
+    elif is_single_page and word_count > 750:
+        warnings.append(f"High word count ({word_count} words). Layout may be overly dense for 1 page.")
+
+    ats_score = calculate_ats_score(is_single_page, sections_found, has_contact_info)
+
+    density_metrics = {
+        "word_count": word_count,
+        "char_count": char_count,
+        "words_per_page": round(word_count / max(1, page_count), 1),
+        "density_status": "optimal" if (200 <= word_count <= 750 and is_single_page) else ("sparse" if word_count < 200 else "dense"),
+    }
+
+    return {
+        "file_path": str(file_path),
+        "is_single_page": is_single_page,
+        "page_count": page_count,
+        "word_count": word_count,
+        "sections_found": sections_found,
+        "sections_missing": sections_missing,
+        "has_contact_info": has_contact_info,
+        "density_metrics": density_metrics,
+        "warnings": warnings,
+        "ats_score": ats_score,
+    }
 
 
 def scan_pdf_for_ats(pdf_path: Union[str, Path]) -> Dict[str, Any]:
@@ -170,6 +257,23 @@ def scan_pdf_for_ats(pdf_path: Union[str, Path]) -> Dict[str, Any]:
                 pass
 
 
+def scan_resume(file_path: Union[str, Path]) -> Dict[str, Any]:
+    """
+    Universal scanner that dispatches to PDF scanner or text/markdown/tex scanner
+    based on the file extension.
+    """
+    path = Path(file_path)
+    if not path.exists():
+        raise FileNotFoundError(f"Resume file not found at: {path}")
+
+    ext = path.suffix.lower()
+    if ext == ".pdf":
+        return scan_pdf_for_ats(path)
+    else:
+        text_content = path.read_text(encoding="utf-8", errors="replace")
+        return scan_text_for_ats(text_content, file_path=str(path))
+
+
 def format_text_report(result: Dict[str, Any]) -> str:
     """Formats ATS scan result into a readable terminal report."""
     lines = [
@@ -199,24 +303,31 @@ def format_text_report(result: Dict[str, Any]) -> str:
 
 def main():
     """Main CLI entry point for validate_ats."""
-    parser = argparse.ArgumentParser(description="Validate PDF resume for ATS compliance and single-page budget.")
-    parser.add_argument("pdf_positional", nargs="?", default=None, help="Path to PDF resume")
+    parser = argparse.ArgumentParser(
+        description="Validate PDF, LaTeX, or Markdown resume for ATS compliance and single-page budget."
+    )
+    parser.add_argument("file_positional", nargs="?", default=None, help="Path to resume file (PDF, TEX, MD, TXT)")
     parser.add_argument("--pdf", default=None, help="Path to PDF resume")
+    parser.add_argument("--file", default=None, help="Path to resume file (PDF, TEX, MD, TXT)")
     parser.add_argument("--json", action="store_true", help="Output results in JSON format")
     parser.add_argument("--output", help="Write report to file")
     args = parser.parse_args()
 
-    pdf_target = args.pdf or args.pdf_positional or "002-cv/resume.pdf"
-    target_path = Path(pdf_target)
+    target = args.pdf or args.file or args.file_positional or "002-cv/resume.pdf"
+    target_path = Path(target)
 
     if not target_path.exists():
-        sys.stderr.write(f"Error: PDF file not found: {target_path}\n")
+        sys.stderr.write(f"Error: File not found: {target_path}\n")
         sys.exit(1)
 
     try:
-        result = scan_pdf_for_ats(target_path)
+        # If explicitly flagged as --pdf or file has .pdf suffix, use PDF scan
+        if args.pdf or target_path.suffix.lower() == ".pdf":
+            result = scan_pdf_for_ats(target_path)
+        else:
+            result = scan_resume(target_path)
     except Exception as exc:
-        sys.stderr.write(f"Error scanning PDF: {exc}\n")
+        sys.stderr.write(f"Error scanning resume: {exc}\n")
         sys.exit(1)
 
     if args.json:

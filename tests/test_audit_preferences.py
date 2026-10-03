@@ -1,3 +1,4 @@
+import copy
 import os
 import sys
 import tempfile
@@ -275,6 +276,78 @@ class TestAuditPreferences(unittest.TestCase):
         finally:
             if os.path.exists(temp_path):
                 os.remove(temp_path)
+
+    def test_elastic_candidate_location_matching(self):
+        """Verify candidate location matching dynamically adapts to any country/city."""
+        # 1. Candidate in Canada
+        canada_prefs = copy.deepcopy(self.mock_preferences)
+        canada_prefs["location_visa"]["current_location"] = "Toronto, Ontario, Canada"
+        canada_prefs["location_visa"]["us_work_authorization"] = "None"
+
+        test_opps = [
+            {
+                "id": "opp-toronto",
+                "company": "Shopify",
+                "role": "Data Engineer Intern",
+                "location": "Toronto, ON (Hybrid)",
+                "hours_per_week": "20",
+                "status": "eligible",
+            },
+            {
+                "id": "opp-mexico-onsite",
+                "company": "Kavak",
+                "role": "Software Engineer Intern",
+                "location": "Mexico City, Mexico (Onsite)",
+                "hours_per_week": "20",
+                "status": "eligible",
+            },
+        ]
+
+        result_canada = audit_opportunities_against_preferences(canada_prefs, test_opps)
+        match_ids_canada = [m["id"] for m in result_canada["matches"]]
+        caution_ids_canada = [c["id"] for c in result_canada["caution"]]
+
+        self.assertIn("opp-toronto", match_ids_canada)
+        self.assertIn("opp-mexico-onsite", caution_ids_canada)
+
+        # 2. Candidate in US with US Work Authorization
+        us_prefs = copy.deepcopy(self.mock_preferences)
+        us_prefs["location_visa"]["current_location"] = "Austin, TX, USA"
+        us_prefs["location_visa"]["us_work_authorization"] = "Citizen / Green Card"
+
+        us_opps = [
+            {
+                "id": "opp-austin",
+                "company": "Dell",
+                "role": "ML Intern",
+                "location": "Austin, TX (Hybrid)",
+                "hours_per_week": "20",
+                "status": "eligible",
+            },
+            {
+                "id": "opp-remote-us",
+                "company": "Amazon",
+                "role": "Software Intern",
+                "location": "Remote (US)",
+                "hours_per_week": "20",
+                "status": "eligible",
+            },
+            {
+                "id": "opp-seattle-onsite",
+                "company": "Microsoft",
+                "role": "Software Intern",
+                "location": "Seattle, WA (Onsite)",
+                "hours_per_week": "20",
+                "status": "eligible",
+            },
+        ]
+
+        result_us = audit_opportunities_against_preferences(us_prefs, us_opps)
+        match_ids_us = [m["id"] for m in result_us["matches"]]
+        caution_ids_us = [c["id"] for c in result_us["caution"]]
+        self.assertIn("opp-austin", match_ids_us)
+        self.assertIn("opp-remote-us", match_ids_us)
+        self.assertIn("opp-seattle-onsite", caution_ids_us)
 
 
 if __name__ == "__main__":

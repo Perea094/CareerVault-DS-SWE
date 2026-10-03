@@ -11,6 +11,7 @@ import json
 import os
 import re
 import sys
+import unicodedata
 from datetime import datetime
 from typing import Any, Dict, List, Optional, Tuple, Union
 
@@ -21,6 +22,101 @@ def _parse_hours_range(hours_str: str) -> Tuple[Optional[float], Optional[float]
     if not nums:
         return None, None
     return min(nums), max(nums)
+
+
+def _normalize_text(s: str) -> str:
+    """Normalize string: lowercased, stripped, and unaccented."""
+    nfkd_form = unicodedata.normalize("NFKD", s)
+    return "".join([c for c in nfkd_form if not unicodedata.combining(c)]).lower().strip()
+
+
+DEFAULT_TEMPLATE_FALLBACK_CUES = [
+    "mexico",
+    "méxico",
+    "querétaro",
+    "queretaro",
+    "cdmx",
+    "mexico city",
+    "ciudad de méxico",
+    "ciudad de mexico",
+    "jalisco",
+    "zapopan",
+    "guadalajara",
+    "monterrey",
+    "apodaca",
+    "nuevo león",
+    "nuevo leon",
+]
+
+
+def _extract_candidate_location_cues(candidate_location: str) -> Tuple[List[str], str, str]:
+    """Extract search cues, country, and clean display name from candidate's current_location.
+
+    Dynamically matches candidate location from preferences.json. Supports any global
+    country/city, with intelligent regional expansion for common countries (Mexico, Canada,
+    United States, UK, Germany, Spain, Colombia, Brazil, etc.) and graceful template fallback.
+
+    Returns:
+        Tuple of (cues_list, country_name, display_name).
+    """
+    raw_loc = (candidate_location or "").strip()
+    norm_loc = _normalize_text(raw_loc)
+
+    is_placeholder = (
+        not norm_loc
+        or norm_loc in ["city, country", "location", "none", "tbd", "unknown"]
+    )
+
+    if is_placeholder:
+        return (list(DEFAULT_TEMPLATE_FALLBACK_CUES), "Mexico", "Local entity")
+
+    cues = set()
+    cues.add(raw_loc.lower())
+    cues.add(norm_loc)
+
+    # Split into components by comma, slash, hyphen, pipe
+    parts = [p.strip() for p in re.split(r"[,/\|\-]+", raw_loc) if p.strip()]
+    for part in parts:
+        p_low = part.lower()
+        p_norm = _normalize_text(part)
+        if len(p_norm) >= 2:
+            cues.add(p_low)
+            cues.add(p_norm)
+
+    country = ""
+    # Recognize common countries / regions to enrich local cues
+    if any(k in norm_loc for k in ["mexic", "queretaro", "cdmx", "jalisco", "monterrey", "nuevo leon"]):
+        country = "Mexico"
+        cues.update(DEFAULT_TEMPLATE_FALLBACK_CUES)
+    elif any(k in norm_loc for k in ["canada", "toronto", "vancouver", "ontario", "montreal", "quebec", "ottawa", "waterloo", "calgary", "alberta"]):
+        country = "Canada"
+        cues.update([
+            "canada", "toronto", "vancouver", "montreal", "montréal", "ottawa",
+            "waterloo", "ontario", "quebec", "québec", "british columbia", "alberta", "calgary"
+        ])
+    elif any(k in norm_loc for k in ["united states", "usa", "u.s."]) or norm_loc.endswith(" us") or norm_loc.endswith(", us"):
+        country = "United States"
+        cues.update(["united states", "usa", "u.s.", "u.s.a."])
+    elif any(k in norm_loc for k in ["united kingdom", "uk", "london", "england", "scotland"]):
+        country = "United Kingdom"
+        cues.update(["united kingdom", "uk", "great britain", "london", "england", "scotland"])
+    elif any(k in norm_loc for k in ["germany", "deutschland", "berlin", "munich", "munchen"]):
+        country = "Germany"
+        cues.update(["germany", "deutschland", "berlin", "munich", "münchen"])
+    elif any(k in norm_loc for k in ["spain", "espana", "madrid", "barcelona"]):
+        country = "Spain"
+        cues.update(["spain", "españa", "espana", "madrid", "barcelona"])
+    elif any(k in norm_loc for k in ["colombia", "bogota", "medellin"]):
+        country = "Colombia"
+        cues.update(["colombia", "bogotá", "bogota", "medellín", "medellin"])
+    elif any(k in norm_loc for k in ["brazil", "brasil", "sao paulo"]):
+        country = "Brazil"
+        cues.update(["brazil", "brasil", "são paulo", "sao paulo", "rio"])
+    else:
+        country = parts[-1] if len(parts) > 1 else raw_loc
+
+    filtered_cues = [c for c in cues if len(c) >= 2]
+    return (sorted(filtered_cues), country or raw_loc, raw_loc)
 
 
 def audit_opportunities_against_preferences(
@@ -63,6 +159,9 @@ def audit_opportunities_against_preferences(
     cal = pref_data.get("availability_calendar", {})
     max_weekly_hours = cal.get("target_weekly_hours_max", 30)
 
+    candidate_location = str(loc_visa.get("current_location", "City, Country")).strip()
+    location_cues, candidate_country, candidate_location_display = _extract_candidate_location_cues(candidate_location)
+
     ind_domain = pref_data.get("industry_domain", {})
     avoid_industries = [i.strip() for i in ind_domain.get("industries_to_avoid", []) if i.strip()]
 
@@ -82,6 +181,9 @@ def audit_opportunities_against_preferences(
             avoid_industries=avoid_industries,
             hard_constraints=hard_constraints,
             auto_disqualifiers=auto_disqualifiers,
+            location_cues=location_cues,
+            candidate_country=candidate_country,
+            candidate_location_display=candidate_location_display,
         )
 
         category = eval_result["category"]
@@ -117,6 +219,9 @@ def _evaluate_single_opportunity(
     avoid_industries: List[str],
     hard_constraints: List[str],
     auto_disqualifiers: List[str],
+    location_cues: Optional[List[str]] = None,
+    candidate_country: str = "Mexico",
+    candidate_location_display: str = "Local entity",
 ) -> Dict[str, Any]:
     """Evaluate one opportunity against active criteria."""
     opp_copy = copy.deepcopy(opp)
@@ -231,21 +336,8 @@ def _evaluate_single_opportunity(
 
     # --- 2. Location & Schedule Evaluation ---
     loc_l = location.lower()
-    mexico_cues = [
-        "mexico",
-        "querétaro",
-        "queretaro",
-        "cdmx",
-        "mexico city",
-        "ciudad de méxico",
-        "jalisco",
-        "zapopan",
-        "monterrey",
-        "apodaca",
-        "nuevo león",
-        "nuevo leon",
-    ]
-    is_mexico = any(cue in loc_l for cue in mexico_cues)
+    norm_opp_loc = _normalize_text(location)
+    is_local = any(cue in loc_l or cue in norm_opp_loc for cue in location_cues) if location_cues else False
 
     # Check remote across both location and work_arrangement
     is_remote = (
@@ -255,6 +347,7 @@ def _evaluate_single_opportunity(
         or "teletrabajo" in arr_l
         or "virtual" in arr_l
         or "work from home" in arr_l
+        or "wfh" in arr_l
     )
 
     # Dynamic Hours Evaluation against candidate's max_weekly_hours
@@ -272,20 +365,20 @@ def _evaluate_single_opportunity(
     is_tier3_or_tier4 = "tier 3" in tier.lower() or "tier 4" in tier.lower()
 
     # General International Sponsor Fallback:
-    # If not Mexico and not Remote, it's an onsite/hybrid role abroad requiring relocation sponsorship
+    # If not local and not Remote, it's an onsite/hybrid role abroad requiring relocation sponsorship
     is_abroad_relocation = (
         is_tier3_or_tier4
-        or (not is_mexico and not is_remote)
-        or (not is_mexico and any(h in loc_l for h in ["hybrid", "onsite", "office", "hub"]))
+        or (not is_local and not is_remote)
+        or (not is_local and any(h in loc_l for h in ["hybrid", "onsite", "office", "hub"]))
     )
     requires_sponsorship = is_abroad_relocation and not has_us_auth
     is_caution_or_summer = requires_sponsorship or is_excess_hours or is_summer or has_5day_onsite
 
-    if (is_mexico or is_remote) and not is_caution_or_summer:
+    if (is_local or is_remote) and not is_caution_or_summer:
         opp_copy["audit_status"] = "direct_match"
         opp_copy["match_reason"] = (
             f"Direct match: Semester-compatible hours ({hours_str} hrs/week <= {max_weekly_hours}h max) "
-            "with Mexico local entity or Remote arrangement."
+            f"with {candidate_location_display} local entity or Remote arrangement."
         )
         return {"category": "matches", "data": opp_copy}
     else:
@@ -301,8 +394,11 @@ def _evaluate_single_opportunity(
             caution_notes.append("Requires 5 days/week onsite during Summer (requires relocation or local presence)")
         if requires_sponsorship:
             caution_notes.append("International role requiring visa sponsorship (US J-1, Canadian co-op work permit, or relocation sponsorship)")
-        if is_remote and not is_mexico:
-            caution_notes.append("International Remote: verify if entity supports Mexican contractors (W-8BEN) or requires US domestic payroll")
+        if is_remote and not is_local:
+            country_label = candidate_country if candidate_country else candidate_location_display
+            caution_notes.append(
+                f"International Remote: verify if entity supports {country_label} contractors / global payroll (e.g. Deel, Remote, W-8BEN) or requires domestic payroll"
+            )
         opp_copy["caution_reasons"] = caution_notes
         return {"category": "caution", "data": opp_copy}
 

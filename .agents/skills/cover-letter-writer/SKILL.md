@@ -31,7 +31,7 @@ Generates targeted, compelling, and strictly grounded supplemental cover letters
    - Never invent or exaggerate past impact, revenue figures, speedups, or tools.
 2. **Conciseness & High Signal**:
    - Total length should strictly be **250–350 words** (never exceeding 400 words).
-   - Eliminate fluff, generic clichés (*"I am writing to express my eager interest..."*), and sycophantic corporate flattery.
+   - Eliminate fluff, generic cliches (*"I am writing to express my eager interest..."*), and sycophantic corporate flattery.
 3. **The 3-Paragraph Formula**:
    - **Paragraph 1: Hook & Value Alignment** (~60–80 words)
      - State the target role and immediate domain intersection without boilerplate openings.

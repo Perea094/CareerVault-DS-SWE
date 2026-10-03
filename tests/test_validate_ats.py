@@ -123,5 +123,55 @@ class TestValidateAts(unittest.TestCase):
                             validate_ats.main()
                         self.assertEqual(cm.exception.code, 1)
 
+    def test_scan_text_and_markdown_resume(self):
+        sample_md = """# Taylor Swift
+taylor@domain.edu • +1 555 0100 • github.com/taylor • linkedin.com/in/taylor
+
+## Education
+University of Science
+B.S. in Computer Science
+
+## Experience
+Software Engineer at Cloud Tech
+- Built scalable streaming pipeline processing 10M events daily.
+
+## Projects
+Distributed Cache
+- Built Redis-compatible caching engine in Rust.
+
+## Skills
+Python, Rust, Distributed Systems, Linux
+"""
+        result = validate_ats.scan_text_for_ats(sample_md, file_path="sample.md")
+        self.assertEqual(result["ats_score"], 100)
+        self.assertTrue(result["is_single_page"])
+        self.assertTrue(result["has_contact_info"]["email"])
+        self.assertTrue(result["has_contact_info"]["phone"])
+        self.assertTrue(result["has_contact_info"]["github"])
+        self.assertTrue(result["has_contact_info"]["linkedin"])
+        self.assertIn("education", result["sections_found"])
+        self.assertIn("experience", result["sections_found"])
+        self.assertIn("projects", result["sections_found"])
+        self.assertIn("skills", result["sections_found"])
+
+    def test_scan_resume_dispatches_by_extension(self):
+        import tempfile
+        with tempfile.TemporaryDirectory() as tmpdir:
+            tex_file = Path(tmpdir) / "test.tex"
+            tex_file.write_text(r"""
+\documentclass{article}
+\begin{document}
+Candidate
+user@example.com -- +1 555 0122
+\cvsection{Education} University
+\cvsection{Experience} Work
+\cvsection{Projects} Code
+\cvsection{Technical Skills} Python
+\end{document}
+""", encoding="utf-8")
+            result = validate_ats.scan_resume(tex_file)
+            self.assertEqual(result["ats_score"], 100)
+            self.assertEqual(result["file_path"], str(tex_file))
+
 if __name__ == "__main__":
     unittest.main()

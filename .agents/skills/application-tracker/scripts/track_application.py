@@ -9,6 +9,7 @@ import os
 import sys
 import json
 import csv
+from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Any, Union
 
@@ -106,8 +107,9 @@ def generate_pipeline_dashboard(opportunities: Union[List[Dict[str, Any]], Dict[
         else:
             grouped["wishlist"].append(opp)
             
-    md = """---
-created: 2026-10-02
+    today_str = datetime.now().strftime("%Y-%m-%d")
+    md = f"""---
+created: {today_str}
 type: pipeline-dashboard
 tags: [pipeline, kanban, applications]
 ---

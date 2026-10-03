@@ -44,6 +44,7 @@ def load_profile(preferences_path: Union[str, Path, None] = None) -> Dict[str, A
         return dict(DEFAULT_PROFILE)
         
     cand = data.get("candidate", {}) if isinstance(data.get("candidate"), dict) else {}
+    acad = data.get("academic_context", {}) if isinstance(data.get("academic_context"), dict) else {}
     goals = data.get("career_goals", {}) if isinstance(data.get("career_goals"), dict) else {}
     comp = data.get("compensation", {}) if isinstance(data.get("compensation"), dict) else (
         data.get("compensation_benefits", {}) if isinstance(data.get("compensation_benefits"), dict) else {}
@@ -54,6 +55,7 @@ def load_profile(preferences_path: Union[str, Path, None] = None) -> Dict[str, A
     compensation_floor = (
         comp.get("minimum_hourly_usd")
         or comp.get("minimum_hourly")
+        or comp.get("floor")
         or DEFAULT_PROFILE["compensation_floor"]
     )
     try:
@@ -61,13 +63,51 @@ def load_profile(preferences_path: Union[str, Path, None] = None) -> Dict[str, A
     except (ValueError, TypeError):
         compensation_floor = DEFAULT_PROFILE["compensation_floor"]
 
+    school = (
+        cand.get("school")
+        or cand.get("university")
+        or acad.get("university")
+        or DEFAULT_PROFILE["school"]
+    )
+    degree = (
+        cand.get("degree")
+        or cand.get("major")
+        or acad.get("program")
+        or DEFAULT_PROFILE["degree"]
+    )
+    graduation = (
+        cand.get("graduation")
+        or cand.get("expected_graduation")
+        or acad.get("expected_graduation")
+        or DEFAULT_PROFILE["graduation"]
+    )
+    location = (
+        cand.get("location")
+        or loc_visa.get("current_location")
+        or DEFAULT_PROFILE["location"]
+    )
+
+    raw_us_auth = str(loc_visa.get("us_work_authorization", "")).strip()
+    valid_us_auth = raw_us_auth if raw_us_auth and raw_us_auth.lower() not in ["none", "no"] else None
+
+    work_auth = (
+        cand.get("work_authorization")
+        or loc_visa.get("work_authorization")
+        or valid_us_auth
+        or DEFAULT_PROFILE["work_authorization"]
+    )
+
     profile = {
         "name": cand.get("name") or DEFAULT_PROFILE["name"],
-        "school": cand.get("school") or cand.get("university") or DEFAULT_PROFILE["school"],
-        "degree": cand.get("degree") or DEFAULT_PROFILE["degree"],
-        "graduation": cand.get("graduation") or cand.get("expected_graduation") or DEFAULT_PROFILE["graduation"],
-        "location": cand.get("location") or loc_visa.get("current_location") or DEFAULT_PROFILE["location"],
-        "work_authorization": cand.get("work_authorization") or loc_visa.get("us_work_authorization") or DEFAULT_PROFILE["work_authorization"],
+        "school": school,
+        "university": school,
+        "degree": degree,
+        "major": degree,
+        "graduation": graduation,
+        "expected_graduation": graduation,
+        "location": location,
+        "current_location": location,
+        "work_authorization": work_auth,
         "email": cand.get("email") or cand.get("email_contact") or DEFAULT_PROFILE["email"],
         "phone": cand.get("phone") or DEFAULT_PROFILE["phone"],
         "linkedin": cand.get("linkedin") or DEFAULT_PROFILE["linkedin"],
@@ -81,3 +121,4 @@ def load_profile(preferences_path: Union[str, Path, None] = None) -> Dict[str, A
 if __name__ == "__main__":
     import pprint
     pprint.pprint(load_profile())
+

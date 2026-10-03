@@ -3,14 +3,17 @@
 Automated LaTeX CV Compiler with High-Resolution PNG Preview Generation.
 Detects available LaTeX compilers (tectonic, pdflatex, xelatex, latexmk),
 compiles .tex resumes to PDF, and renders a page 1 PNG snapshot for Obsidian embedding.
+Supports CLI, JSON output for AI agents, and custom output directories.
 """
 
 import os
 import sys
+import json
 import shutil
 import argparse
 import subprocess
 from pathlib import Path
+from typing import Optional, Tuple, Union
 
 try:
     import pypdfium2
@@ -19,12 +22,33 @@ except ImportError:
 
 SUPPORTED_COMPILERS = ["tectonic", "pdflatex", "xelatex", "latexmk"]
 
-def detect_latex_compiler():
+
+def detect_latex_compiler() -> Optional[str]:
     """Detects first available LaTeX compiler in PATH."""
     for compiler in SUPPORTED_COMPILERS:
         if shutil.which(compiler):
             return compiler
     return None
+
+
+def resolve_tex_path(tex_file: Union[str, Path]) -> Path:
+    """
+    Resolves tex_file path checking working directory, vault root, or 002-cv directory.
+    """
+    path = Path(tex_file)
+    if path.exists():
+        return path
+
+    vault_root = Path(__file__).resolve().parent.parent.parent
+    if (vault_root / path).exists():
+        return vault_root / path
+
+    cv_dir = Path(__file__).resolve().parent.parent
+    if (cv_dir / path).exists():
+        return cv_dir / path
+
+    return path
+
 
 def build_compile_command(compiler: str, tex_file: Path, output_dir: Path) -> list:
     """Builds appropriate CLI arguments for the detected compiler."""
@@ -52,6 +76,7 @@ def build_compile_command(compiler: str, tex_file: Path, output_dir: Path) -> li
     else:
         raise ValueError(f"Unsupported compiler: {compiler}")
 
+
 def generate_preview_image(pdf_path: Path, output_png: Path = None, dpi: int = 150) -> Path:
     """Renders the first page of the PDF to a high-resolution PNG using pypdfium2."""
     if pypdfium2 is None:
@@ -74,17 +99,23 @@ def generate_preview_image(pdf_path: Path, output_png: Path = None, dpi: int = 1
     image.save(str(output_png), format="PNG")
     return output_png
 
-def compile_resume(tex_file: Path, output_dir: Path = None, generate_png: bool = True, dpi: int = 150):
+
+def compile_resume(
+    tex_file: Union[str, Path],
+    output_dir: Optional[Union[str, Path]] = None,
+    generate_png: bool = True,
+    dpi: int = 150
+) -> Tuple[Path, Optional[Path]]:
     """Orchestrates compilation and preview generation."""
-    tex_file = Path(tex_file)
-    if not tex_file.exists():
-        raise FileNotFoundError(f"LaTeX file not found: {tex_file}")
+    resolved_tex = resolve_tex_path(tex_file)
+    if not resolved_tex.exists():
+        raise FileNotFoundError(f"LaTeX file not found: {resolved_tex}")
         
     if output_dir is None:
-        output_dir = tex_file.parent
+        target_out_dir = resolved_tex.parent
     else:
-        output_dir = Path(output_dir)
-    output_dir.mkdir(parents=True, exist_ok=True)
+        target_out_dir = Path(output_dir)
+    target_out_dir.mkdir(parents=True, exist_ok=True)
     
     compiler = detect_latex_compiler()
     if not compiler:
@@ -93,16 +124,16 @@ def compile_resume(tex_file: Path, output_dir: Path = None, generate_png: bool =
             "Quick install (PowerShell): winget install MiKTeX.MiKTeX"
         )
         
-    cmd = build_compile_command(compiler, tex_file, output_dir)
-    print(f"[INFO] Compiling {tex_file.name} using {compiler}...")
+    cmd = build_compile_command(compiler, resolved_tex, target_out_dir)
+    print(f"[INFO] Compiling {resolved_tex.name} using {compiler}...")
     result = subprocess.run(cmd, capture_output=True, text=True)
     
     if result.returncode != 0:
         print(f"[ERROR] LaTeX compilation failed:\n{result.stderr or result.stdout}", file=sys.stderr)
         raise subprocess.CalledProcessError(result.returncode, cmd, output=result.stdout, stderr=result.stderr)
         
-    pdf_name = tex_file.stem + ".pdf"
-    pdf_path = output_dir / pdf_name
+    pdf_name = resolved_tex.stem + ".pdf"
+    pdf_path = target_out_dir / pdf_name
     print(f"[SUCCESS] PDF generated at: {pdf_path}")
     
     png_path = None
@@ -115,6 +146,7 @@ def compile_resume(tex_file: Path, output_dir: Path = None, generate_png: bool =
             
     return pdf_path, png_path
 
+
 def main():
     parser = argparse.ArgumentParser(description="Compile LaTeX Resume to PDF and PNG preview")
     parser.add_argument("tex_file", nargs="?", default="002-cv/template.tex", help="Path to .tex file")
@@ -122,29 +154,52 @@ def main():
     parser.add_argument("--no-preview", action="store_true", help="Skip PNG preview generation")
     parser.add_argument("--dpi", type=int, default=150, help="DPI for PNG preview (default: 150)")
     parser.add_argument("--preview-only", action="store_true", help="Only generate PNG from existing PDF")
+    parser.add_argument("--json", action="store_true", help="Output machine-readable JSON status for AI agents")
     
     args = parser.parse_args()
-    tex_path = Path(args.tex_file)
+    tex_path = resolve_tex_path(args.tex_file)
+    compiler = detect_latex_compiler()
     
     if args.preview_only:
         pdf_path = tex_path.with_suffix(".pdf")
         if not pdf_path.exists():
-            print(f"[ERROR] PDF not found: {pdf_path}", file=sys.stderr)
+            if args.json:
+                print(json.dumps({"success": False, "error": f"PDF not found: {pdf_path}"}))
+            else:
+                print(f"[ERROR] PDF not found: {pdf_path}", file=sys.stderr)
             sys.exit(1)
         png = generate_preview_image(pdf_path, dpi=args.dpi)
-        print(f"[SUCCESS] Preview saved to: {png}")
+        if args.json:
+            print(json.dumps({"success": True, "preview_png": str(png.resolve())}))
+        else:
+            print(f"[SUCCESS] Preview saved to: {png}")
         sys.exit(0)
         
     try:
-        compile_resume(
+        pdf_path, png_path = compile_resume(
             tex_file=tex_path,
             output_dir=Path(args.output_dir) if args.output_dir else None,
             generate_png=not args.no_preview,
             dpi=args.dpi
         )
+        if args.json:
+            print(json.dumps({
+                "success": True,
+                "compiler": compiler,
+                "pdf_path": str(pdf_path.resolve()),
+                "png_path": str(png_path.resolve()) if png_path else None
+            }))
     except Exception as e:
-        print(f"[ERROR] {e}", file=sys.stderr)
+        if args.json:
+            print(json.dumps({
+                "success": False,
+                "compiler": compiler,
+                "error": str(e)
+            }))
+        else:
+            print(f"[ERROR] {e}", file=sys.stderr)
         sys.exit(1)
+
 
 if __name__ == "__main__":
     main()

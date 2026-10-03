@@ -71,10 +71,10 @@ obsidian tags counts
 
 ### Step 4: Interactive Confirmation Gate
 Before writing the note into the vault, present a clear proposal to the user:
-- **Destino sugerido**: `<Semestre>/<Materia>`
-- **Título de la nota**: `<Título extraído o propuesto>`
-- **Etiquetas sugeridas**: `#concepto1`, `#materia`
-- **Conexiones encontradas**: 3–5 candidate notes discovered via Obsidian search
+- **Suggested Destination**: `<Semester>/<Course>`
+- **Note Title**: `<Extracted or proposed title>`
+- **Suggested Tags**: `#concept1`, `#course`
+- **Discovered Connections**: 3–5 candidate notes discovered via Obsidian search
 - Prompt the user to confirm or adjust the folder and connections.
 
 ### Step 5: Generate the Linked Note
@@ -82,27 +82,28 @@ Format the note following the vault's structure:
 
 ```markdown
 ---
-tipo: Apunte
-fecha: YYYY-MM-DD
-materia: <Nombre de la materia>
-fuente: <Nombre del archivo fuente>
+type: note
+created: YYYY-MM-DD
+updated: YYYY-MM-DD
+course: <Course Name>
+source_file: <Source File Name>
 tags:
   - tag1
   - tag2
-relacionados:
-  - "[[Nota 1]]"
-  - "[[Nota 2]]"
+related:
+  - "[[Note 1]]"
+  - "[[Note 2]]"
 ---
 
-# <Título de la nota>
+# <Note Title>
 
-<Contenido convertido en Markdown con fórmulas matemáticas KaTeX y [[wikilinks]] inline en menciones relevantes>
+<Converted Markdown content with KaTeX mathematical formulas and inline [[wikilinks]] for relevant mentions>
 
 ---
 
-## Conexiones
-- [[Nota 1]] — <Breve descripción de la relación conceptual>
-- [[Nota 2]] — <Breve descripción de la relación conceptual>
+## Connections
+- [[Note 1]] — <Brief description of conceptual relationship>
+- [[Note 2]] — <Brief description of conceptual relationship>
 ```
 
 Write the note using `obsidian create path="..." content="..."` or `write_to_file`.

@@ -58,5 +58,27 @@ class TestCompileCv(unittest.TestCase):
         self.assertEqual(png_path, pdf_path.with_suffix(".png"))
         mock_image.save.assert_called_once()
 
+    def test_resolve_tex_path(self):
+        # Existing template.tex in 002-cv
+        resolved = compile_cv.resolve_tex_path("002-cv/template.tex")
+        self.assertTrue(resolved.exists())
+
+        resolved_short = compile_cv.resolve_tex_path("template.tex")
+        self.assertTrue(resolved_short.exists())
+
+    def test_cli_json_no_compiler(self):
+        import json
+        with patch("compile_cv.detect_latex_compiler", return_value=None):
+            with patch("sys.argv", ["compile_cv.py", "002-cv/template.tex", "--json"]):
+                with patch("builtins.print") as mock_print:
+                    with self.assertRaises(SystemExit) as cm:
+                        compile_cv.main()
+                    self.assertEqual(cm.exception.code, 1)
+                    mock_print.assert_called()
+                    call_arg = mock_print.call_args[0][0]
+                    parsed = json.loads(call_arg)
+                    self.assertFalse(parsed["success"])
+                    self.assertIn("No LaTeX compiler", parsed["error"])
+
 if __name__ == "__main__":
     unittest.main()

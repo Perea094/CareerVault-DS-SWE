@@ -55,5 +55,37 @@ class TestCandidateProfile(unittest.TestCase):
             if tmp_path.exists():
                 tmp_path.unlink()
 
+    def test_academic_context_and_international_visa_fallbacks(self):
+        sample_data = {
+            "academic_context": {
+                "university": "Oxford University",
+                "program": "M.Sc. in Advanced Computer Science",
+                "expected_graduation": "September 2027"
+            },
+            "location_visa": {
+                "current_location": "Oxford, UK",
+                "work_authorization": "UK Citizen / EU Pre-settled",
+                "us_work_authorization": "None"
+            }
+        }
+        with tempfile.NamedTemporaryFile("w", suffix=".json", delete=False, encoding="utf-8") as f:
+            json.dump(sample_data, f)
+            tmp_path = Path(f.name)
+
+        try:
+            profile = candidate_profile.load_profile(tmp_path)
+            self.assertEqual(profile["school"], "Oxford University")
+            self.assertEqual(profile["university"], "Oxford University")
+            self.assertEqual(profile["degree"], "M.Sc. in Advanced Computer Science")
+            self.assertEqual(profile["major"], "M.Sc. in Advanced Computer Science")
+            self.assertEqual(profile["graduation"], "September 2027")
+            self.assertEqual(profile["location"], "Oxford, UK")
+            self.assertEqual(profile["work_authorization"], "UK Citizen / EU Pre-settled")
+        finally:
+            if tmp_path.exists():
+                tmp_path.unlink()
+
+
 if __name__ == "__main__":
     unittest.main()
+

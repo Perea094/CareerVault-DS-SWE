@@ -6,7 +6,9 @@ technical question drills, and system design talking points grounded in vault ev
 
 from typing import Dict, List, Any, Optional
 import argparse
+import json
 import sys
+from datetime import datetime
 from pathlib import Path
 
 # Add 001-background to path to import candidate_profile
@@ -38,9 +40,21 @@ def build_dossier_markdown(
     """Builds a complete Markdown interview dossier for an opportunity."""
     if candidate_name is None:
         if candidate_profile:
-            candidate_name = candidate_profile.load_profile().get("name", "Candidate")
+            try:
+                candidate_name = candidate_profile.load_profile().get("name", "Candidate")
+            except Exception:
+                candidate_name = "Candidate"
         else:
-            candidate_name = "Candidate"
+            pref_path = BACKGROUND_DIR / "preferences.json"
+            if pref_path.exists():
+                try:
+                    with open(pref_path, "r", encoding="utf-8") as f:
+                        pref_data = json.load(f)
+                        candidate_name = pref_data.get("candidate", {}).get("name", "Candidate")
+                except Exception:
+                    candidate_name = "Candidate"
+            else:
+                candidate_name = "Candidate"
 
     company = role_info.get("company", "Target Company")
     role = role_info.get("role", "Target Role")
@@ -57,8 +71,9 @@ def build_dossier_markdown(
             result=star.get("r", "Measurable Impact")
         ) + "\n"
 
+    today_str = datetime.now().strftime("%Y-%m-%d")
     return f"""---
-created: 2026-10-02
+created: {today_str}
 type: interview-dossier
 candidate: "{candidate_name}"
 company: "{company}"

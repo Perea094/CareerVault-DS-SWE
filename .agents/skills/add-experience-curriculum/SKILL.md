@@ -21,16 +21,16 @@ The skill operates using paths relative to the vault root (or detected workspace
    - **Strict Rule:** Never invent metrics, benchmarks, or tools. All claims must be grounded in evidence.
 
 2. **Format Experience Entry**
-   Apply Google XYZ formula (*Accomplished [X], measured by [Y], by doing [Z]*):
+   Apply Google XYZ formula (*Accomplished [X], measured by [Y], by doing [Z]*) strictly following `001-background/templates/experience-blueprint.md`:
    ```markdown
-   ### Organization / Socio Formador — Role Title
-   *Modality / Context | Location | Month YYYY – Month YYYY*
-   *Repositorio Oficial:* [owner/repo](url)
+   ### Organization / Company — Role Title
+   *Modality (Remote/Hybrid/Onsite) | Location | Month YYYY – Month YYYY*
+   *Official Repo / Project URL:* [link](https://...)
 
-   - **Contexto & Problema:** Institutional scope, scale, and operational bottleneck.
-   - **Stack & Arquitectura:** Exact languages, frameworks, databases, and architectural patterns.
-   - **Funcionalidades & Métricas:** Measurable impact, key features, throughput, latency, or scale.
-   - **Calidad & Testing:** Automated test suites, coverage, specs, and validation results.
+   - **Context & Problem:** Institutional scale, traffic volume, or operational bottleneck being addressed.
+   - **Stack & Architecture:** Languages (Python, C++, SQL), frameworks (PyTorch, FastAPI, Spark), and hardware/cloud platforms.
+   - **Impact & Metrics (Google XYZ):** Accomplished [X], measured by [Y] (e.g. latency, throughput, accuracy, cost), by doing [Z].
+   - **Testing & Verification:** Test coverage, benchmarks, automated validation, and peer review.
    ```
 
 3. **Temporal Snapshot & History Preservation**
@@ -42,24 +42,24 @@ The skill operates using paths relative to the vault root (or detected workspace
      created: YYYY-MM-DD
      updated: YYYY-MM-DD
      type: experience
-     tags: [background, experience, socio-formador, fullstack, ...]
+     tags: [background, experience, industry, swe, data-science]
      status: evergreen
      ---
      ```
-   - Insert new experience under the relevant section:
-     - `## Proyectos de Vinculación con Socios Formadores (Tecnológico de Monterrey)` (Tec21 challenges)
-     - `## Experiencia en Industria` (Internships, formal employment)
-     - `## Liderazgo & Startups` (Own ventures, executive roles)
-     - `## Organizaciones Estudiantiles & Competiciones` (LEIA, hackathons, contests)
-     - `## Investigación & Proyectos Académicos` (Research, papers)
+   - Insert new experience under the relevant universal section:
+     - `## Industry Experience` (Internships, formal employment, contracted roles)
+     - `## Technical Projects & Challenges` (Industry challenges, open source systems)
+     - `## Startups & Leadership` (Venture leadership, founding roles)
+     - `## Student Organizations & Competitions` (Engineering clubs, hackathons, contests)
+     - `## Academic Research & Publications` (Research labs, published papers, capstones)
 
 4. **Integrity & Backlinks**
    - In superseded file, add top callout:
      `> [!NOTE]`
-     `> Esta versión ha sido sucedida por [[experiences-YYYY-MM-DD|Título]].`
-   - In `001-background/findings/consolidated-findings.md`:
+     `> This version has been superseded by [[experiences-YYYY-MM-DD|Title]].`
+   - In `001-background/findings/consolidated-findings.md` (or findings audit note):
      - Update YAML `updated: YYYY-MM-DD`.
-     - Append bullet summary under `## 12. Subdirectory: experiences/`.
+     - Append bullet summary under `## Subdirectory: experiences/`.
 
 5. **Verify & Report**
    - Confirm file creation and links. Present brief summary with clickable `file://` links.

@@ -93,10 +93,17 @@ DEFAULT_PREFERENCES: Dict[str, Any] = {
     "candidate": {
         "name": "Candidate",
         "university": "University",
+        "school": "University",
         "degree": "B.S. in Computer Science / Data Science",
         "current_semester": "Junior",
         "expected_graduation": "May 2027",
+        "location": "City, Country",
+        "work_authorization": "Needs Sponsorship / International",
         "email_contact": "candidate@example.com",
+        "email": "candidate@example.com",
+        "phone": "+1 555 0100",
+        "linkedin": "https://linkedin.com/in/username",
+        "github": "https://github.com/username",
     },
     "metadata": {
         "created": "2026-10-02",
@@ -142,19 +149,21 @@ DEFAULT_PREFERENCES: Dict[str, Any] = {
     },
     "location_visa": {
         "current_location": "City, Country",
+        "work_authorization": "Needs Sponsorship / International",
         "us_work_authorization": "None",
         "relocation_willingness": "Remote preferred; open to international relocation if visa sponsored",
         "travel_willingness": True,
     },
     "compensation_benefits": {
         "minimum_hourly": 20,
+        "minimum_hourly_usd": 20,
         "equity_importance": "Don't care",
         "benefits_priorities": [
             "PTO",
             "Health insurance",
             "Learning budget",
             "Hardware stipend",
-            "401k",
+            "401k / Retirement plan",
         ],
         "negotiation_flexibility": "Flexible",
     },
@@ -369,13 +378,14 @@ def format_flat_yaml_frontmatter(data: Dict[str, Any]) -> str:
         ("timezone_overlap", get_val(wa, "timezone_overlap", default="Flexible; prefers morning availability for classes")),
         ("communication_style", get_val(wa, "communication_style", default="Both async and sync acceptable")),
         ("scheduling_constraints", get_val(wa, "scheduling_constraints", default="Morning classes likely; schedule TBD")),
-        ("current_location", get_val(lv, "current_location", default="Querétaro, Mexico")),
+        ("current_location", get_val(lv, "current_location", default="City, Country")),
+        ("work_authorization", get_val(lv, "work_authorization", default="Needs Sponsorship / International")),
         ("us_work_authorization", get_val(lv, "us_work_authorization", default="None")),
         ("relocation_willingness", get_val(lv, "relocation_willingness", default="Remote preferred; open to international relocation if visa sponsored")),
         ("travel_willingness", get_val(lv, "travel_willingness", default=True)),
         ("minimum_hourly", get_val(cb, "minimum_hourly", default=20)),
         ("equity_importance", get_val(cb, "equity_importance", default="Don't care")),
-        ("benefits_priorities", get_val(cb, "benefits_priorities", default=["PTO", "Health insurance", "Learning budget", "Hardware stipend", "401k"])),
+        ("benefits_priorities", get_val(cb, "benefits_priorities", default=["PTO", "Health insurance", "Learning budget", "Hardware stipend", "401k / Retirement plan"])),
         ("negotiation_flexibility", get_val(cb, "negotiation_flexibility", default="Flexible")),
         ("target_industries", get_val(ind, "target_industries", default=["Any (no strong preference)"])),
         ("domains_of_interest", get_val(ind, "domains_of_interest", default=["GenAI/LLMs", "RL", "Computer Vision", "NLP", "MLOps", "Research", "Applied ML"])),
@@ -408,17 +418,21 @@ def generate_narrative_context(data: Dict[str, Any]) -> str:
         return narrative
 
     cand = data.get("candidate", {})
-    degree = cand.get("degree", "B.S. Data Science & Mathematics")
-    semester = cand.get("current_semester") or cand.get("semester", "4th semester")
-    university = cand.get("university", "Tecnológico de Monterrey")
+    acad = data.get("academic_context", {})
+    degree = cand.get("degree") or acad.get("program", "B.S. in Computer Science / Data Science")
+    semester = cand.get("current_semester") or cand.get("semester") or acad.get("term", "Junior")
+    university = cand.get("university") or cand.get("school") or acad.get("university", "University")
 
     wa = data.get("work_arrangement", {})
     cal = data.get("availability_calendar", {})
 
     lv = data.get("location_visa", {})
-    loc = lv.get("current_location", "Querétaro, Mexico")
-    us_auth = str(lv.get("us_work_authorization", "None"))
-    us_auth_str = "**No US work authorization** (no OPT, H1B, TN, etc.)" if us_auth.lower() == "none" else f"**US work authorization**: {us_auth}"
+    loc = lv.get("current_location", "City, Country")
+    work_auth_val = str(lv.get("work_authorization") or lv.get("us_work_authorization", "Needs Sponsorship")).strip()
+    if work_auth_val.lower() in ["none", "needs sponsorship", "needs sponsorship / international"]:
+        work_auth_str = "**Requires visa sponsorship for US/international relocation** (or remote employment in home country)"
+    else:
+        work_auth_str = f"**Work authorization**: {work_auth_val}"
     travel = "**Occasional onsite travel is acceptable**" if lv.get("travel_willingness", True) else "**No travel**"
 
     cb = data.get("compensation_benefits", {})
@@ -456,7 +470,7 @@ def generate_narrative_context(data: Dict[str, Any]) -> str:
 Strong preference for **remote work** due to ongoing university studies ({degree}, {semester} at {university}). Hybrid is acceptable; onsite is last resort. Preferred commitment: **20–30 hours/week** (40 manageable but not ideal). Needs **daily hour flexibility** — can work longer on some days, shorter on others. Morning classes likely (schedule TBD), so morning availability may be limited. Comfortable with both async and sync communication.
 
 ## Location & Visa
-Based in **{loc}**. {us_auth_str}. Relocation only viable with **full visa sponsorship**. Open to international relocation (Canada, EU, etc.) if sponsored. {travel}.
+Based in **{loc}**. {work_auth_str}. Relocation only viable with **full visa sponsorship**. Open to international relocation if sponsored. {travel}.
 
 ## Compensation & Benefits
 **Minimum: ${min_h}/hour** (flexible — first formal role beyond internships). Equity: **{str(eq).lower()}**. Benefits priority order: **{b_str}**. Negotiation: **{str(neg).lower()}** — no hard floor.

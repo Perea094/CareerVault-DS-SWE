@@ -25,14 +25,32 @@ except ImportError:
 
 
 def get_default_candidate_info() -> Dict[str, Any]:
-    """Retrieve default candidate profile info from candidate_profile if available."""
+    """Retrieve default candidate profile info from candidate_profile or preferences.json."""
     if candidate_profile:
-        prof = candidate_profile.load_profile()
-        return {
-            "name": prof.get("name", "Candidate"),
-            "school": prof.get("school", "University"),
-            "highlight": "delivered high-throughput distributed systems & ML pipelines",
-        }
+        try:
+            prof = candidate_profile.load_profile()
+            return {
+                "name": prof.get("name", "Candidate"),
+                "school": prof.get("school", "University"),
+                "highlight": "delivered high-throughput distributed systems & ML pipelines",
+            }
+        except Exception:
+            pass
+
+    pref_path = BACKGROUND_DIR / "preferences.json"
+    if pref_path.exists():
+        try:
+            with open(pref_path, "r", encoding="utf-8") as f:
+                pref_data = json.load(f)
+                cand = pref_data.get("candidate", {})
+                return {
+                    "name": cand.get("name", "Candidate"),
+                    "school": cand.get("university", "University"),
+                    "highlight": "delivered high-throughput distributed systems & ML pipelines",
+                }
+        except Exception:
+            pass
+
     return {
         "name": "Candidate",
         "school": "University",
@@ -164,7 +182,7 @@ def format_outreach_markdown(
 ---
 
 ### Tier 1: Alumni Outreach
-*Target*: Alumni from {candidate_info.get('school', 'Tecnológico de Monterrey')} at {company}.
+*Target*: Alumni from {candidate_info.get('school') or candidate_info.get('university', 'University')} at {company}.
 *Goal*: Build rapport, ask about team culture, request advice or internal referral.
 
 ```markdown

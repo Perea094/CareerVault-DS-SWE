@@ -20,6 +20,7 @@ timezone_overlap: "Flexible; prefers morning availability for classes"
 communication_style: "Both async and sync acceptable"
 scheduling_constraints: "Morning classes likely; schedule TBD"
 current_location: "City, Country"
+work_authorization: "Needs Sponsorship / International"
 us_work_authorization: "None"
 relocation_willingness: "Remote preferred; open to international relocation if visa sponsored"
 travel_willingness: true
@@ -30,7 +31,7 @@ benefits_priorities:
   - Health insurance
   - Learning budget
   - Hardware stipend
-  - 401k
+  - "401k / Retirement plan"
 negotiation_flexibility: "Flexible"
 target_industries:
   - "Any (no strong preference)"
@@ -73,10 +74,10 @@ team_size: "No preference"
 Strong preference for **remote work** due to ongoing university studies (B.S. in Computer Science / Data Science, Junior at University). Hybrid is acceptable; onsite is last resort. Preferred commitment: **20–30 hours/week** (40 manageable but not ideal). Needs **daily hour flexibility** — can work longer on some days, shorter on others. Morning classes likely (schedule TBD), so morning availability may be limited. Comfortable with both async and sync communication.
 
 ## Location & Visa
-Based in **City, Country**. **No US work authorization** (no OPT, H1B, TN, etc.). Relocation only viable with **full visa sponsorship**. Open to international relocation (Canada, EU, etc.) if sponsored. **Occasional onsite travel is acceptable**.
+Based in **City, Country**. **Requires visa sponsorship for US/international relocation** (or remote employment in home country). Relocation only viable with **full visa sponsorship**. Open to international relocation if sponsored. **Occasional onsite travel is acceptable**.
 
 ## Compensation & Benefits
-**Minimum: $20/hour** (flexible — first formal role beyond internships). Equity: **don't care**. Benefits priority order: **PTO > Health insurance > Learning budget > Hardware stipend > 401k**. Negotiation: **flexible** — no hard floor.
+**Minimum: $20/hour** (flexible — first formal role beyond internships). Equity: **don't care**. Benefits priority order: **PTO > Health insurance > Learning budget > Hardware stipend > 401k / Retirement plan**. Negotiation: **flexible** — no hard floor.
 
 ## Industry & Domain
 **No strong industry preference** — open to Healthcare/AI, Fintech, Research labs, Gaming, EdTech, etc. Healthcare is a growth area (no prior domain experience). **Domains of interest**: GenAI/LLMs, RL, Computer Vision, NLP, MLOps, Research, Applied ML — **all welcome**. **Avoid: Crypto**.

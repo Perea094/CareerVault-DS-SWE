@@ -12,5 +12,5 @@ status: active
 - **Overview:** Concise problem statement and architectural objective.
 - **Key Technical Highlights:**
   - Designed and implemented [system component], achieving [quantifiable metric] under [conditions].
-  - Optimized [bottleneck], reducing compute footprint or latency by [X\%].
+  - Optimized [bottleneck], reducing compute footprint or latency by [X%].
 - **Verification & Reproducibility:** Test suite specs, benchmark scripts, and deployment instructions.

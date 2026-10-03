@@ -43,19 +43,23 @@ The scanner monitors **19 high-volume feeds** across seven community aggregation
 
 ---
 
-## 3. Dynamic Viability & Triage Engine
+## 3. Dynamic Worldwide Viability & Triage Engine
 
-Every job posting is evaluated against the constraints in [`001-background/preferences.md`](../../001-background/preferences.md):
+Every job posting is dynamically evaluated against the candidate's active constraints in [`001-background/preferences.json`](../../001-background/preferences.json) (with fallback to [`001-background/preferences.md`](../../001-background/preferences.md)):
+- **Candidate Context Integration**:
+  - **Home Location (`current_location`)**: Dynamically resolves the candidate's home country and metropolitan region anywhere worldwide (e.g., Mexico, Canada, United States, United Kingdom, Germany, Brazil, India, etc.).
+  - **Work Authorization (`us_work_authorization`)**: Recognizes domestic authorization (Citizen, Permanent Resident) versus international sponsorship requirements (None, J-1, H-1B, TN). Domestic authorized candidates receive Tier 1 status for home country roles without visa penalties.
+  - **Disallowed Industries (`industries_to_avoid`)**: Dynamically filters excluded sectors (Crypto, Web3, Gambling, etc.).
 - **Hard Disqualifiers**:
-  - `sponsorship_notes` containing "US Citizenship Required" or "No Visa Sponsorship" on US onsite roles.
+  - `sponsorship_notes` containing "US Citizenship Required" or "No Visa Sponsorship" on US onsite roles (when candidate lacks US work authorization).
   - Strict PhD-only or Master's-only requisitions (unless undergraduate applicants are explicitly welcome).
-  - Excluded industries (Crypto, Web3, Blockchain).
+  - Excluded industries configured in `preferences.json` (Crypto, Web3, Blockchain, etc.).
   - Missing application URLs.
 - **Stratified Priority Tiers**:
-  - **Tier 1 (Mexico & LATAM)**: Location in Mexico City, Querétaro, Guadalajara, Monterrey, or Mexican entities. (Score: 95)
-  - **Tier 2 (Remote Part-Time & Flexible)**: Remote roles allowing 20–30 hrs/week or independent contractor status. (Score: 85)
-  - **Tier 4 (Canadian Co-op & International Hubs)**: Canadian co-op terms in Toronto, Ottawa, Montreal, Vancouver. (Score: 75)
-  - **Tier 3 (Elite US Summer 2027 Sponsors)**: Tier-1 tech/quant sponsoring J-1 visas (Figma, Adobe, Jane Street, Citadel, etc.). (Score: 65)
+  - **Tier 1 (Domestic / Home Market)**: Direct legal match in the candidate's home country/region with zero visa friction. (Score: 95)
+  - **Tier 2 (Remote Part-Time & Flexible)**: Global remote roles matching candidate schedule and target hours. (Score: 85)
+  - **Tier 3 (Elite Sponsoring Programs / Target Hubs)**: Top tech/quant firms sponsoring J-1/H-1B visas (Figma, Adobe, Jane Street, Citadel, etc.), or domestic elite programs if authorized. (Score: 65)
+  - **Tier 4 (Global Co-op & International Hubs)**: International co-op terms and innovation hubs offering exchange permits or bilateral agreements. (Score: 50–75)
 
 ---
 
@@ -99,7 +103,7 @@ python 004-work-opportunities/scripts/prune_opportunities.py --older-than 45
 python 004-work-opportunities/scripts/prune_opportunities.py --archive-status passed,rejected,closed
 
 # Shortcut: mark a specific ID as passed and archive it
-python 004-work-opportunities/scripts/prune_opportunities.py --mark-passed opp-01-salesforce-ai-builder-intern-mexico
+python 004-work-opportunities/scripts/prune_opportunities.py --mark-passed opp-01-example-intern-id
 
 # List all archived opportunities
 python 004-work-opportunities/scripts/prune_opportunities.py --list-archived

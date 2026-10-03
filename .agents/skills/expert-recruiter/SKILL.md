@@ -113,8 +113,8 @@ When upgrading weak bullets or addressing gaps:
    - *Example Transformation*:
      - ❌ **Weak**: "Collaborated on integrating predictive models applied to market intelligence."
      - ✅ **Strong**: "Integrated spatial predictive models using INEGI census datasets across 15+ urban zones, enabling commercial clients to identify high-potential expansion locations with 20% higher projected revenue."
-     - ❌ **Weak**: "Co-founded student AI group; won 1st place at Expo Ingenierías with DAVE project."
-     - ✅ **Strong**: "Co-founded university AI laboratory (LEIA) and architected DAVE, an edge surveillance system utilizing Hailo-8 AI acceleration that won 1st place among 40+ engineering capstone projects at Expo Ingenierías."
+     - ❌ **Weak**: "Co-founded student AI group; won 1st place at Expo Ingenierias (Engineering Expo) with DAVE project."
+     - ✅ **Strong**: "Co-founded university AI laboratory (LEIA) and architected DAVE, an edge surveillance system utilizing Hailo-8 AI acceleration that won 1st place among 40+ engineering capstone projects at Expo Ingenierias (Engineering Expo)."
 
 ---
 

@@ -5,10 +5,17 @@
   "candidate": {
     "name": "Candidate",
     "university": "University",
+    "school": "University",
     "degree": "B.S. in Computer Science / Data Science",
     "current_semester": "Junior",
     "expected_graduation": "May 2027",
-    "email_contact": "candidate@example.com"
+    "location": "City, Country",
+    "work_authorization": "Needs Sponsorship / International",
+    "email_contact": "candidate@example.com",
+    "email": "candidate@example.com",
+    "phone": "+1 555 0100",
+    "linkedin": "https://linkedin.com/in/username",
+    "github": "https://github.com/username"
   },
   "metadata": {
     "created": "2026-10-02",
@@ -458,19 +465,21 @@
   },
   "location_visa": {
     "current_location": "City, Country",
+    "work_authorization": "Needs Sponsorship / International",
     "us_work_authorization": "None",
     "relocation_willingness": "Remote preferred; open to international relocation if visa sponsored",
     "travel_willingness": true
   },
   "compensation_benefits": {
     "minimum_hourly": 20,
+    "minimum_hourly_usd": 20,
     "equity_importance": "Don't care",
     "benefits_priorities": [
       "PTO",
       "Health insurance",
       "Learning budget",
       "Hardware stipend",
-      "401k"
+      "401k / Retirement plan"
     ],
     "negotiation_flexibility": "Flexible"
   },

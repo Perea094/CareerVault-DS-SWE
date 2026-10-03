@@ -138,7 +138,7 @@ def analyze_bullets(bullet_points):
 
 
 STOP_ACRONYMS = {
-    "and", "the", "for", "with", "from", "both", "well", "gpa", "para",
+    "and", "the", "for", "with", "from", "both", "well", "gpa",
     "note", "id", "us", "usa", "cfr", "eeo", "all", "not", "any", "are",
     "our", "you", "who", "how", "what", "when", "why", "per", "via"
 }

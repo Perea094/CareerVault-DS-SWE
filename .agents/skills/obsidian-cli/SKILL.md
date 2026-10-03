@@ -31,19 +31,19 @@ When NOT to use:
 | `obsidian vault` | Show current vault info | `obsidian vault` |
 | `obsidian vaults` | List all known vaults | `obsidian vaults verbose` |
 | `obsidian search` | Fast indexed text search | `obsidian search query="simplex"` |
-| `obsidian search:context` | Search with matching line snippets | `obsidian search:context query="algoritmo" limit=5` |
+| `obsidian search:context` | Search with matching line snippets | `obsidian search:context query="algorithm" limit=5` |
 | `obsidian tasks` | List tasks across vault | `obsidian tasks todo verbose` |
-| `obsidian task` | Toggle or update task status | `obsidian task done ref="Diario/Hoy.md:14"` |
+| `obsidian task` | Toggle or update task status | `obsidian task done ref="Daily/Today.md:14"` |
 | `obsidian tags` | List tags with optional counts | `obsidian tags counts sort=count` |
 | `obsidian tag` | Inspect specific tag usage | `obsidian tag name="pca" verbose` |
-| `obsidian read` | Read note contents | `obsidian read file="Nota.md"` |
-| `obsidian create` | Create a new note | `obsidian create path="Folder/Nota.md" content="Hola"` |
-| `obsidian append` | Append content to existing note | `obsidian append path="Nota.md" content="Nuevo texto"` |
-| `obsidian prepend` | Prepend content to existing note | `obsidian prepend path="Nota.md" content="Encabezado"` |
-| `obsidian property:read` | Read YAML frontmatter field | `obsidian property:read name="tipo" file="Nota.md"` |
-| `obsidian property:set` | Set YAML frontmatter field | `obsidian property:set name="estado" value="revisado" file="Nota.md"` |
-| `obsidian template:read` | Read & resolve template variables | `obsidian template:read name="Apunte" resolve title="Tema"` |
-| `obsidian open` | Open note in Obsidian GUI | `obsidian open file="Nota.md"` |
+| `obsidian read` | Read note contents | `obsidian read file="Note.md"` |
+| `obsidian create` | Create a new note | `obsidian create path="Folder/Note.md" content="Hello world"` |
+| `obsidian append` | Append content to existing note | `obsidian append path="Note.md" content="New text"` |
+| `obsidian prepend` | Prepend content to existing note | `obsidian prepend path="Note.md" content="Header"` |
+| `obsidian property:read` | Read YAML frontmatter field | `obsidian property:read name="type" file="Note.md"` |
+| `obsidian property:set` | Set YAML frontmatter field | `obsidian property:set name="status" value="reviewed" file="Note.md"` |
+| `obsidian template:read` | Read & resolve template variables | `obsidian template:read name="Note" resolve title="Topic"` |
+| `obsidian open` | Open note in Obsidian GUI | `obsidian open file="Note.md"` |
 | `obsidian eval` | Execute JS in Obsidian runtime | `obsidian eval code="app.vault.getName()"` |
 
 ## Common Workflows & Examples
@@ -51,7 +51,7 @@ When NOT to use:
 ### 1. Searching Notes and Inspecting Context
 To find relevant notes without manually grepping:
 ```powershell
-obsidian search:context query="proceso estocástico" limit=5
+obsidian search:context query="stochastic processes" limit=5
 ```
 
 ### 2. Managing Tasks Across Notes
@@ -61,24 +61,24 @@ obsidian tasks todo verbose
 ```
 Mark a specific task as done:
 ```powershell
-obsidian task done ref="005-Quinto Semestre/003-Optimización estocástica/002-Relación.md:12"
+obsidian task done ref="005-Semester-5/003-Stochastic-Optimization/002-Simplex.md:12"
 ```
 
 ### 3. Frontmatter Properties
 Read metadata safely:
 ```powershell
-obsidian property:read name="tipo" file="005-Estimación de componentes principales.md"
+obsidian property:read name="type" file="005-Principal-Component-Analysis.md"
 ```
 Add or update frontmatter metadata:
 ```powershell
-obsidian property:set name="revisado" value="true" type="checkbox" file="005-Estimación de componentes principales.md"
+obsidian property:set name="reviewed" value="true" type="checkbox" file="005-Principal-Component-Analysis.md"
 ```
 
 ### 4. Creating Notes from Templates
 Resolve template variables (like `{{title}}` and `{{date}}`) and create the note:
 ```powershell
-$content = obsidian template:read name="Apunte - {{title}}" resolve title="Algoritmo de Viterbi"
-obsidian create path="005-Quinto Semestre/001-Análisis/Algoritmo de Viterbi.md" content="$content"
+$content = obsidian template:read name="Note - {{title}}" resolve title="Viterbi Algorithm"
+obsidian create path="005-Semester-5/001-Analysis/Viterbi-Algorithm.md" content="$content"
 ```
 
 ### 5. Running Obsidian API Calls (`eval`)
@@ -91,7 +91,7 @@ obsidian eval code="app.vault.getMarkdownFiles().length"
 
 - Parameter formatting: Obsidian CLI expects `param=value` or `param="value with spaces"`. Do not use `--param value` style flags.
 - Quoting in PowerShell: When passing quotes or JSON, escape properly or pass parameters as separate tokens, e.g.:
-  `obsidian search query="métodos multivariados"`
+  `obsidian search query="multivariate methods"`
 - Character encoding: For files with accents or special characters, PowerShell commands should maintain UTF-8 encoding.
 
 ## Common Mistakes
