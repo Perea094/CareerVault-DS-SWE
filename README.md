@@ -1,4 +1,4 @@
-# Career Vault — Autonomous AI-Powered Career Operating System for Data Scientists & Software Engineers
+# Career Vault | Autonomous AI-Powered Career Operating System for Data Scientists & Software Engineers
 
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/)
 [![Obsidian Vault](https://img.shields.io/badge/Obsidian-Vault-purple.svg)](https://obsidian.md/)
