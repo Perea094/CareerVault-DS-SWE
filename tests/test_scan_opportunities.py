@@ -348,7 +348,9 @@ class TestScanOpportunities(unittest.TestCase):
 
     def test_filter_candidate_links_default_checker_fallback(self):
         candidates = [{"company": "LiveCo", "role": "SWE", "apply_url": "https://example.com/live"}]
-        with patch("prune_opportunities.check_single_link", return_value=(candidates[0], True, "Active (200 OK)")):
+        with patch.object(scan_opportunities, "ats_scraper", None), \
+             patch("scan_opportunities.check_single_link", return_value=(candidates[0], True, "Active (200 OK)")), \
+             patch("prune_opportunities.check_single_link", return_value=(candidates[0], True, "Active (200 OK)")):
             verified = scan_opportunities.filter_candidate_links(candidates, checker_func=None)
             self.assertEqual(len(verified), 1)
 
@@ -369,9 +371,9 @@ class TestScanOpportunities(unittest.TestCase):
         }
         profile = CandidateProfile(location="Monterrey, Mexico", work_authorization="Needs Sponsorship")
         score, tier = score_and_tier(item, profile)
-        assert score == 85
-        assert "part-time" not in tier.lower()
-        assert "Tier 2: Remote & Flexible Opportunities" == tier
+        self.assertEqual(score, 85)
+        self.assertNotIn("part-time", tier.lower())
+        self.assertEqual(tier, "Tier 2: Remote & Flexible Opportunities")
 
     def test_filter_candidate_links_enriches_and_drops_expired(self):
         candidates = [
@@ -404,10 +406,10 @@ class TestScanOpportunities(unittest.TestCase):
 
         with patch("ats_scraper.inspect_job_page", side_effect=mock_inspect):
             verified = filter_candidate_links(candidates)
-            assert len(verified) == 1
-            assert verified[0]["company"] == "Active Corp"
-            assert verified[0]["position_type"] == "Full-Time"
-            assert verified[0]["hours_per_week"] == "Full-Time (40 hrs/week)"
+            self.assertEqual(len(verified), 1)
+            self.assertEqual(verified[0]["company"], "Active Corp")
+            self.assertEqual(verified[0]["position_type"], "Full-Time")
+            self.assertEqual(verified[0]["hours_per_week"], "Full-Time (40 hrs/week)")
 
 
 if __name__ == "__main__":
