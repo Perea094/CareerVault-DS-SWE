@@ -37,7 +37,7 @@ ABSTRACT_PLACEHOLDER_PATTERNS = [
     re.compile(r"\[City[^\]]*\]", re.IGNORECASE),
     re.compile(r"\[tech stack\]", re.IGNORECASE),
     re.compile(r"\[quantified[^\]]*\]", re.IGNORECASE),
-    re.compile(r"\[(?:[^\]]*\b)?X%(?:[^\]]*)?\]", re.IGNORECASE),
+    re.compile(r"\[(?:[^\]]*\b)?X\\?%(?:[^\]]*)?\]", re.IGNORECASE),
     re.compile(r"\[Languages:[^\]]*\]", re.IGNORECASE),
     re.compile(r"\[Frameworks[^\]]*\]", re.IGNORECASE),
     re.compile(r"\[Infrastructure:[^\]]*\]", re.IGNORECASE),

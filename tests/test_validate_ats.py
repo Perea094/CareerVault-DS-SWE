@@ -23,8 +23,10 @@ class TestValidateAts(unittest.TestCase):
         
         mock_pdf = MagicMock()
         mock_pdf.pages = [mock_page]
+        mock_pdfplumber = MagicMock()
+        mock_pdfplumber.open.return_value = mock_pdf
         
-        with patch("validate_ats.pdfplumber.open", return_value=mock_pdf):
+        with patch("validate_ats.pdfplumber", mock_pdfplumber):
             result = validate_ats.scan_pdf_for_ats(Path("002-cv/resume.pdf"))
             
             self.assertTrue(result["is_single_page"])
@@ -45,8 +47,10 @@ class TestValidateAts(unittest.TestCase):
         
         mock_pdf = MagicMock()
         mock_pdf.pages = [mock_page]
+        mock_pdfplumber = MagicMock()
+        mock_pdfplumber.open.return_value = mock_pdf
         
-        with patch("validate_ats.pdfplumber.open", return_value=mock_pdf):
+        with patch("validate_ats.pdfplumber", mock_pdfplumber):
             result = validate_ats.scan_pdf_for_ats(Path("002-cv/resume.pdf"))
             self.assertLess(result["ats_score"], 60)
             self.assertFalse(result["has_contact_info"]["email"])
@@ -59,8 +63,10 @@ class TestValidateAts(unittest.TestCase):
         
         mock_pdf = MagicMock()
         mock_pdf.pages = [mock_page1, mock_page2]
+        mock_pdfplumber = MagicMock()
+        mock_pdfplumber.open.return_value = mock_pdf
         
-        with patch("validate_ats.pdfplumber.open", return_value=mock_pdf):
+        with patch("validate_ats.pdfplumber", mock_pdfplumber):
             result = validate_ats.scan_pdf_for_ats(Path("002-cv/resume.pdf"))
             self.assertFalse(result["is_single_page"])
             self.assertEqual(result["page_count"], 2)
@@ -80,8 +86,10 @@ class TestValidateAts(unittest.TestCase):
         mock_page.height = 792.0
         mock_pdf = MagicMock()
         mock_pdf.pages = [mock_page]
+        mock_pdfplumber = MagicMock()
+        mock_pdfplumber.open.return_value = mock_pdf
 
-        with patch("validate_ats.pdfplumber.open", return_value=mock_pdf):
+        with patch("validate_ats.pdfplumber", mock_pdfplumber):
             result = validate_ats.scan_pdf_for_ats(Path("dummy.pdf"))
             self.assertTrue(result["has_contact_info"]["github"])
             self.assertTrue(result["has_contact_info"]["linkedin"])
@@ -99,9 +107,11 @@ class TestValidateAts(unittest.TestCase):
         )
         mock_pdf = MagicMock()
         mock_pdf.pages = [mock_page]
+        mock_pdfplumber = MagicMock()
+        mock_pdfplumber.open.return_value = mock_pdf
 
         with patch("pathlib.Path.exists", return_value=True):
-            with patch("validate_ats.pdfplumber.open", return_value=mock_pdf):
+            with patch("validate_ats.pdfplumber", mock_pdfplumber):
                 with patch("sys.argv", ["validate_ats.py", "--pdf", "test.pdf", "--json"]):
                     with patch("builtins.print") as mock_print:
                         with self.assertRaises(SystemExit) as cm:
@@ -114,9 +124,11 @@ class TestValidateAts(unittest.TestCase):
         mock_page.extract_text.return_value = "Random text"
         mock_pdf = MagicMock()
         mock_pdf.pages = [mock_page]
+        mock_pdfplumber = MagicMock()
+        mock_pdfplumber.open.return_value = mock_pdf
 
         with patch("pathlib.Path.exists", return_value=True):
-            with patch("validate_ats.pdfplumber.open", return_value=mock_pdf):
+            with patch("validate_ats.pdfplumber", mock_pdfplumber):
                 with patch("sys.argv", ["validate_ats.py", "--pdf", "test.pdf"]):
                     with patch("builtins.print"):
                         with self.assertRaises(SystemExit) as cm:
@@ -278,6 +290,7 @@ Python, Rust, Distributed Systems, Linux
             "[Project Title]\n"
             "[Start Month Year]\n"
             "achieved [X%]\n"
+            "improved by [X\\%]\n"
             "[Languages: Python, Go]\n"
             "[Frameworks & Libraries: PyTorch]\n"
             "[Infrastructure: Docker]\n"
@@ -294,6 +307,7 @@ Python, Rust, Distributed Systems, Linux
         self.assertIn("[Project Title]", detected)
         self.assertIn("[Start Month Year]", detected)
         self.assertIn("[X%]", detected)
+        self.assertIn("[X\\%]", detected)
         self.assertIn("[Languages: Python, Go]", detected)
         self.assertIn("[Frameworks & Libraries: PyTorch]", detected)
         self.assertIn("[Infrastructure: Docker]", detected)
@@ -321,10 +335,39 @@ Python, Rust, Distributed Systems, Linux
         )
         mock_pdf = MagicMock()
         mock_pdf.pages = [mock_page]
+        mock_pdfplumber = MagicMock()
+        mock_pdfplumber.open.return_value = mock_pdf
 
         with patch("pathlib.Path.exists", return_value=True):
-            with patch("validate_ats.pdfplumber.open", return_value=mock_pdf):
+            with patch("validate_ats.pdfplumber", mock_pdfplumber):
                 with patch("sys.argv", ["validate_ats.py", "--pdf", "test.pdf"]):
+                    with patch("builtins.print"):
+                        with self.assertRaises(SystemExit) as cm:
+                            validate_ats.main()
+                        self.assertEqual(cm.exception.code, 1)
+
+    def test_cli_exit_code_blocked_by_placeholders_tex(self):
+        import tempfile
+        with tempfile.TemporaryDirectory() as tmpdir:
+            tex_file = Path(tmpdir) / "resume_template.tex"
+            tex_file.write_text(r"""
+\documentclass{article}
+\begin{document}
+Candidate Name
+candidate@example.com -- +1 555 0100
+\cvsection{Education} University of Technology
+\cvsection{Experience}
+\textbf{[Company / Organization Name]}
+\begin{itemize}
+    \item [Action Verb] reduced latency by [X\%].
+\end{itemize}
+\cvsection{Projects}
+\textbf{[Key Technical Project 1]}
+\cvsection{Skills} Python
+\end{document}
+""", encoding="utf-8")
+            with patch("validate_ats.pdfplumber", None):
+                with patch("sys.argv", ["validate_ats.py", "--file", str(tex_file)]):
                     with patch("builtins.print"):
                         with self.assertRaises(SystemExit) as cm:
                             validate_ats.main()
