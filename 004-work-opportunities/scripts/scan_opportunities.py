@@ -8,6 +8,10 @@ import argparse
 import re
 from concurrent.futures import ThreadPoolExecutor
 
+SCRIPTS_DIR = os.path.dirname(__file__)
+if SCRIPTS_DIR not in sys.path:
+    sys.path.insert(0, SCRIPTS_DIR)
+
 try:
     import ats_scraper
 except ImportError:

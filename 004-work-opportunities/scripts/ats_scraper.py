@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import re
 import json
+import html as html_lib
 import urllib.request
 import urllib.error
 import ssl
@@ -37,7 +38,7 @@ _RE_HOURS_PER_WEEK = re.compile(r'(\d{1,2}(?:\s*-\s*\d{1,2})?)\s*(?:hrs?|hours?)
 _RE_NOT_EXCEED_HOURS = re.compile(r'not\s+exceed\s+(\d{1,2})\s*(?:hrs?|hours?)(?:/|\s*per\s*)week', re.IGNORECASE)
 
 _RE_DEADLINE_WINDOW = re.compile(
-    rf'(?:anticipate that the application window will close on|application window will close on|application deadline:?|deadline:?|applications close on|closing date:?)\s*([0-9]{{1,2}}/[0-9]{{1,2}}/(?:20\d{{2}}|\d{{2}})|20\d{{2}}[-/][0-9]{{1,2}}[-/][0-9]{{1,2}}|(?:{_MON_PAT})\.?\s+[0-9]{{1,2}}(?:st|nd|rd|th)?,?\s+20\d{{2}})',
+    rf'(?:anticipate that the application window will close on|application window will close on|application deadline:?|deadline:?|applications close on|closing date:?)\s*([0-9]{{1,2}}/[0-9]{{1,2}}/(?:20\d{{2}}|\d{{2}})|20\d{{2}}[-/][0-9]{{1,2}}[-/][0-9]{{1,2}}|(?:{_MON_PAT})\.?\s+[0-9]{{1,2}}(?:st|nd|rd|th)?,?\s+20\d{{2}}|[0-9]{{1,2}}(?:st|nd|rd|th)?\s+(?:{_MON_PAT})\.?\s+20\d{{2}})',
     re.IGNORECASE
 )
 
@@ -49,13 +50,13 @@ def resolve_ats_subdocument_url(base_url: str, html: str) -> str:
 
     # Iterate through all iframe candidates so tracking/analytics iframes don't block resolution
     for m in _RE_ANY_IFRAME.finditer(html):
-        src = m.group(1)
+        src = html_lib.unescape(m.group(1))
         if "in_iframe" in src.lower():
             return urljoin(base_url, src)
 
     if "icims.com" in base_url.lower():
         for m in _RE_ANY_IFRAME.finditer(html):
-            src = m.group(1)
+            src = html_lib.unescape(m.group(1))
             if "icims.com" in src.lower():
                 return urljoin(base_url, src)
 
@@ -148,12 +149,12 @@ def parse_position_type(html: str, json_ld: dict | None = None) -> tuple[str, st
             if m_hrs:
                 val = m_hrs.group(1).strip()
                 if "40" in val and "20" not in val:
-                    hours_str = f"Full-Time ({val} hrs/week)"
-                    if pos_type == "Unspecified":
+                    if pos_type in ["Unspecified", "Full-Time"]:
+                        hours_str = f"Full-Time ({val} hrs/week)"
                         pos_type = "Full-Time"
                 elif any(k in val for k in ["20", "25", "30", "15"]):
-                    hours_str = f"Part-Time ({val} hrs/week)"
-                    if pos_type == "Unspecified":
+                    if pos_type in ["Unspecified", "Part-Time"]:
+                        hours_str = f"Part-Time ({val} hrs/week)"
                         pos_type = "Part-Time"
 
     return pos_type, hours_str
@@ -198,13 +199,24 @@ def _parse_date_string(d_str: str) -> datetime | None:
             except Exception:
                 pass
 
-    # Textual: "July 18, 2026", "July 18th, 2026", "Jul 18 2026"
+    # Textual: Month Day, Year ("July 18, 2026", "July 18th, 2026", "Jul 18 2026")
     m_text = re.search(rf'({_MON_PAT})\.?\s+([0-9]{{1,2}})(?:st|nd|rd|th)?,?\s+(20\d{{2}})', d_clean, re.IGNORECASE)
     if m_text:
         try:
             m_val = MONTH_MAP[m_text.group(1).lower()]
             d_val = int(m_text.group(2))
             y_val = int(m_text.group(3))
+            return datetime(y_val, m_val, d_val)
+        except Exception:
+            pass
+
+    # Textual: Day Month Year ("18 July 2026", "18th July 2026")
+    m_day_text = re.search(rf'([0-9]{{1,2}})(?:st|nd|rd|th)?\s+({_MON_PAT})\.?,?\s+(20\d{{2}})', d_clean, re.IGNORECASE)
+    if m_day_text:
+        try:
+            d_val = int(m_day_text.group(1))
+            m_val = MONTH_MAP[m_day_text.group(2).lower()]
+            y_val = int(m_day_text.group(3))
             return datetime(y_val, m_val, d_val)
         except Exception:
             pass
@@ -236,7 +248,9 @@ def parse_closing_deadline(html: str, json_ld: dict | None = None, reference_dat
         target_dt = _parse_date_string(str(json_ld["validThrough"]))
 
     if target_dt:
-        if target_dt < ref:
+        # If target_dt is date-only (00:00:00), compare by date so applications closing today aren't expired mid-day
+        is_past = (target_dt.date() < ref.date()) if (target_dt.hour == 0 and target_dt.minute == 0 and target_dt.second == 0) else (target_dt < ref)
+        if is_past:
             dt_str = target_dt.strftime("%Y-%m-%d")
             return target_dt, True, f"Expired application window: closed on {dt_str}"
         return target_dt, False, ""

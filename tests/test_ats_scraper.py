@@ -379,3 +379,42 @@ def test_inspect_job_page_subdocument_410_inactive():
         assert info["is_expired"] is True
 
 
+def test_parse_closing_deadline_same_day_active():
+    html = '<p>We anticipate that the application window will close on 10/04/2026.</p>'
+    ref_date = datetime(2026, 10, 4, 15, 30, 0)
+    deadline_dt, is_expired, reason = parse_closing_deadline(html, reference_date=ref_date)
+    assert deadline_dt == datetime(2026, 10, 4)
+    assert is_expired is False
+    assert reason == ""
+
+
+def test_parse_closing_deadline_international_day_first():
+    html = '<p>Application deadline: 18th July 2026</p>'
+    ref_date = datetime(2026, 10, 4)
+    deadline_dt, is_expired, reason = parse_closing_deadline(html, reference_date=ref_date)
+    assert deadline_dt == datetime(2026, 7, 18)
+    assert is_expired is True
+    assert "closed on 2026-07-18" in reason.lower()
+
+
+def test_resolve_icims_iframe_html_escaped():
+    html = '''<html><body><iframe src="https://careers.icims.com/jobs/1?foo=1&amp;in_iframe=1"></iframe></body></html>'''
+    resolved = resolve_ats_subdocument_url("https://careers.icims.com/jobs/1", html)
+    assert "&in_iframe=1" in resolved
+    assert "&amp;" not in resolved
+
+
+def test_parse_position_type_guard_conflicting_disclaimer():
+    html = '''
+    <div class="iCIMS_JobHeaderTag">
+      <dt class="iCIMS_JobHeaderField">Position Type</dt>
+      <dd class="iCIMS_JobHeaderData"><span>Part-Time</span></dd>
+    </div>
+    <div>Standard company employees work 40 hrs/week.</div>
+    '''
+    pos_type, hours = parse_position_type(html)
+    assert pos_type == "Part-Time"
+    assert hours == "Part-Time"
+
+
+
