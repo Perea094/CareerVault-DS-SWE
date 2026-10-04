@@ -1,6 +1,5 @@
 import pytest
 from datetime import datetime
-from unittest.mock import patch, MagicMock
 
 import sys
 import os
@@ -16,6 +15,16 @@ from ats_scraper import (
 
 def test_resolve_icims_iframe():
     html = '''<html><body><iframe src="https://careers-cotiviti.icims.com/jobs/19531/job?in_iframe=1"></iframe></body></html>'''
+    base_url = "https://careers-cotiviti.icims.com/jobs/19531/job"
+    resolved = resolve_ats_subdocument_url(base_url, html)
+    assert resolved == "https://careers-cotiviti.icims.com/jobs/19531/job?in_iframe=1"
+
+
+def test_resolve_iframe_preceded_by_analytics():
+    html = '''<html><body>
+      <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-1234"></iframe>
+      <iframe src="https://careers-cotiviti.icims.com/jobs/19531/job?in_iframe=1"></iframe>
+    </body></html>'''
     base_url = "https://careers-cotiviti.icims.com/jobs/19531/job"
     resolved = resolve_ats_subdocument_url(base_url, html)
     assert resolved == "https://careers-cotiviti.icims.com/jobs/19531/job?in_iframe=1"
@@ -51,6 +60,28 @@ def test_extract_json_ld():
     assert data.get("validThrough") == "2026-12-31T23:59:59Z"
 
 
+def test_extract_json_ld_graph():
+    html = '''
+    <html><head><script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {"@type": "WebSite", "name": "Company Careers"},
+        {
+          "@type": "JobPosting",
+          "title": "Data Science Intern",
+          "employmentType": "FULL_TIME"
+        }
+      ]
+    }
+    </script></head></html>
+    '''
+    data = extract_json_ld(html)
+    assert data is not None
+    assert data.get("title") == "Data Science Intern"
+    assert data.get("employmentType") == "FULL_TIME"
+
+
 def test_parse_position_type_icims_header():
     html = '''
     <div class="iCIMS_JobHeaderTag">
@@ -75,6 +106,23 @@ def test_parse_position_type_part_time_hours():
     assert "29" in hours or "20-30" in hours
 
 
+def test_parse_position_type_space_separated_and_json_ld_dash():
+    html = "<div><p>Position Type: Full Time</p></div>"
+    pos_type, hours = parse_position_type(html, json_ld=None)
+    assert pos_type == "Full-Time"
+    assert hours == "Full-Time (40 hrs/week)"
+
+    json_ld = {"employmentType": "FULL-TIME"}
+    pos_type2, hours2 = parse_position_type("", json_ld=json_ld)
+    assert pos_type2 == "Full-Time"
+    assert hours2 == "Full-Time (40 hrs/week)"
+
+    json_ld_space = {"employmentType": "Full Time"}
+    pos_type3, hours3 = parse_position_type("", json_ld=json_ld_space)
+    assert pos_type3 == "Full-Time"
+    assert hours3 == "Full-Time (40 hrs/week)"
+
+
 def test_parse_closing_deadline_past():
     html = '''
     <p>Date of posting: 6/18/2026</p>
@@ -96,3 +144,36 @@ def test_parse_closing_deadline_future():
     assert deadline_dt == datetime(2026, 11, 15)
     assert is_expired is False
     assert reason == ""
+
+
+def test_parse_closing_deadline_json_ld_iso_tz_offset():
+    # validThrough with ISO timezone offset
+    json_ld = {"validThrough": "2026-12-31T23:59:59-05:00"}
+    ref_date = datetime(2026, 10, 4)
+    deadline_dt, is_expired, reason = parse_closing_deadline("", json_ld=json_ld, reference_date=ref_date)
+    assert deadline_dt == datetime(2026, 12, 31, 23, 59, 59)
+    assert is_expired is False
+
+    # validThrough in past with ISO +02:00
+    json_ld_past = {"validThrough": "2026-06-30T12:00:00+02:00"}
+    deadline_dt2, is_expired2, reason2 = parse_closing_deadline("", json_ld=json_ld_past, reference_date=ref_date)
+    assert deadline_dt2 == datetime(2026, 6, 30, 12, 0, 0)
+    assert is_expired2 is True
+    assert "2026-06-30" in reason2
+
+
+def test_parse_closing_deadline_year_first_and_ordinal():
+    ref_date = datetime(2026, 10, 4)
+
+    # YYYY/MM/DD slashed format
+    html_year_first = "<p>Application deadline: 2026/11/20</p>"
+    deadline_dt, is_expired, reason = parse_closing_deadline(html_year_first, json_ld=None, reference_date=ref_date)
+    assert deadline_dt == datetime(2026, 11, 20)
+    assert is_expired is False
+
+    # Ordinal date: "July 18th, 2026"
+    html_ordinal = "<p>Applications close on July 18th, 2026</p>"
+    deadline_dt2, is_expired2, reason2 = parse_closing_deadline(html_ordinal, json_ld=None, reference_date=ref_date)
+    assert deadline_dt2 == datetime(2026, 7, 18)
+    assert is_expired2 is True
+    assert "closed on 2026-07-18" in reason2
