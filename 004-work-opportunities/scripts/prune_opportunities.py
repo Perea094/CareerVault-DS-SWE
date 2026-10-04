@@ -51,13 +51,24 @@ CLOSED_KEYWORDS = [
     "sorry, this job is no longer open"
 ]
 
+# Precompiled regexes for ATS redirect detection
+_RE_LEVER_POSTING = re.compile(r"jobs\.lever\.co/([^/?#]+)/([^/?#]+)")
+_RE_GENERIC_REQ = re.compile(r"/(?:job|jobs|requisition|posting)/[a-zA-Z0-9_\-]+")
+_RE_GENERIC_CATALOG = re.compile(r"/(?:careers|search|jobs|home|portal)$")
+
 def is_ats_redirected_to_catalog(original_url: str, final_url: str) -> tuple[bool, str]:
-    if not original_url or not final_url:
+    if not isinstance(original_url, str) or not isinstance(final_url, str):
         return False, ""
 
     orig_clean = original_url.strip().rstrip("/")
     final_clean = final_url.strip().rstrip("/")
-    if orig_clean.lower() == final_clean.lower():
+    if not orig_clean or not final_clean:
+        return False, ""
+
+    # Scheme normalization for fast exit
+    orig_no_scheme = re.sub(r"^https?://", "", orig_clean.lower())
+    final_no_scheme = re.sub(r"^https?://", "", final_clean.lower())
+    if orig_no_scheme == final_no_scheme:
         return False, ""
 
     orig_lower = orig_clean.lower()
@@ -86,15 +97,15 @@ def is_ats_redirected_to_catalog(original_url: str, final_url: str) -> tuple[boo
 
     # Lever
     if "jobs.lever.co" in orig_lower:
-        orig_match = re.search(r"jobs\.lever\.co/([^/?#]+)/([^/?#]+)", orig_lower)
+        orig_match = _RE_LEVER_POSTING.search(orig_lower)
         if orig_match:
-            final_match = re.search(r"jobs\.lever\.co/([^/?#]+)/([^/?#]+)", final_lower)
+            final_match = _RE_LEVER_POSTING.search(final_lower)
             if not final_match or "jobs.lever.co" not in final_lower:
                 return True, "Redirected away from Lever job posting (Job Closed)"
 
     # Generic ATS Requisition Drop
-    if re.search(r"/(?:job|jobs|requisition|posting)/[a-zA-Z0-9_\-]+", orig_lower):
-        if re.search(r"/(?:careers|search|jobs|home|portal)$", final_path) or re.search(r"/(?:careers|search|jobs|home|portal)$", final_lower):
+    if _RE_GENERIC_REQ.search(orig_lower):
+        if _RE_GENERIC_CATALOG.search(final_path):
             return True, "Redirected from specific requisition to generic portal (Job Closed)"
 
     return False, ""
@@ -140,9 +151,10 @@ def sync_csv(opportunities):
             })
 
 def check_single_link(opp):
-    url = opp.get("apply_url")
-    if not url:
+    raw_url = opp.get("apply_url")
+    if not raw_url or not isinstance(raw_url, str) or not raw_url.strip():
         return opp, False, "Missing URL"
+    url = raw_url.strip()
 
     ctx = ssl.create_default_context()
     ctx.check_hostname = False

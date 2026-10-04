@@ -128,3 +128,17 @@ class TestPruneOpportunities(unittest.TestCase):
             _, is_active, reason = check_single_link(opp)
             self.assertTrue(is_active)
             self.assertEqual(reason, "Active (200 OK)")
+
+    def test_check_single_link_whitespace_and_invalid_url(self):
+        for invalid_url in ["   ", "\t\n", None, 12345]:
+            opp = {"company": "BadCo", "role": "SWE", "apply_url": invalid_url}
+            _, is_active, reason = check_single_link(opp)
+            self.assertFalse(is_active)
+            self.assertEqual(reason, "Missing URL")
+
+    def test_is_ats_redirected_to_catalog_scheme_upgrade(self):
+        orig = "http://example.com/jobs/123"
+        final = "https://example.com/jobs/123"
+        is_redirected, _ = is_ats_redirected_to_catalog(orig, final)
+        self.assertFalse(is_redirected)
+
