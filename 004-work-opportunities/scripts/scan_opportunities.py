@@ -4,6 +4,7 @@ import json
 import urllib.request
 import argparse
 import re
+from concurrent.futures import ThreadPoolExecutor
 
 from adapters import get_parser
 
@@ -438,11 +439,18 @@ def filter_candidate_links(candidates: list, checker_func=None, max_workers: int
         except ImportError:
             return candidates
 
-    verified = []
-    from concurrent.futures import ThreadPoolExecutor
+    def _safe_check(opp):
+        try:
+            res = checker_func(opp)
+            if isinstance(res, tuple) and len(res) == 3:
+                return res
+            return opp, True, "Unknown checker response format"
+        except Exception as exc:
+            return opp, True, f"Checker exception/skip: {exc}"
 
+    verified = []
     with ThreadPoolExecutor(max_workers=max_workers) as executor:
-        results = list(executor.map(checker_func, candidates))
+        results = list(executor.map(_safe_check, candidates))
 
     for opp, is_active, reason in results:
         if is_active:

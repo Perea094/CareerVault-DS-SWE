@@ -1,6 +1,7 @@
 import os
 import sys
 import unittest
+from unittest.mock import patch
 import tempfile
 import json
 from pathlib import Path
@@ -335,6 +336,30 @@ class TestScanOpportunities(unittest.TestCase):
     def test_filter_candidate_links_empty_list(self):
         verified = scan_opportunities.filter_candidate_links([])
         self.assertEqual(verified, [])
+
+    def test_filter_candidate_links_handles_checker_exception(self):
+        candidates = [{"company": "CrashCo", "role": "SWE", "apply_url": "https://example.com/crash"}]
+        def faulty_checker(opp):
+            raise RuntimeError("Unexpected failure")
+
+        verified = scan_opportunities.filter_candidate_links(candidates, checker_func=faulty_checker)
+        self.assertEqual(len(verified), 1)
+        self.assertEqual(verified[0]["company"], "CrashCo")
+
+    def test_filter_candidate_links_default_checker_fallback(self):
+        candidates = [{"company": "LiveCo", "role": "SWE", "apply_url": "https://example.com/live"}]
+        with patch("prune_opportunities.check_single_link", return_value=(candidates[0], True, "Active (200 OK)")):
+            verified = scan_opportunities.filter_candidate_links(candidates, checker_func=None)
+            self.assertEqual(len(verified), 1)
+
+    def test_verify_links_cli_flag_parsing(self):
+        import argparse
+        parser = argparse.ArgumentParser()
+        parser.add_argument("--verify-links", action="store_true")
+        args_default = parser.parse_args([])
+        self.assertFalse(args_default.verify_links)
+        args_flag = parser.parse_args(["--verify-links"])
+        self.assertTrue(args_flag.verify_links)
 
 
 if __name__ == "__main__":
