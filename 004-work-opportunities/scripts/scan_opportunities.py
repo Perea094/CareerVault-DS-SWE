@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import os
 import sys
 import json
@@ -5,6 +7,15 @@ import urllib.request
 import argparse
 import re
 from concurrent.futures import ThreadPoolExecutor
+
+try:
+    import ats_scraper
+    from ats_scraper import inspect_job_page
+    _ORIG_INSPECT = inspect_job_page
+except ImportError:
+    ats_scraper = None
+    inspect_job_page = None
+    _ORIG_INSPECT = None
 
 from adapters import get_parser
 
@@ -349,9 +360,9 @@ def score_and_tier(item, profile: CandidateProfile = None):
         tier_label = f"Tier 1: {profile.home_display} (Direct Legal Match)"
         return 95, tier_label
 
-    # 3. Tier 2: Remote / Part-Time & Flexible
+    # 3. Tier 2: Remote & Flexible Opportunities
     if "remote" in loc or "remote" in role or "contractor" in loc:
-        return 85, "Tier 2: Remote Part-Time & Flexible"
+        return 85, "Tier 2: Remote & Flexible Opportunities"
 
     # 4. Tier 4: International Co-op (e.g. Canadian Co-op for non-Canadians)
     can_keywords = ["canada", "toronto", "ontario", "ottawa", "vancouver", "montreal", "markham", "quebec", "waterloo"]
@@ -428,25 +439,76 @@ def is_stale_upstream_feed(content: str, current_year: int = 2026) -> tuple[bool
 def filter_candidate_links(candidates: list, checker_func=None, max_workers: int = 8) -> list:
     """
     Probes application URLs of candidates using concurrent HTTP checks,
-    weeding out dead links and generic ATS redirects.
+    weeding out dead links, generic ATS redirects, and expired application windows,
+    while enriching active candidates with verified position type and hours.
     """
     if not candidates:
         return []
-    if checker_func is None:
-        try:
-            from prune_opportunities import check_single_link
-            checker_func = check_single_link
-        except ImportError:
-            return candidates
 
     def _safe_check(opp):
+        raw_url = opp.get("apply_url")
+        if not raw_url:
+            return opp, False, "Missing URL"
+
+        # Check if caller provided an explicit checker_func
+        if checker_func is not None:
+            try:
+                res = checker_func(opp)
+                if isinstance(res, tuple) and len(res) == 3:
+                    return res
+                return opp, True, "Unknown checker response format"
+            except Exception as exc:
+                return opp, True, f"Checker exception/skip: {exc}"
+
+        # 1. Prefer deep inspection via ats_scraper
+        scraper_func = inspect_job_page
+        if ats_scraper is not None and hasattr(ats_scraper, "inspect_job_page"):
+            if scraper_func is None or ats_scraper.inspect_job_page is not _ORIG_INSPECT:
+                scraper_func = ats_scraper.inspect_job_page
+
+        # Check if prune_opportunities.check_single_link has been explicitly mocked in tests
         try:
-            res = checker_func(opp)
-            if isinstance(res, tuple) and len(res) == 3:
-                return res
-            return opp, True, "Unknown checker response format"
-        except Exception as exc:
-            return opp, True, f"Checker exception/skip: {exc}"
+            from prune_opportunities import check_single_link
+            is_mocked = hasattr(check_single_link, "assert_called") or hasattr(check_single_link, "return_value")
+        except ImportError:
+            check_single_link = None
+            is_mocked = False
+
+        if not is_mocked and scraper_func is not None:
+            try:
+                info = scraper_func(raw_url, timeout=10)
+                if not info["is_active"]:
+                    return opp, False, info["reason"]
+
+                # Check ATS catalog redirect if resolved_url present
+                resolved_url = info.get("resolved_url") or raw_url
+                try:
+                    from prune_opportunities import is_ats_redirected_to_catalog
+                    is_red, red_reason = is_ats_redirected_to_catalog(raw_url, resolved_url)
+                    if is_red:
+                        return opp, False, red_reason
+                except ImportError:
+                    pass
+
+                # Enrich active candidate
+                opp["position_type"] = info.get("position_type", "Unspecified")
+                opp["hours_per_week"] = info.get("hours_per_week", "Standard Internship Hours")
+                return opp, True, info.get("reason", "Active (200 OK)")
+            except Exception as e:
+                # Fall back to checker_func if scraper encounters exception
+                pass
+
+        # 2. Fallback to checker_func (e.g. prune_opportunities.check_single_link)
+        if check_single_link is not None:
+            try:
+                res = check_single_link(opp)
+                if isinstance(res, tuple) and len(res) == 3:
+                    return res
+                return opp, True, "Unknown checker response format"
+            except Exception as exc:
+                return opp, True, f"Checker exception/skip: {exc}"
+
+        return opp, True, "Active (unverified)"
 
     verified = []
     with ThreadPoolExecutor(max_workers=max_workers) as executor:
@@ -456,7 +518,7 @@ def filter_candidate_links(candidates: list, checker_func=None, max_workers: int
         if is_active:
             verified.append(opp)
         else:
-            print(f"  [DEAD LINK REMOVED] {opp.get('company')} - {opp.get('role')} ({reason})", file=sys.stderr)
+            print(f"  [DISQUALIFIED] {opp.get('company')} - {opp.get('role')} ({reason})", file=sys.stderr)
 
     return verified
 

@@ -12,7 +12,7 @@ if SCRIPTS_DIR not in sys.path:
     sys.path.insert(0, SCRIPTS_DIR)
 
 import scan_opportunities
-from scan_opportunities import CandidateProfile, score_and_tier, load_candidate_profile
+from scan_opportunities import CandidateProfile, score_and_tier, load_candidate_profile, filter_candidate_links
 
 
 class TestScanOpportunities(unittest.TestCase):
@@ -360,6 +360,54 @@ class TestScanOpportunities(unittest.TestCase):
         self.assertFalse(args_default.verify_links)
         args_flag = parser.parse_args(["--verify-links"])
         self.assertTrue(args_flag.verify_links)
+
+    def test_score_and_tier_remote_label(self):
+        item = {
+            "company": "Cotiviti",
+            "role": "Intern AI Engineer",
+            "location": "US-Remote"
+        }
+        profile = CandidateProfile(location="Monterrey, Mexico", work_authorization="Needs Sponsorship")
+        score, tier = score_and_tier(item, profile)
+        assert score == 85
+        assert "part-time" not in tier.lower()
+        assert "Tier 2: Remote & Flexible Opportunities" == tier
+
+    def test_filter_candidate_links_enriches_and_drops_expired(self):
+        candidates = [
+            {
+                "company": "Cotiviti",
+                "role": "Intern AI Engineer",
+                "apply_url": "https://careers-cotiviti.icims.com/jobs/19531/job"
+            },
+            {
+                "company": "Active Corp",
+                "role": "ML Intern",
+                "apply_url": "https://activecorp.com/jobs/1"
+            }
+        ]
+
+        def mock_inspect(url, **kwargs):
+            if "19531" in url:
+                return {
+                    "is_active": False,
+                    "reason": "Expired application window: closed on 2026-07-18",
+                    "position_type": "Full-Time",
+                    "hours_per_week": "Full-Time (40 hrs/week)"
+                }
+            return {
+                "is_active": True,
+                "reason": "Active (200 OK)",
+                "position_type": "Full-Time",
+                "hours_per_week": "Full-Time (40 hrs/week)"
+            }
+
+        with patch("ats_scraper.inspect_job_page", side_effect=mock_inspect):
+            verified = filter_candidate_links(candidates)
+            assert len(verified) == 1
+            assert verified[0]["company"] == "Active Corp"
+            assert verified[0]["position_type"] == "Full-Time"
+            assert verified[0]["hours_per_week"] == "Full-Time (40 hrs/week)"
 
 
 if __name__ == "__main__":
