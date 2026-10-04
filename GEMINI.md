@@ -30,12 +30,16 @@
 
 ### Workflow 0: Onboarding & Kickoff ("Hi, I already ran the setup script, what is the next step?")
 When the candidate initiates the session with this kickoff prompt:
-1. Inspect `001-background/preferences.json` and `001-background/preferences.md` to confirm the configured profile, target domains, and availability.
-2. Verify that the starter LaTeX resume exists in `002-cv/` and run `002-cv/scripts/validate_ats.py` to confirm the baseline ATS score.
-3. Present the candidate with the 3 immediate actionable next steps:
-   - **Path A: Ingest Verified Background**: Add past projects, GitHub repositories, or internships to `001-background/` using `add-experience-curriculum`.
-   - **Path B: Scout Global Tech Opportunities**: Run `opportunity-scout` to search 19 tech feeds and evaluate listings against their active constraints.
-   - **Path C: Tailor for a Target Role**: If they have a specific job description or link ready, immediately draft a tailored 1-page CV using `tailored-cv`.
+1. Inspect `001-background/preferences.json` and `001-background/preferences.md` to confirm configured candidate identity, targets, and availability.
+2. Audit `001-background/` for verified records (`001-background/experiences/`, `001-background/projects/`, `001-background/education/`).
+3. Verify starter LaTeX resume in `002-cv/` and run `002-cv/scripts/validate_ats.py`.
+4. Evaluate Template Status & Enforce Background Ingestion:
+   - If the starter resume contains abstract structural placeholders (`[Company...]`, `[Project...]`) and `001-background/` has no verified records:
+     - **NEVER** claim the resume is ready, application-grade, or passed 100/100.
+     - Transparently inform the candidate that their contact profile is configured, but their CV is currently an **abstract structural template with placeholders** with **0 verified records** in `001-background/`.
+     - **Mandatory Primary Move (High-Priority Prompt)**: Steer the candidate to **Path A: Ingest Verified Background** (using `add-experience-curriculum`, uploading a past CV into `001-background/previous_cv/`, or documenting recent projects/roles) before tailoring or applying.
+   - If verified records already exist in `001-background/`:
+     - Compile their true baseline CV and present Path B (Scout Global Tech Opportunities) and Path C (Tailor for a Target Role).
 
 ### Workflow 1: Opportunity Intake & Triage
 1. Save the job description in Markdown under `004-work-opportunities/` with YAML frontmatter tracking temporality and metadata (e.g., `date`, `company`, `role`, `status`, `tags`).
