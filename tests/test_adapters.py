@@ -58,3 +58,47 @@ def test_parse_age_future_date():
     ref_date = datetime(2026, 10, 4)
     assert parse_age_days("Oct 10, 2026", reference_date=ref_date) == 0
 
+
+def test_parse_age_multiples_of_ten_days():
+    assert parse_age_days("0d") == 0
+    assert parse_age_days("0 days") == 0
+    assert parse_age_days("10d") == 10
+    assert parse_age_days("20d") == 20
+    assert parse_age_days("30d") == 30
+    assert parse_age_days("10 days") == 10
+
+
+def test_parse_age_relative_weeks_and_years():
+    assert parse_age_days("yesterday") == 1
+    assert parse_age_days("1 week") == 7
+    assert parse_age_days("2w") == 14
+    assert parse_age_days("1 year ago") == 365
+    assert parse_age_days("2y") == 730
+
+
+def test_parse_age_string_default_year():
+    ref_date = datetime(2026, 10, 4)
+    assert parse_age_days("Oct 10", reference_date=ref_date, default_year="2024") > 700
+    assert parse_age_days("Oct 01", reference_date=ref_date, default_year="2026") == 3
+
+
+def test_parse_age_slash_two_digit_year():
+    ref_date = datetime(2026, 10, 4)
+    assert parse_age_days("10/24/24", reference_date=ref_date) > 700
+    assert parse_age_days("10/01/26", reference_date=ref_date) == 3
+
+
+def test_parse_age_ordinal_dates():
+    ref_date = datetime(2026, 10, 4)
+    assert parse_age_days("Oct 1st", reference_date=ref_date, default_year=2026) == 3
+    assert parse_age_days("Oct 2nd", reference_date=ref_date, default_year=2026) == 2
+    assert parse_age_days("1st Oct", reference_date=ref_date, default_year=2026) == 3
+    assert parse_age_days("2nd Oct", reference_date=ref_date, default_year=2026) == 2
+
+
+def test_parse_age_month_year_format():
+    ref_date = datetime(2026, 10, 4)
+    assert parse_age_days("Oct 2024", reference_date=ref_date) > 700
+    assert parse_age_days("October 2026", reference_date=ref_date) == 3
+
+

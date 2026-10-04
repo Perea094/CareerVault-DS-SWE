@@ -1,19 +1,23 @@
 import re
+from datetime import datetime, date
+
+# Precompiled regexes for text cleaning
+_RE_HTML = re.compile(r'<[^>]+>')
+_RE_MD_LINK = re.compile(r'\[([^\]]+)\]\([^\)]+\)')
+_RE_SPACES = re.compile(r'\s+')
 
 def clean_text(s):
     if not s:
         return ""
     # Strip HTML tags
-    s = re.sub(r'<[^>]+>', ' ', s)
+    s = _RE_HTML.sub(' ', s)
     # Strip Markdown links [text](url) -> text
-    s = re.sub(r'\[([^\]]+)\]\([^\)]+\)', r'\1', s)
+    s = _RE_MD_LINK.sub(r'\1', s)
     # Strip markdown bold/italics
     s = s.replace('**', '').replace('__', '')
     # Normalize whitespaces
-    s = re.sub(r'\s+', ' ', s)
+    s = _RE_SPACES.sub(' ', s)
     return s.strip()
-
-from datetime import datetime, date
 
 MONTH_MAP = {
     'jan': 1, 'january': 1,
@@ -29,6 +33,23 @@ MONTH_MAP = {
     'nov': 11, 'november': 11,
     'dec': 12, 'december': 12,
 }
+
+_MON_PAT = '|'.join(sorted(MONTH_MAP.keys(), key=len, reverse=True))
+
+# Precompiled regexes for age and date parsing
+_RE_HOURS = re.compile(r'\b(\d+)\s*(?:hours?|hrs?|h)\b')
+_RE_DAYS = re.compile(r'\b(\d+)\s*(?:days?|d)\b')
+_RE_WEEKS = re.compile(r'\b(\d+)\s*(?:weeks?|w)\b')
+_RE_MONTHS = re.compile(r'\b(\d+)\s*(?:months?|mos?|mo)\b')
+_RE_YEARS = re.compile(r'\b(\d+)\s*(?:years?|yrs?|y)\b')
+
+_RE_YEAR_4DIGIT = re.compile(r'\b(20[0-9]{2})\b')
+_RE_ISO = re.compile(r'\b(20\d{2})[-/](\d{1,2})[-/](\d{1,2})(?=[^\d]|$)')
+_RE_SLASH = re.compile(r'\b(\d{1,2})/(\d{1,2})(?:/(\d{4}|\d{2}))?(?=[^\d/]|$)')
+_RE_MON_DAY = re.compile(rf'\b({_MON_PAT})\.?\s*[-/,]?\s*(\d{{1,2}})(?:st|nd|rd|th)?\b')
+_RE_DAY_MON = re.compile(rf'\b(\d{{1,2}})(?:st|nd|rd|th)?\s*[-/,]?\s*({_MON_PAT})\b')
+_RE_MON_YEAR = re.compile(rf'\b({_MON_PAT})\.?\s*[-/,]?\s*(20\d{{2}})\b')
+_RE_YEAR_MON = re.compile(rf'\b(20\d{{2}})\s*[-/,]?\s*({_MON_PAT})\b')
 
 def parse_age_days(age_str, reference_date=None, default_year=None) -> int:
     if not age_str:
@@ -50,40 +71,46 @@ def parse_age_days(age_str, reference_date=None, default_year=None) -> int:
 
     ref = datetime(ref_dt.year, ref_dt.month, ref_dt.day)
 
-    if default_year is None:
+    try:
+        default_year = int(default_year) if default_year is not None else ref.year
+    except (ValueError, TypeError):
         default_year = ref.year
 
     # Relative time strings
-    if any(k in s for k in ["today", "just now", "0d", "0 days"]):
+    if any(k in s for k in ["today", "just now"]):
         return 0
     if "yesterday" in s:
         return 1
 
-    m_h = re.search(r'\b(\d+)\s*(?:hours?|hrs?|h)\b', s)
+    m_h = _RE_HOURS.search(s)
     if m_h:
         return 0
 
-    m_d = re.search(r'\b(\d+)\s*(?:days?|d)\b', s)
+    m_d = _RE_DAYS.search(s)
     if m_d:
         return int(m_d.group(1))
 
-    m_mo = re.search(r'\b(\d+)\s*(?:months?|mos?|mo)\b', s)
-    if m_mo:
-        return int(m_mo.group(1)) * 30
-
-    m_w = re.search(r'\b(\d+)\s*(?:weeks?|w)\b', s)
+    m_w = _RE_WEEKS.search(s)
     if m_w:
         return int(m_w.group(1)) * 7
 
+    m_mo = _RE_MONTHS.search(s)
+    if m_mo:
+        return int(m_mo.group(1)) * 30
+
+    m_y = _RE_YEARS.search(s)
+    if m_y:
+        return int(m_y.group(1)) * 365
+
     # Year detection: explicit 4-digit year or default_year
-    year_match = re.search(r'\b(20[0-9]{2})\b', s)
+    year_match = _RE_YEAR_4DIGIT.search(s)
     if year_match:
         parsed_year = int(year_match.group(1))
     else:
         parsed_year = default_year
 
     # ISO format YYYY-MM-DD or YYYY/MM/DD
-    m_iso = re.search(r'\b(20\d{2})[-/](\d{1,2})[-/](\d{1,2})(?=[^\d]|$)', s)
+    m_iso = _RE_ISO.search(s)
     if m_iso:
         try:
             target_dt = datetime(int(m_iso.group(1)), int(m_iso.group(2)), int(m_iso.group(3)))
@@ -91,8 +118,8 @@ def parse_age_days(age_str, reference_date=None, default_year=None) -> int:
         except (ValueError, OverflowError):
             pass
 
-    # Slash dates: MM/DD/YYYY or MM/DD
-    m_slash = re.search(r'\b(\d{1,2})/(\d{1,2})(?:/(\d{2,4}))?(?=[^\d/]|$)', s)
+    # Slash dates: MM/DD/YYYY or MM/DD/YY or MM/DD
+    m_slash = _RE_SLASH.search(s)
     if m_slash:
         try:
             m_month = int(m_slash.group(1))
@@ -109,10 +136,8 @@ def parse_age_days(age_str, reference_date=None, default_year=None) -> int:
         except (ValueError, OverflowError):
             pass
 
-    # Month name dates: "Oct 10, 2024", "Oct 01", "Sep 28", "10 Oct", etc.
-    mon_pat = '|'.join(sorted(MONTH_MAP.keys(), key=len, reverse=True))
-
-    m_mon_day = re.search(rf'\b({mon_pat})\.?\s*[-/,]?\s*(\d{{1,2}})(?:st|nd|rd|th)?\b', s)
+    # Month name dates with day: "Oct 10, 2024", "Oct 01", "Sep 28", "10 Oct", etc.
+    m_mon_day = _RE_MON_DAY.search(s)
     if m_mon_day:
         try:
             m_month = MONTH_MAP[m_mon_day.group(1)]
@@ -122,12 +147,33 @@ def parse_age_days(age_str, reference_date=None, default_year=None) -> int:
         except (ValueError, OverflowError):
             pass
 
-    m_day_mon = re.search(rf'\b(\d{{1,2}})(?:st|nd|rd|th)?\s*[-/,]?\s*({mon_pat})\b', s)
+    m_day_mon = _RE_DAY_MON.search(s)
     if m_day_mon:
         try:
             m_month = MONTH_MAP[m_day_mon.group(2)]
             m_day = int(m_day_mon.group(1))
             target_dt = datetime(parsed_year, m_month, m_day)
+            return max(0, (ref - target_dt).days)
+        except (ValueError, OverflowError):
+            pass
+
+    # Month Year dates without day: "Oct 2024", "2024 Oct"
+    m_mon_yr = _RE_MON_YEAR.search(s)
+    if m_mon_yr:
+        try:
+            m_month = MONTH_MAP[m_mon_yr.group(1)]
+            yr = int(m_mon_yr.group(2))
+            target_dt = datetime(yr, m_month, 1)
+            return max(0, (ref - target_dt).days)
+        except (ValueError, OverflowError):
+            pass
+
+    m_yr_mon = _RE_YEAR_MON.search(s)
+    if m_yr_mon:
+        try:
+            m_month = MONTH_MAP[m_yr_mon.group(2)]
+            yr = int(m_yr_mon.group(1))
+            target_dt = datetime(yr, m_month, 1)
             return max(0, (ref - target_dt).days)
         except (ValueError, OverflowError):
             pass
