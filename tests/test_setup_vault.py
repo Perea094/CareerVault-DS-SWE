@@ -250,6 +250,110 @@ class TestSetupVault(unittest.TestCase):
             success = setup_vault.launch_preferences_server(vault_root, open_browser=True)
             self.assertFalse(success)
 
+    def test_configure_vault_edge_cases_none_and_empty_strings(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            vault_path = Path(tmpdir)
+            bg_dir = vault_path / "001-background"
+            cv_dir = vault_path / "002-cv"
+            bg_dir.mkdir()
+            cv_dir.mkdir()
+
+            # Pre-seed existing preferences with None values to verify defensive merging
+            prefs_json = bg_dir / "preferences.json"
+            initial_data = {
+                "deal_breakers": None,
+                "custom_null_field": None,
+                "schedule": {"custom_rule": "keep"}
+            }
+            with open(prefs_json, "w", encoding="utf-8") as f:
+                json.dump(initial_data, f)
+
+            profile_input = {
+                "name": "",
+                "school": None,
+                "degree": "   ",
+                "graduation": None,
+                "current_semester": "",
+                "location": None,
+                "work_authorization": "TN visa",
+                "email": None,
+                "phone": "",
+                "linkedin": None,
+                "github": "",
+                "target_domains": None,
+                "minimum_hourly_usd": None
+            }
+
+            result = setup_vault.configure_vault(
+                vault_dir=vault_path,
+                profile=profile_input,
+                dry_run=False
+            )
+
+            self.assertTrue(result["success"])
+            with open(prefs_json, "r", encoding="utf-8") as f:
+                saved = json.load(f)
+
+            # Check that candidate fields fell back gracefully and didn't crash
+            self.assertEqual(saved["candidate"]["name"], "Candidate")
+            self.assertEqual(saved["candidate"]["school"], "University")
+            self.assertEqual(saved["candidate"]["degree"], "B.S. in Computer Science / Data Science")
+            self.assertEqual(saved["candidate"]["email"], "candidate@example.com")
+
+            # Check robust float parsing
+            self.assertEqual(saved["compensation_benefits"]["minimum_hourly"], 20.0)
+
+            # Check robust target_domains is a list and not None
+            self.assertIsInstance(saved["industry_domain"]["domains_of_interest"], list)
+            self.assertTrue(len(saved["industry_domain"]["domains_of_interest"]) > 0)
+            self.assertIsInstance(saved["academic_context"]["focus_areas"], list)
+
+            # Check clean work authorization mapping
+            self.assertEqual(saved["location_visa"]["us_work_authorization"], "TN Visa Eligible")
+
+            # Check existing data merging guarded against None overwrites
+            self.assertIsInstance(saved["deal_breakers"], dict)
+            self.assertEqual(saved["schedule"]["custom_rule"], "keep")
+
+    def test_configure_vault_work_authorization_mappings_and_invalid_numbers(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            vault_path = Path(tmpdir)
+            bg_dir = vault_path / "001-background"
+            cv_dir = vault_path / "002-cv"
+            bg_dir.mkdir()
+            cv_dir.mkdir()
+
+            # Test OPT/CPT mapping and string compensation floor
+            profile_opt = {
+                "name": "Alex Student",
+                "work_authorization": "OPT/CPT",
+                "minimum_hourly_usd": "not_a_number",
+                "target_domains": []
+            }
+            res_opt = setup_vault.configure_vault(vault_path, profile_opt)
+            self.assertTrue(res_opt["success"])
+
+            with open(bg_dir / "preferences.json", "r", encoding="utf-8") as f:
+                saved_opt = json.load(f)
+            self.assertEqual(saved_opt["location_visa"]["us_work_authorization"], "OPT/CPT Eligible")
+            self.assertEqual(saved_opt["compensation_benefits"]["minimum_hourly"], 20.0)
+            self.assertIsInstance(saved_opt["industry_domain"]["domains_of_interest"], list)
+
+            # Test Citizen mapping
+            profile_cit = {
+                "name": "Jane Citizen",
+                "work_authorization": "US Citizen",
+                "minimum_hourly_usd": "42.50"
+            }
+            res_cit = setup_vault.configure_vault(vault_path, profile_cit)
+            self.assertTrue(res_cit["success"])
+
+            with open(bg_dir / "preferences.json", "r", encoding="utf-8") as f:
+                saved_cit = json.load(f)
+            self.assertEqual(saved_cit["location_visa"]["us_work_authorization"], "Citizen / Green Card")
+            self.assertEqual(saved_cit["compensation_benefits"]["minimum_hourly"], 42.5)
+
+
 if __name__ == "__main__":
     unittest.main()
 

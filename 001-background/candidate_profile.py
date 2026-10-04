@@ -46,20 +46,33 @@ def load_profile(preferences_path: Union[str, Path, None] = None) -> Dict[str, A
     cand = data.get("candidate", {}) if isinstance(data.get("candidate"), dict) else {}
     acad = data.get("academic_context", {}) if isinstance(data.get("academic_context"), dict) else {}
     goals = data.get("career_goals", {}) if isinstance(data.get("career_goals"), dict) else {}
-    comp = data.get("compensation", {}) if isinstance(data.get("compensation"), dict) else (
-        data.get("compensation_benefits", {}) if isinstance(data.get("compensation_benefits"), dict) else {}
-    )
-    loc_visa = data.get("location_visa", {}) if isinstance(data.get("location_visa"), dict) else {}
     industry = data.get("industry_domain", {}) if isinstance(data.get("industry_domain"), dict) else {}
+    comp_canonical = data.get("compensation_benefits", {}) if isinstance(data.get("compensation_benefits"), dict) else {}
+    comp_legacy = data.get("compensation", {}) if isinstance(data.get("compensation"), dict) else {}
+    loc_visa = data.get("location_visa", {}) if isinstance(data.get("location_visa"), dict) else {}
     
-    compensation_floor = (
-        comp.get("minimum_hourly_usd")
-        or comp.get("minimum_hourly")
-        or comp.get("floor")
-        or DEFAULT_PROFILE["compensation_floor"]
+    # Prioritize canonical compensation_benefits over legacy compensation
+    comp_val = (
+        comp_canonical.get("minimum_hourly")
+        if comp_canonical.get("minimum_hourly") is not None
+        else (
+            comp_canonical.get("minimum_hourly_usd")
+            if comp_canonical.get("minimum_hourly_usd") is not None
+            else (
+                comp_legacy.get("minimum_hourly_usd")
+                if comp_legacy.get("minimum_hourly_usd") is not None
+                else (
+                    comp_legacy.get("minimum_hourly")
+                    if comp_legacy.get("minimum_hourly") is not None
+                    else comp_legacy.get("floor")
+                )
+            )
+        )
     )
+    if comp_val is None:
+        comp_val = DEFAULT_PROFILE["compensation_floor"]
     try:
-        compensation_floor = float(compensation_floor)
+        compensation_floor = float(comp_val)
     except (ValueError, TypeError):
         compensation_floor = DEFAULT_PROFILE["compensation_floor"]
 
@@ -97,6 +110,14 @@ def load_profile(preferences_path: Union[str, Path, None] = None) -> Dict[str, A
         or DEFAULT_PROFILE["work_authorization"]
     )
 
+    target_domains = (
+        industry.get("domains_of_interest")
+        or goals.get("target_domains")
+        or DEFAULT_PROFILE["target_domains"]
+    )
+    if not isinstance(target_domains, list):
+        target_domains = DEFAULT_PROFILE["target_domains"]
+
     profile = {
         "name": cand.get("name") or DEFAULT_PROFILE["name"],
         "school": school,
@@ -112,7 +133,7 @@ def load_profile(preferences_path: Union[str, Path, None] = None) -> Dict[str, A
         "phone": cand.get("phone") or DEFAULT_PROFILE["phone"],
         "linkedin": cand.get("linkedin") or DEFAULT_PROFILE["linkedin"],
         "github": cand.get("github") or DEFAULT_PROFILE["github"],
-        "target_domains": goals.get("target_domains") or industry.get("domains_of_interest") or DEFAULT_PROFILE["target_domains"],
+        "target_domains": target_domains,
         "compensation_floor": compensation_floor
     }
     return profile

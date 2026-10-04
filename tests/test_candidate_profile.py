@@ -85,6 +85,33 @@ class TestCandidateProfile(unittest.TestCase):
             if tmp_path.exists():
                 tmp_path.unlink()
 
+    def test_canonical_schema_prioritization_over_legacy(self):
+        sample_data = {
+            "compensation_benefits": {
+                "minimum_hourly": 55.0
+            },
+            "compensation": {
+                "minimum_hourly_usd": 20.0
+            },
+            "industry_domain": {
+                "domains_of_interest": ["GenAI/LLMs", "Robotics"]
+            },
+            "career_goals": {
+                "target_domains": ["Legacy Domain"]
+            }
+        }
+        with tempfile.NamedTemporaryFile("w", suffix=".json", delete=False, encoding="utf-8") as f:
+            json.dump(sample_data, f)
+            tmp_path = Path(f.name)
+
+        try:
+            profile = candidate_profile.load_profile(tmp_path)
+            self.assertEqual(profile["compensation_floor"], 55.0)
+            self.assertEqual(profile["target_domains"], ["GenAI/LLMs", "Robotics"])
+        finally:
+            if tmp_path.exists():
+                tmp_path.unlink()
+
 
 if __name__ == "__main__":
     unittest.main()

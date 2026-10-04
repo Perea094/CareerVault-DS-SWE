@@ -89,6 +89,21 @@ function isValidUrl(url) {
   return trimmed.startsWith('http://') || trimmed.startsWith('https://');
 }
 
+function normalizeWorkAuth(authStr) {
+  if (!authStr) return 'None';
+  const s = String(authStr).trim().toLowerCase();
+  if (s.includes('citizen') || s.includes('green card') || s.includes('permanent resident') || s === 'pr') {
+    return 'Citizen / Green Card';
+  }
+  if (s.includes('tn visa') || s.includes('tn-visa') || s.includes('tn status') || s.includes('usmca') || s.includes('nafta') || s === 'tn') {
+    return 'TN Visa Eligible';
+  }
+  if (s.includes('opt') || s.includes('cpt') || s.includes('f-1') || s.includes('f1')) {
+    return 'OPT/CPT Eligible';
+  }
+  return 'None';
+}
+
 // ============================================================================
 // Application State
 // ============================================================================
@@ -974,10 +989,14 @@ function syncFormFieldsFromState() {
     ? cand.location
     : (loc.current_location || cand.location || 'City, Country');
 
-  const isDefaultWorkAuth = !loc.us_work_authorization || loc.us_work_authorization === 'None';
-  document.getElementById('us-work-auth').value = (isDefaultWorkAuth && cand.work_authorization && cand.work_authorization.includes('Citizen'))
-    ? 'Citizen / Green Card'
-    : (loc.us_work_authorization || (cand.work_authorization && cand.work_authorization.includes('Citizen') ? 'Citizen / Green Card' : 'None'));
+  const rawWorkAuth = (loc.us_work_authorization && loc.us_work_authorization !== 'None')
+    ? loc.us_work_authorization
+    : (cand.work_authorization || loc.us_work_authorization || 'None');
+  const mappedWorkAuth = normalizeWorkAuth(rawWorkAuth);
+  const usAuthSelect = document.getElementById('us-work-auth');
+  if (usAuthSelect) {
+    usAuthSelect.value = mappedWorkAuth;
+  }
 
   document.getElementById('relocation-willingness').value = loc.relocation_willingness || 'Remote preferred; open to international relocation if visa sponsored';
   document.getElementById('travel-willingness').checked = loc.travel_willingness !== false;
@@ -1047,7 +1066,7 @@ function syncStateFromFormFields() {
 
   // Location & Visa
   state.location_visa.current_location = document.getElementById('current-location').value.trim();
-  state.location_visa.us_work_authorization = document.getElementById('us-work-auth').value;
+  state.location_visa.us_work_authorization = normalizeWorkAuth(document.getElementById('us-work-auth').value);
   state.location_visa.relocation_willingness = document.getElementById('relocation-willingness').value.trim();
   state.location_visa.travel_willingness = document.getElementById('travel-willingness').checked;
 
@@ -1069,6 +1088,18 @@ function syncStateFromFormFields() {
 
   // Role Responsibilities
   state.role_responsibilities.ic_vs_lead = document.getElementById('role-focus-ic').value;
+
+  // Mirror updates to legacy keys if present
+  if (state.compensation) {
+    state.compensation.minimum_hourly_usd = state.compensation_benefits.minimum_hourly;
+  }
+  if (state.career_goals) {
+    state.career_goals.target_domains = state.industry_domain.domains_of_interest;
+    state.career_goals.disallowed_industries = state.industry_domain.industries_to_avoid;
+  }
+  if (state.modality) {
+    state.modality.ranking = (state.work_arrangement.preference_rank || []).map(r => r.toLowerCase());
+  }
 
   // Candidate mirror
   state.candidate = Object.assign({}, state.candidate, {
@@ -1132,13 +1163,13 @@ async function loadPreferences(isReset = false) {
 }
 
 async function savePreferences(showNotification = true, andQuit = false) {
+  const saveBtn = document.getElementById('btn-save-preferences');
+  const quitBtn = document.getElementById('btn-save-quit');
+  const origSaveText = saveBtn ? saveBtn.innerHTML : '';
+  const origQuitText = quitBtn ? quitBtn.innerHTML : '';
+
   try {
     syncStateFromFormFields();
-
-    const saveBtn = document.getElementById('btn-save-preferences');
-    const quitBtn = document.getElementById('btn-save-quit');
-    const origSaveText = saveBtn ? saveBtn.innerHTML : '';
-    const origQuitText = quitBtn ? quitBtn.innerHTML : '';
 
     if (andQuit && quitBtn) {
       quitBtn.innerHTML = `<span class="spinner"></span> Saving &amp; Closing...`;
@@ -1165,15 +1196,6 @@ async function savePreferences(showNotification = true, andQuit = false) {
       body: JSON.stringify(payload)
     });
 
-    if (saveBtn) {
-      saveBtn.innerHTML = origSaveText;
-      saveBtn.disabled = false;
-    }
-    if (quitBtn) {
-      quitBtn.innerHTML = origQuitText;
-      quitBtn.disabled = false;
-    }
-
     if (!res.ok) {
       const errData = await res.json().catch(() => ({}));
       throw new Error(errData.error || `HTTP ${res.status}`);
@@ -1199,6 +1221,14 @@ async function savePreferences(showNotification = true, andQuit = false) {
         try { window.close(); } catch (e) {}
       }, 1500);
     } else {
+      if (saveBtn) {
+        saveBtn.innerHTML = origSaveText;
+        saveBtn.disabled = false;
+      }
+      if (quitBtn) {
+        quitBtn.innerHTML = origQuitText;
+        quitBtn.disabled = false;
+      }
       document.getElementById('save-status-text').innerHTML = `
         <span class="save-status-indicator" style="background-color: var(--emerald);"></span>
         <span>Preferences saved & synced to Obsidian</span>
@@ -1210,6 +1240,14 @@ async function savePreferences(showNotification = true, andQuit = false) {
 
     return data;
   } catch (err) {
+    if (saveBtn) {
+      saveBtn.innerHTML = origSaveText;
+      saveBtn.disabled = false;
+    }
+    if (quitBtn) {
+      quitBtn.innerHTML = origQuitText;
+      quitBtn.disabled = false;
+    }
     console.error("Error saving preferences:", err);
     document.getElementById('save-status-text').innerHTML = `
       <span class="save-status-indicator" style="background-color: var(--coral);"></span>

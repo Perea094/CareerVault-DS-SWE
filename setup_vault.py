@@ -63,6 +63,24 @@ def build_default_schedule() -> Dict[str, Dict[str, str]]:
         grid[day] = {slot: "available" if "09_00" <= slot <= "17_00" else "busy" for slot in DEFAULT_SLOTS}
     return grid
 
+def normalize_us_work_authorization(auth_str: Any) -> str:
+    """Maps work authorization strings cleanly to canonical categories:
+    - 'Citizen / Green Card'
+    - 'TN Visa Eligible'
+    - 'OPT/CPT Eligible'
+    - 'None'
+    """
+    if not auth_str:
+        return "None"
+    s = str(auth_str).strip().lower()
+    if any(k in s for k in ["citizen", "green card", "permanent resident", "pr"]):
+        return "Citizen / Green Card"
+    if any(k in s for k in ["tn visa", "tn-visa", "tn status", "usmca", "nafta"]) or s == "tn":
+        return "TN Visa Eligible"
+    if any(k in s for k in ["opt", "cpt", "f-1", "f1", "stem opt"]):
+        return "OPT/CPT Eligible"
+    return "None"
+
 def _fallback_generate_resume(template_path: Path, output_path: Path, profile: Dict[str, Any]) -> Path:
     with open(template_path, "r", encoding="utf-8") as f:
         template_content = f.read()
@@ -226,26 +244,66 @@ def configure_vault(vault_dir: Path, profile: Dict[str, Any], dry_run: bool = Fa
 
     # Preserve all existing data sections
     for k, v in existing_data.items():
-        if k in prefs_payload and isinstance(prefs_payload[k], dict) and isinstance(v, dict):
-            prefs_payload[k].update(v)
-        else:
+        if k in prefs_payload and isinstance(prefs_payload[k], dict):
+            if isinstance(v, dict):
+                prefs_payload[k].update(v)
+        elif v is not None:
             prefs_payload[k] = v
 
     # Extract candidate values from profile with fallbacks
-    cand = prefs_payload.get("candidate", {})
-    name = profile.get("name") or cand.get("name") or "Candidate"
-    school = profile.get("school") or profile.get("university") or cand.get("school") or cand.get("university") or "University"
-    degree = profile.get("degree") or profile.get("program") or cand.get("degree") or "B.S. in Computer Science / Data Science"
-    graduation = profile.get("graduation") or profile.get("expected_graduation") or cand.get("graduation") or "May 2027"
-    current_semester = profile.get("current_semester") or profile.get("term") or cand.get("current_semester") or "Junior"
-    location = profile.get("location") or cand.get("location") or "City, Country"
-    work_auth = profile.get("work_authorization") or cand.get("work_authorization") or "Needs Sponsorship / International"
-    email = profile.get("email") or profile.get("email_contact") or cand.get("email") or "candidate@example.com"
-    phone = profile.get("phone") or cand.get("phone") or "+1 555 0100"
-    linkedin = profile.get("linkedin") or cand.get("linkedin") or "https://linkedin.com/in/username"
-    github = profile.get("github") or cand.get("github") or "https://github.com/username"
-    target_domains = profile.get("target_domains", prefs_payload.get("industry_domain", {}).get("domains_of_interest", ["Software Engineering", "Machine Learning", "Data Systems"]))
-    comp_floor = float(profile.get("minimum_hourly_usd", profile.get("minimum_hourly", prefs_payload.get("compensation_benefits", {}).get("minimum_hourly", 20.0))))
+    cand = prefs_payload.get("candidate") or {}
+
+    def _safe_str(val: Any, fallback: str = "") -> str:
+        if val is None:
+            return fallback
+        s = str(val).strip()
+        return s if s else fallback
+
+    name = _safe_str(profile.get("name")) or cand.get("name") or "Candidate"
+    school = _safe_str(profile.get("school")) or _safe_str(profile.get("university")) or cand.get("school") or cand.get("university") or "University"
+    degree = _safe_str(profile.get("degree")) or _safe_str(profile.get("program")) or cand.get("degree") or "B.S. in Computer Science / Data Science"
+    graduation = _safe_str(profile.get("graduation")) or _safe_str(profile.get("expected_graduation")) or cand.get("graduation") or "May 2027"
+    current_semester = _safe_str(profile.get("current_semester")) or _safe_str(profile.get("term")) or cand.get("current_semester") or "Junior"
+    location = _safe_str(profile.get("location")) or cand.get("location") or "City, Country"
+    work_auth = _safe_str(profile.get("work_authorization")) or cand.get("work_authorization") or "Needs Sponsorship / International"
+    email = _safe_str(profile.get("email")) or _safe_str(profile.get("email_contact")) or cand.get("email") or "candidate@example.com"
+    phone = _safe_str(profile.get("phone")) or cand.get("phone") or "+1 555 0100"
+    linkedin = _safe_str(profile.get("linkedin")) or cand.get("linkedin") or "https://linkedin.com/in/username"
+    github = _safe_str(profile.get("github")) or cand.get("github") or "https://github.com/username"
+
+    # Robust handling of target_domains: ensure it is a list, not None
+    default_domains = (prefs_payload.get("industry_domain") or {}).get(
+        "domains_of_interest", ["Software Engineering", "Machine Learning", "Data Systems"]
+    )
+    if not isinstance(default_domains, list) or not default_domains:
+        default_domains = ["Software Engineering", "Machine Learning", "Data Systems"]
+
+    raw_domains = profile.get("target_domains") if "target_domains" in profile else None
+    if raw_domains is not None:
+        if isinstance(raw_domains, list):
+            target_domains = [str(d).strip() for d in raw_domains if d is not None and str(d).strip()]
+            if not target_domains:
+                target_domains = list(default_domains)
+        elif isinstance(raw_domains, str) and raw_domains.strip():
+            target_domains = [d.strip() for d in raw_domains.split(",") if d.strip()]
+        else:
+            target_domains = list(default_domains)
+    else:
+        target_domains = list(default_domains)
+
+    # Robust parsing of comp_floor with try/except fallback to 20.0
+    raw_comp = None
+    if profile.get("minimum_hourly_usd") is not None and str(profile.get("minimum_hourly_usd")).strip() != "":
+        raw_comp = profile.get("minimum_hourly_usd")
+    elif profile.get("minimum_hourly") is not None and str(profile.get("minimum_hourly")).strip() != "":
+        raw_comp = profile.get("minimum_hourly")
+    else:
+        raw_comp = (prefs_payload.get("compensation_benefits") or {}).get("minimum_hourly", 20.0)
+
+    try:
+        comp_floor = float(raw_comp)
+    except (ValueError, TypeError):
+        comp_floor = 20.0
 
     # Update candidate section
     candidate_data = dict(cand)
@@ -268,32 +326,41 @@ def configure_vault(vault_dir: Path, profile: Dict[str, Any], dry_run: bool = Fa
     prefs_payload["candidate"] = candidate_data
 
     # Update academic_context
-    acad = prefs_payload.get("academic_context", {})
+    acad = prefs_payload.get("academic_context") or {}
     acad["university"] = school
     acad["program"] = degree
     acad["term"] = current_semester
     acad["expected_graduation"] = graduation
     if "target_domains" in profile:
         acad["focus_areas"] = target_domains
+    elif "focus_areas" not in acad or not isinstance(acad.get("focus_areas"), list):
+        acad["focus_areas"] = target_domains
     prefs_payload["academic_context"] = acad
 
     # Update location_visa
-    loc_v = prefs_payload.get("location_visa", {})
+    loc_v = prefs_payload.get("location_visa") or {}
     loc_v["current_location"] = location
     loc_v["work_authorization"] = work_auth
-    if "citizen" in work_auth.lower():
-        loc_v["us_work_authorization"] = "Citizen / Green Card"
+    target_auth = profile.get("us_work_authorization") or profile.get("work_authorization")
+    if target_auth:
+        norm_auth = normalize_us_work_authorization(target_auth)
+        if norm_auth != "None" or loc_v.get("us_work_authorization") in [None, "", "None"]:
+            loc_v["us_work_authorization"] = norm_auth
+    elif not loc_v.get("us_work_authorization") or loc_v.get("us_work_authorization") == "None":
+        loc_v["us_work_authorization"] = normalize_us_work_authorization(work_auth)
     prefs_payload["location_visa"] = loc_v
 
     # Update compensation_benefits
-    comp_b = prefs_payload.get("compensation_benefits", {})
+    comp_b = prefs_payload.get("compensation_benefits") or {}
     comp_b["minimum_hourly"] = comp_floor
     comp_b["minimum_hourly_usd"] = comp_floor
     prefs_payload["compensation_benefits"] = comp_b
 
     # Update industry_domain
-    ind = prefs_payload.get("industry_domain", {})
+    ind = prefs_payload.get("industry_domain") or {}
     if "target_domains" in profile:
+        ind["domains_of_interest"] = target_domains
+    elif "domains_of_interest" not in ind or not isinstance(ind.get("domains_of_interest"), list):
         ind["domains_of_interest"] = target_domains
     prefs_payload["industry_domain"] = ind
 
@@ -310,9 +377,9 @@ def configure_vault(vault_dir: Path, profile: Dict[str, Any], dry_run: bool = Fa
         prefs_payload["schedule"] = existing_data["schedule"]
     else:
         prefs_payload["schedule"] = {
-            "weekly_availability_grid": prefs_payload.get("availability_calendar", {}).get("weekly_grid", build_default_schedule()),
-            "target_weekly_hours": prefs_payload.get("availability_calendar", {}).get("target_weekly_hours_min", 20),
-            "max_weekly_hours": prefs_payload.get("availability_calendar", {}).get("target_weekly_hours_max", 30)
+            "weekly_availability_grid": (prefs_payload.get("availability_calendar") or {}).get("weekly_grid", build_default_schedule()),
+            "target_weekly_hours": (prefs_payload.get("availability_calendar") or {}).get("target_weekly_hours_min", 20),
+            "max_weekly_hours": (prefs_payload.get("availability_calendar") or {}).get("target_weekly_hours_max", 30)
         }
 
     if "compensation" in existing_data and isinstance(existing_data["compensation"], dict):
@@ -355,7 +422,7 @@ def configure_vault(vault_dir: Path, profile: Dict[str, Any], dry_run: bool = Fa
 
     # Generate starter resume if template exists
     template_tex = cv_dir / "template.tex"
-    clean_name = candidate_data["name"].replace(" ", "_")
+    clean_name = (candidate_data.get("name") or "Candidate").strip().replace(" ", "_") or "Candidate"
     output_tex = cv_dir / f"{clean_name}_Resume.tex"
     
     if template_tex.exists():
