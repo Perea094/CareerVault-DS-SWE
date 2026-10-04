@@ -424,12 +424,42 @@ def is_stale_upstream_feed(content: str, current_year: int = 2026) -> tuple[bool
     return False, ""
 
 
+def filter_candidate_links(candidates: list, checker_func=None, max_workers: int = 8) -> list:
+    """
+    Probes application URLs of candidates using concurrent HTTP checks,
+    weeding out dead links and generic ATS redirects.
+    """
+    if not candidates:
+        return []
+    if checker_func is None:
+        try:
+            from prune_opportunities import check_single_link
+            checker_func = check_single_link
+        except ImportError:
+            return candidates
+
+    verified = []
+    from concurrent.futures import ThreadPoolExecutor
+
+    with ThreadPoolExecutor(max_workers=max_workers) as executor:
+        results = list(executor.map(checker_func, candidates))
+
+    for opp, is_active, reason in results:
+        if is_active:
+            verified.append(opp)
+        else:
+            print(f"  [DEAD LINK REMOVED] {opp.get('company')} - {opp.get('role')} ({reason})", file=sys.stderr)
+
+    return verified
+
+
 def main():
     parser = argparse.ArgumentParser(description="Unified Opportunities Scanner with Dynamic Worldwide Location & Constraints Engine.")
     parser.add_argument("--days", type=int, default=7, help="Maximum age of job postings in days (default: 7)")
     parser.add_argument("--limit", type=int, default=10, help="Maximum candidates to export to pending_scan.json (default: 10)")
     parser.add_argument("--source", type=str, default=None, help="Filter to run only a specific source ID")
     parser.add_argument("--all", action="store_true", help="Include all candidates without limiting batch size")
+    parser.add_argument("--verify-links", action="store_true", help="Probe candidate apply_url to drop 404s and corporate ATS redirects before export.")
     args = parser.parse_args()
 
     profile = load_candidate_profile()
@@ -508,6 +538,11 @@ def main():
 
     limit = len(all_candidates) if args.all else args.limit
     selected = all_candidates[:limit]
+
+    if getattr(args, "verify_links", False):
+        print(f"\nVerifying live links for top {len(selected)} candidate roles...")
+        selected = filter_candidate_links(selected)
+        print(f"Retained {len(selected)} verified active opportunities.")
 
     print(f"\n=======================================================")
     print(f"Scan Finished: Found {len(all_candidates)} viable new postings (Age <= {args.days}d).")

@@ -318,7 +318,26 @@ class TestScanOpportunities(unittest.TestCase):
         self.assertIn("expired 2025 cycle", reason)
         self.assertIn("without active 2026+ updates", reason)
 
+    def test_filter_dead_links_with_verify_links(self):
+        candidates = [
+            {"company": "Active Corp", "role": "SWE Intern", "apply_url": "https://example.com/active"},
+            {"company": "Dead Corp", "role": "Data Intern", "apply_url": "https://example.com/dead404"}
+        ]
+        def mock_checker(opp):
+            if "dead404" in opp["apply_url"]:
+                return opp, False, "Dead Link (HTTP 404)"
+            return opp, True, "Active (200 OK)"
+
+        verified = scan_opportunities.filter_candidate_links(candidates, checker_func=mock_checker)
+        self.assertEqual(len(verified), 1)
+        self.assertEqual(verified[0]["company"], "Active Corp")
+
+    def test_filter_candidate_links_empty_list(self):
+        verified = scan_opportunities.filter_candidate_links([])
+        self.assertEqual(verified, [])
+
 
 if __name__ == "__main__":
     unittest.main()
+
 
