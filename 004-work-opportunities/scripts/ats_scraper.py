@@ -317,6 +317,7 @@ def inspect_job_page(url: str, reference_date: datetime | None = None, timeout: 
                 "hours_per_week": "Unspecified",
                 "deadline": None,
                 "is_expired": False,
+                "content": "",
             }
         return {
             "url": url,
@@ -327,6 +328,7 @@ def inspect_job_page(url: str, reference_date: datetime | None = None, timeout: 
             "hours_per_week": "Unspecified",
             "deadline": None,
             "is_expired": False,
+            "content": "",
         }
     except Exception as exc:
         return {
@@ -338,6 +340,7 @@ def inspect_job_page(url: str, reference_date: datetime | None = None, timeout: 
             "hours_per_week": "Unspecified",
             "deadline": None,
             "is_expired": False,
+            "content": "",
         }
 
     # Unwrap iframes if applicable
@@ -391,5 +394,6 @@ def inspect_job_page(url: str, reference_date: datetime | None = None, timeout: 
         "hours_per_week": hours,
         "deadline": deadline_dt,
         "is_expired": False,
+        "content": working_content,
     }
 

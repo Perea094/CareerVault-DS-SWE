@@ -116,7 +116,7 @@ class TestPruneOpportunities(unittest.TestCase):
         with patch("urllib.request.urlopen", side_effect=TimeoutError("Connection timed out")):
             _, is_active, reason = check_single_link(opp)
             self.assertTrue(is_active)
-            self.assertIn("Network timeout/skip", reason)
+            self.assertIn("Network skip", reason)
 
     def test_check_single_link_active_200(self):
         opp = {"company": "LiveCo", "role": "SWE", "apply_url": "https://example.com/job"}
@@ -162,10 +162,10 @@ class TestPruneOpportunities(unittest.TestCase):
             "is_expired": True
         }
 
-        with patch("ats_scraper.inspect_job_page", return_value=mock_info):
+        with patch("prune_opportunities.inspect_job_page", return_value=mock_info):
             updated_opp, is_live, reason = check_single_link(opp)
-            assert is_live is False
-            assert "closed on 2026-07-18" in reason.lower()
+            self.assertFalse(is_live)
+            self.assertIn("closed on 2026-07-18", reason.lower())
 
     def test_check_single_link_keeps_active_when_inspect_job_page_is_active(self):
         opp = {
@@ -183,7 +183,8 @@ class TestPruneOpportunities(unittest.TestCase):
             "position_type": "Internship",
             "hours_per_week": "40 hrs/week",
             "deadline": datetime(2026, 12, 31),
-            "is_expired": False
+            "is_expired": False,
+            "content": "<html>Apply now</html>"
         }
 
         mock_resp = MagicMock()
@@ -191,10 +192,34 @@ class TestPruneOpportunities(unittest.TestCase):
         mock_resp.read.return_value = b"<html>Apply now</html>"
         mock_resp.__enter__.return_value = mock_resp
 
-        with patch("ats_scraper.inspect_job_page", return_value=mock_info), \
-             patch("urllib.request.urlopen", return_value=mock_resp):
+        with patch("prune_opportunities.inspect_job_page", return_value=mock_info), \
+             patch("urllib.request.urlopen", return_value=mock_resp) as mock_urlopen:
             updated_opp, is_live, reason = check_single_link(opp)
-            assert is_live is True
-            assert "Active" in reason
+            self.assertTrue(is_live)
+            self.assertIn("Active", reason)
+            # Verify redundant secondary HTTP request is eliminated
+            mock_urlopen.assert_not_called()
+
+    def test_check_single_link_fallback_on_scraper_exception(self):
+        opp = {"company": "FallbackCo", "role": "SWE", "apply_url": "https://example.com/job-fallback"}
+        mock_resp = MagicMock()
+        mock_resp.geturl.return_value = "https://example.com/job-fallback"
+        mock_resp.read.return_value = b"<html><body>Join our team today!</body></html>"
+        mock_resp.__enter__.return_value = mock_resp
+
+        with patch("prune_opportunities.inspect_job_page", side_effect=RuntimeError("Scraper crash")), \
+             patch("urllib.request.urlopen", return_value=mock_resp) as mock_urlopen:
+            updated_opp, is_live, reason = check_single_link(opp)
+            self.assertTrue(is_live)
+            self.assertIn("Active (200 OK)", reason)
+            mock_urlopen.assert_called_once()
+
+    def test_check_single_link_fallback_network_exception(self):
+        opp = {"company": "FallbackTimeoutCo", "role": "SWE", "apply_url": "https://example.com/slow-fallback"}
+        with patch("prune_opportunities.inspect_job_page", side_effect=RuntimeError("Scraper crash")), \
+             patch("urllib.request.urlopen", side_effect=TimeoutError("Connection timed out")):
+            _, is_active, reason = check_single_link(opp)
+            self.assertTrue(is_active)
+            self.assertIn("Network timeout/skip", reason)
 
 

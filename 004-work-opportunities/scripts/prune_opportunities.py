@@ -20,6 +20,11 @@ SCRIPTS_DIR = os.path.dirname(os.path.abspath(__file__))
 if SCRIPTS_DIR not in sys.path:
     sys.path.insert(0, SCRIPTS_DIR)
 
+try:
+    from ats_scraper import inspect_job_page
+except ImportError:
+    inspect_job_page = None
+
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 DB_PATH = os.path.join(BASE_DIR, "database", "opportunities.json")
 MIRROR_PATH = os.path.join(BASE_DIR, "opportunities-database.json")
@@ -160,14 +165,27 @@ def check_single_link(opp, reference_date=None):
         return opp, False, "Missing URL"
     url = raw_url.strip()
 
-    # 1. Use deep ATS inspector for iframe resolution, closing date detection, and status
-    try:
-        from ats_scraper import inspect_job_page
-        info = inspect_job_page(url, reference_date=reference_date, timeout=10)
-        if not info["is_active"]:
-            return opp, False, info["reason"]
-    except ImportError:
-        pass
+    if inspect_job_page is not None:
+        try:
+            info = inspect_job_page(url, reference_date=reference_date, timeout=10)
+            if not info["is_active"]:
+                return opp, False, info["reason"]
+            
+            # Reuse resolved_url and content from inspect_job_page to avoid duplicate HTTP requests
+            resolved_url = info.get("resolved_url") or url
+            is_redirected, red_reason = is_ats_redirected_to_catalog(url, resolved_url)
+            if is_redirected:
+                return opp, False, red_reason
+
+            page_content = (info.get("content") or "").lower()
+            for kw in CLOSED_KEYWORDS:
+                if kw in page_content:
+                    return opp, False, f"ATS Closed Message: '{kw}'"
+
+            return opp, True, info.get("reason", "Active (200 OK)")
+        except Exception as exc:
+            # Scraper exception, fall back to standard HTTP probe below
+            pass
 
     ctx = ssl.create_default_context()
     ctx.check_hostname = False
