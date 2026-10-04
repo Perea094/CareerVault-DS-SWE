@@ -29,7 +29,7 @@
 - Create: `004-work-opportunities/scripts/ats_scraper.py`
 - Test: `tests/test_ats_scraper.py`
 
-- [ ] **Step 1: Write the failing tests for core ATS parsing utilities**
+- [x] **Step 1: Write the failing tests for core ATS parsing utilities**
 
 Create `tests/test_ats_scraper.py` with test cases covering iframe unwrapping, JSON-LD parsing, position type detection (Full-Time vs Part-Time), and closing window deadline extraction.
 
@@ -134,12 +134,12 @@ def test_parse_closing_deadline_future():
     assert reason == ""
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `py -3.11 -m pytest tests/test_ats_scraper.py -v`
 Expected: FAIL with `ModuleNotFoundError: No module named 'ats_scraper'`
 
-- [ ] **Step 3: Write minimal implementation in `ats_scraper.py`**
+- [x] **Step 3: Write minimal implementation in `ats_scraper.py`**
 
 Create `004-work-opportunities/scripts/ats_scraper.py`:
 
@@ -356,12 +356,12 @@ def parse_closing_deadline(html: str, json_ld: dict | None = None, reference_dat
     return None, False, ""
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 Run: `py -3.11 -m pytest tests/test_ats_scraper.py -v`
 Expected: PASS (all 6 tests pass)
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add 004-work-opportunities/scripts/ats_scraper.py tests/test_ats_scraper.py
@@ -376,7 +376,7 @@ git commit -m "feat(ats): implement core ATS metadata and deadline extraction in
 - Modify: `004-work-opportunities/scripts/ats_scraper.py`
 - Test: `tests/test_ats_scraper.py`
 
-- [ ] **Step 1: Write the failing tests for `inspect_job_page()`**
+- [x] **Step 1: Write the failing tests for `inspect_job_page()`**
 
 Add tests to `tests/test_ats_scraper.py` checking full page inspection, network handling, mock iCIMS iframe redirection, and closed status flagging.
 
@@ -430,12 +430,12 @@ def test_inspect_job_page_active_part_time():
         assert "29" in info["hours_per_week"] or "Part-Time" in info["hours_per_week"]
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `py -3.11 -m pytest tests/test_ats_scraper.py -k "inspect_job_page" -v`
 Expected: FAIL with `ImportError: cannot import name 'inspect_job_page' from 'ats_scraper'`
 
-- [ ] **Step 3: Implement `fetch_page_content()` and `inspect_job_page()` in `ats_scraper.py`**
+- [x] **Step 3: Implement `fetch_page_content()` and `inspect_job_page()` in `ats_scraper.py`**
 
 Append to `004-work-opportunities/scripts/ats_scraper.py`:
 
@@ -555,12 +555,12 @@ def inspect_job_page(url: str, reference_date: datetime | None = None, timeout: 
     }
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 Run: `py -3.11 -m pytest tests/test_ats_scraper.py -v`
 Expected: PASS (all 8 tests pass)
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add 004-work-opportunities/scripts/ats_scraper.py tests/test_ats_scraper.py
@@ -575,7 +575,7 @@ git commit -m "feat(ats): implement inspect_job_page in ats_scraper"
 - Modify: `004-work-opportunities/scripts/prune_opportunities.py:153-195`
 - Test: `tests/test_prune_opportunities.py`
 
-- [ ] **Step 1: Write the failing tests for prune deadline detection**
+- [x] **Step 1: Write the failing tests for prune deadline detection**
 
 Add tests to `tests/test_prune_opportunities.py` verifying that postings with past application closing dates are flagged as closed during link checks.
 
@@ -605,12 +605,12 @@ def test_check_single_link_flags_expired_application_window():
         assert "closed on 2026-07-18" in reason.lower()
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `py -3.11 -m pytest tests/test_prune_opportunities.py -k "expired_application_window" -v`
 Expected: FAIL (because `check_single_link` does not yet call `ats_scraper.inspect_job_page`)
 
-- [ ] **Step 3: Update `check_single_link()` in `prune_opportunities.py`**
+- [x] **Step 3: Update `check_single_link()` in `prune_opportunities.py`**
 
 Modify `004-work-opportunities/scripts/prune_opportunities.py:153-195` to import and call `inspect_job_page`:
 
@@ -665,12 +665,12 @@ def check_single_link(opp, reference_date=None):
         return opp, True, f"Network timeout/skip: {e}"
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 Run: `py -3.11 -m pytest tests/test_prune_opportunities.py -v`
 Expected: PASS
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add 004-work-opportunities/scripts/prune_opportunities.py tests/test_prune_opportunities.py
@@ -685,7 +685,7 @@ git commit -m "feat(prune): integrate deep ATS deadline inspection into check_si
 - Modify: `004-work-opportunities/scripts/scan_opportunities.py:352-356, 428-462`
 - Test: `tests/test_scan_opportunities.py`
 
-- [ ] **Step 1: Write the failing tests for accurate tier labeling and deep link verification**
+- [x] **Step 1: Write the failing tests for accurate tier labeling and deep link verification**
 
 Add tests in `tests/test_scan_opportunities.py` asserting:
 1. Roles with "remote" in location are labeled `"Tier 2: Remote & Flexible Opportunities"` (NOT `"Remote Part-Time & Flexible"` which falsely claims full-time roles are part-time).
@@ -742,12 +742,12 @@ def test_filter_candidate_links_enriches_and_drops_expired():
         assert verified[0]["hours_per_week"] == "Full-Time (40 hrs/week)"
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `py -3.11 -m pytest tests/test_scan_opportunities.py -k "remote_label or drops_expired" -v`
 Expected: FAIL
 
-- [ ] **Step 3: Update `score_and_tier()` and `filter_candidate_links()` in `scan_opportunities.py`**
+- [x] **Step 3: Update `score_and_tier()` and `filter_candidate_links()` in `scan_opportunities.py`**
 
 In `004-work-opportunities/scripts/scan_opportunities.py`:
 1. Change line 354:
@@ -803,12 +803,12 @@ def filter_candidate_links(candidates: list, checker_func=None, max_workers: int
     return verified
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 Run: `py -3.11 -m pytest tests/test_scan_opportunities.py -v`
 Expected: PASS (all tests pass)
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add 004-work-opportunities/scripts/scan_opportunities.py tests/test_scan_opportunities.py
@@ -822,12 +822,12 @@ git commit -m "fix(scanner): correct Tier 2 labeling and enrich candidates with 
 **Files:**
 - Test: All unit test files in `tests/`
 
-- [ ] **Step 1: Run the full test suite**
+- [x] **Step 1: Run the full test suite**
 
 Run: `py -3.11 -m pytest -v`
 Expected: All tests pass (140+ passed, 0 failures).
 
-- [ ] **Step 2: Validate live inspection against real-world test cases**
+- [x] **Step 2: Validate live inspection against real-world test cases**
 
 Run verification script on real Cotiviti and Grow Financial postings:
 ```powershell
@@ -848,7 +848,7 @@ Expected output:
 - Cotiviti: `Position Type: Full-Time` | `Active: False` | `Reason: Expired application window: closed on 2026-07-18`
 - Grow Financial: `Position Type: Part-Time` | `Active: True` | `Hours: Part-Time (Up to 29 hrs/week)`
 
-- [ ] **Step 3: Commit any final test artifacts or documentation**
+- [x] **Step 3: Commit any final test artifacts or documentation**
 
 ```bash
 git add docs/superpowers/plans/2026-10-04-fix-job-page-scraping-and-closed-windows.md
