@@ -381,22 +381,44 @@ def fetch_content(url):
 
 
 def is_stale_upstream_feed(content: str, current_year: int = 2026) -> tuple[bool, str]:
+    """
+    Detect whether an upstream feed or repository README is stale, abandoned,
+    or belongs to an expired recruiting cycle.
+
+    Parameters:
+        content (str): The raw text or markdown content of the feed.
+        current_year (int): The current active recruiting cycle year (default: 2026).
+            Years >= current_year are considered active cycles.
+            Years < current_year (and >= 2000) are considered prior/expired cycles.
+
+    Returns:
+        tuple[bool, str]: A tuple of (is_stale, reason).
+            - (False, "") if the feed is active or is a structured JSON feed.
+            - (True, reason) if the feed header specifies an expired cycle without
+              active updates, or is explicitly marked as abandoned/archived.
+    """
     if not content:
+        return False, ""
+
+    # Bypass structured JSON feeds (API endpoints or JSON dumps)
+    if content.lstrip().startswith(("{", "[")):
         return False, ""
 
     lines = content.splitlines()[:15]
     header_text = "\n".join(lines)
 
-    has_active_cycle = bool(re.search(r"\b(202[5-9]|203[0-9])\b", header_text))
+    years_found = [int(m.group(1)) for m in re.finditer(r"\b(20\d{2})\b", header_text)]
+    has_active_cycle = any(y >= current_year for y in years_found)
 
-    past_match = re.search(r"\b(202[0-4])\b", header_text)
-    if past_match and not has_active_cycle:
-        past_year = past_match.group(1)
-        return True, f"Upstream feed header specifies expired {past_year} cycle without active 2026+ updates."
+    # Check for prior/expired cycle years (< current_year)
+    past_years = [y for y in years_found if y < current_year and y >= 2000]
+    if past_years and not has_active_cycle:
+        past_year = past_years[0]
+        return True, f"Upstream feed header specifies expired {past_year} cycle without active {current_year}+ updates."
 
-    abandoned_patterns = [r"\babandoned\b", r"\barchived\b", r"\bdeprecated\b", r"\bno longer maintained\b"]
-    is_abandoned = any(re.search(pat, header_text, re.IGNORECASE) for pat in abandoned_patterns)
-    if is_abandoned and not has_active_cycle:
+    # Check for explicit maintainer abandonment or archival keywords
+    abandoned_match = re.search(r"\b(abandoned|archived|deprecated|no longer maintained)\b", header_text, re.IGNORECASE)
+    if abandoned_match and not has_active_cycle:
         return True, "Upstream feed is explicitly marked as abandoned or archived by maintainers."
 
     return False, ""
@@ -446,7 +468,7 @@ def main():
             content = fetch_content(src["url"])
             stale, reason = is_stale_upstream_feed(content)
             if stale:
-                print(f"[SKIP] Skipping stale source '{src['id']}': {reason}", file=sys.stderr)
+                print(f"  [SKIP] Skipping stale source '{src['id']}': {reason}", file=sys.stderr)
                 continue
             postings = p_func(content, src)
             print(f"  Parsed {len(postings)} total rows.")

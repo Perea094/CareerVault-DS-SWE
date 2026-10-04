@@ -288,6 +288,36 @@ class TestScanOpportunities(unittest.TestCase):
         self.assertFalse(is_stale)
         self.assertEqual(reason, "")
 
+    def test_stale_feed_bypass_structured_json(self):
+        json_content = '[{"id": 2024, "company": "Meta"}]'
+        is_stale, reason = scan_opportunities.is_stale_upstream_feed(json_content, current_year=2026)
+        self.assertFalse(is_stale)
+        self.assertEqual(reason, "")
+
+        json_obj = '  {\n    "year": 2024,\n    "company": "Google"\n  }'
+        is_stale, reason = scan_opportunities.is_stale_upstream_feed(json_obj, current_year=2026)
+        self.assertFalse(is_stale)
+        self.assertEqual(reason, "")
+
+    def test_stale_feed_abandoned_without_year(self):
+        content = (
+            "# Archived Tech Internships Repo\n"
+            "This repository has been abandoned and is no longer maintained."
+        )
+        is_stale, reason = scan_opportunities.is_stale_upstream_feed(content, current_year=2026)
+        self.assertTrue(is_stale)
+        self.assertIn("abandoned or archived", reason)
+
+    def test_stale_feed_prior_cycle_without_active_updates(self):
+        content = (
+            "# Summer 2025 Tech Internships\n"
+            "Collection of student developer roles."
+        )
+        is_stale, reason = scan_opportunities.is_stale_upstream_feed(content, current_year=2026)
+        self.assertTrue(is_stale)
+        self.assertIn("expired 2025 cycle", reason)
+        self.assertIn("without active 2026+ updates", reason)
+
 
 if __name__ == "__main__":
     unittest.main()
