@@ -97,8 +97,8 @@ def _fallback_generate_resume(template_path: Path, output_path: Path, profile: D
         "<<DEGREE>>": escape_latex(profile.get("degree", "B.S. in Computer Science / Data Science")),
         "<<GRADUATION>>": escape_latex(profile.get("graduation", "May 2027")),
         "<<GPA>>": escape_latex(profile.get("gpa", "3.9/4.0")),
-        "<<DISTINCTIONS>>": escape_latex(profile.get("distinctions", "Dean's Honors List, Academic Excellence Scholarship")),
-        "<<COURSEWORK>>": escape_latex(profile.get("coursework", "Distributed Systems, Machine Learning, Deep Learning, Algorithms & Data Structures, Database Systems, Computer Systems, Linear Algebra, Probability & Statistics")),
+        "<<DISTINCTIONS>>": escape_latex(profile.get("distinctions", "[Honors / Scholarships / Distinctions]")),
+        "<<COURSEWORK>>": escape_latex(profile.get("coursework", "[Relevant Core Coursework: Algorithms, Data Systems, Machine Learning, etc.]")),
     }
     
     rendered = template_content
