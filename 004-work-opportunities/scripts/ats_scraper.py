@@ -8,6 +8,8 @@ import ssl
 from datetime import datetime, date
 from urllib.parse import urljoin
 
+MAX_PAGE_READ_BYTES = 2097152  # 2MB
+
 MONTH_MAP = {
     'jan': 1, 'january': 1,
     'feb': 2, 'february': 2,
@@ -253,7 +255,7 @@ def fetch_page_content(url: str, timeout: int = 10) -> tuple[str, int, str]:
     with urllib.request.urlopen(req, timeout=timeout, context=ctx) as resp:
         code = resp.getcode()
         final_url = resp.geturl() if hasattr(resp, "geturl") else url
-        raw = resp.read(2097152)
+        raw = resp.read(MAX_PAGE_READ_BYTES)
         content = raw.decode("utf-8", errors="ignore") if isinstance(raw, bytes) else str(raw)
         return content, code, final_url
 

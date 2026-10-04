@@ -1,6 +1,6 @@
 import pytest
 from datetime import datetime
-from unittest.mock import patch
+from unittest.mock import patch, MagicMock
 
 import sys
 import os
@@ -13,6 +13,7 @@ from ats_scraper import (
     parse_closing_deadline,
     fetch_page_content,
     inspect_job_page,
+    MAX_PAGE_READ_BYTES,
 )
 
 
@@ -326,4 +327,55 @@ def test_inspect_job_page_fallback_to_parent_json_ld():
         assert info["hours_per_week"] == "Full-Time (40 hrs/week)"
         assert info["deadline"] == datetime(2026, 12, 31, 23, 59, 59)
         assert info["is_expired"] is False
+
+
+def test_fetch_page_content_caps_buffer():
+    mock_resp = MagicMock()
+    mock_resp.getcode.return_value = 200
+    mock_resp.geturl.return_value = "https://example.com/job/1"
+    mock_resp.read.return_value = b"<html>Capped Content</html>"
+    mock_resp.__enter__.return_value = mock_resp
+    mock_resp.__exit__.return_value = None
+
+    with patch("urllib.request.urlopen", return_value=mock_resp):
+        content, code, final_url = fetch_page_content("https://example.com/job/1")
+        mock_resp.read.assert_called_with(MAX_PAGE_READ_BYTES)
+        assert content == "<html>Capped Content</html>"
+        assert code == 200
+        assert final_url == "https://example.com/job/1"
+
+
+def test_inspect_job_page_http_error_410():
+    import urllib.error
+    with patch("ats_scraper.fetch_page_content", side_effect=urllib.error.HTTPError("https://example.com/job/410", 410, "Gone", {}, None)):
+        info = inspect_job_page("https://example.com/job/410")
+        assert info["is_active"] is False
+        assert "Dead Link (HTTP 410)" in info["reason"]
+        assert info["is_expired"] is True
+
+
+def test_inspect_job_page_http_error_401_protected():
+    import urllib.error
+    with patch("ats_scraper.fetch_page_content", side_effect=urllib.error.HTTPError("https://example.com/job/401", 401, "Unauthorized", {}, None)):
+        info = inspect_job_page("https://example.com/job/401")
+        assert info["is_active"] is True
+        assert "Protected ATS (HTTP 401)" in info["reason"]
+        assert info["is_expired"] is False
+
+
+def test_inspect_job_page_subdocument_410_inactive():
+    import urllib.error
+    parent_html = '<html><body><iframe src="https://careers-example.icims.com/jobs/123/job?in_iframe=1"></iframe></body></html>'
+
+    def mock_fetch(url, timeout=10):
+        if "in_iframe=1" in url:
+            raise urllib.error.HTTPError(url, 410, "Gone", {}, None)
+        return parent_html, 200, url
+
+    with patch("ats_scraper.fetch_page_content", side_effect=mock_fetch):
+        info = inspect_job_page("https://careers-example.icims.com/jobs/123/job")
+        assert info["is_active"] is False
+        assert "Dead Link in ATS Subdocument (HTTP 410)" in info["reason"]
+        assert info["is_expired"] is True
+
 
