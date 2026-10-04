@@ -16,6 +16,10 @@ try:
 except Exception:
     pass
 
+SCRIPTS_DIR = os.path.dirname(os.path.abspath(__file__))
+if SCRIPTS_DIR not in sys.path:
+    sys.path.insert(0, SCRIPTS_DIR)
+
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 DB_PATH = os.path.join(BASE_DIR, "database", "opportunities.json")
 MIRROR_PATH = os.path.join(BASE_DIR, "opportunities-database.json")
@@ -150,11 +154,20 @@ def sync_csv(opportunities):
                 "Missing_Skills_Summary": " | ".join(o.get("missing_or_bridge_skills", []) or [])
             })
 
-def check_single_link(opp):
+def check_single_link(opp, reference_date=None):
     raw_url = opp.get("apply_url")
     if not raw_url or not isinstance(raw_url, str) or not raw_url.strip():
         return opp, False, "Missing URL"
     url = raw_url.strip()
+
+    # 1. Use deep ATS inspector for iframe resolution, closing date detection, and status
+    try:
+        from ats_scraper import inspect_job_page
+        info = inspect_job_page(url, reference_date=reference_date, timeout=10)
+        if not info["is_active"]:
+            return opp, False, info["reason"]
+    except ImportError:
+        pass
 
     ctx = ssl.create_default_context()
     ctx.check_hostname = False

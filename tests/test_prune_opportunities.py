@@ -1,6 +1,7 @@
 import unittest
 from unittest.mock import patch, MagicMock
 from pathlib import Path
+from datetime import datetime
 import os
 import sys
 
@@ -141,4 +142,59 @@ class TestPruneOpportunities(unittest.TestCase):
         final = "https://example.com/jobs/123"
         is_redirected, _ = is_ats_redirected_to_catalog(orig, final)
         self.assertFalse(is_redirected)
+
+    def test_check_single_link_flags_expired_application_window(self):
+        opp = {
+            "id": "opp-test-cotiviti",
+            "company": "Cotiviti",
+            "role": "Intern AI Engineer",
+            "apply_url": "https://careers-cotiviti.icims.com/jobs/19531/job"
+        }
+
+        mock_info = {
+            "url": opp["apply_url"],
+            "resolved_url": opp["apply_url"],
+            "is_active": False,
+            "reason": "Expired application window: closed on 2026-07-18",
+            "position_type": "Full-Time",
+            "hours_per_week": "Full-Time (40 hrs/week)",
+            "deadline": datetime(2026, 7, 18),
+            "is_expired": True
+        }
+
+        with patch("ats_scraper.inspect_job_page", return_value=mock_info):
+            updated_opp, is_live, reason = check_single_link(opp)
+            assert is_live is False
+            assert "closed on 2026-07-18" in reason.lower()
+
+    def test_check_single_link_keeps_active_when_inspect_job_page_is_active(self):
+        opp = {
+            "id": "opp-test-active",
+            "company": "ActiveCo",
+            "role": "SWE Intern",
+            "apply_url": "https://careers.activeco.com/jobs/123"
+        }
+
+        mock_info = {
+            "url": opp["apply_url"],
+            "resolved_url": opp["apply_url"],
+            "is_active": True,
+            "reason": "Active (200 OK)",
+            "position_type": "Internship",
+            "hours_per_week": "40 hrs/week",
+            "deadline": datetime(2026, 12, 31),
+            "is_expired": False
+        }
+
+        mock_resp = MagicMock()
+        mock_resp.geturl.return_value = opp["apply_url"]
+        mock_resp.read.return_value = b"<html>Apply now</html>"
+        mock_resp.__enter__.return_value = mock_resp
+
+        with patch("ats_scraper.inspect_job_page", return_value=mock_info), \
+             patch("urllib.request.urlopen", return_value=mock_resp):
+            updated_opp, is_live, reason = check_single_link(opp)
+            assert is_live is True
+            assert "Active" in reason
+
 
