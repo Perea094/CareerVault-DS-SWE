@@ -204,5 +204,29 @@ GPA: 5.8/6.0
             self.assertIn("RISC-V Microarchitecture", tex)
             self.assertIn(r"\cvsection{Experience}", tex)
 
+    def test_template_contains_abstract_placeholders_not_fake_companies(self):
+        template_file = Path(__file__).resolve().parent.parent / "002-cv" / "template.tex"
+        self.assertTrue(template_file.exists())
+        content = template_file.read_text(encoding="utf-8")
+
+        fake_entries = [
+            "Enterprise Cloud Technologies",
+            "Data Systems Laboratory",
+            "AI Research Initiative",
+            "Distributed Reinforcement Learning Engine",
+            "Edge Vision Inference Engine",
+            "High-Throughput Vector Search & RAG System",
+        ]
+        for fake in fake_entries:
+            self.assertNotIn(fake, content)
+
+        abstract_placeholders = [
+            r"\textbf{[Company / Organization Name]}",
+            "[Action Verb]",
+            "[Key Technical Project 1]",
+        ]
+        for placeholder in abstract_placeholders:
+            self.assertIn(placeholder, content)
+
 if __name__ == "__main__":
     unittest.main()

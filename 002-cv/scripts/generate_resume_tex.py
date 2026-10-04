@@ -54,8 +54,8 @@ DEFAULT_PLACEHOLDER_VALUES = {
     "DEGREE": "B.S. in Computer Science / Data Science",
     "GRADUATION": "May 2027",
     "GPA": "3.9/4.0",
-    "DISTINCTIONS": "Dean's Honors List, Academic Excellence Scholarship",
-    "COURSEWORK": "Distributed Systems, Machine Learning, Deep Learning, Algorithms \\& Data Structures, Database Systems, Computer Systems, Linear Algebra, Probability \\& Statistics",
+    "DISTINCTIONS": "[Honors / Scholarships / Distinctions]",
+    "COURSEWORK": "[Relevant Core Coursework: Algorithms, Data Systems, Machine Learning, etc.]",
 }
 
 # LaTeX characters that must be escaped
