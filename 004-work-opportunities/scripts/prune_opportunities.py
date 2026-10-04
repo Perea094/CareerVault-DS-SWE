@@ -6,8 +6,15 @@ import argparse
 import urllib.request
 import urllib.error
 import ssl
+import re
 from datetime import datetime, timezone
 from concurrent.futures import ThreadPoolExecutor
+
+try:
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+except Exception:
+    pass
 
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 DB_PATH = os.path.join(BASE_DIR, "database", "opportunities.json")
@@ -32,8 +39,65 @@ CLOSED_KEYWORDS = [
     "job not found",
     "the role you are looking for is no longer active",
     "job expired",
-    "this vacancy has expired"
+    "this vacancy has expired",
+    "search our other open roles",
+    "this requisition is closed",
+    "the job you are trying to view is no longer available",
+    "this position is no longer accepting applications",
+    "this job listing has expired",
+    "page you are looking for no longer exists",
+    "we couldn't find that job",
+    "sorry, this position has been filled",
+    "sorry, this job is no longer open"
 ]
+
+def is_ats_redirected_to_catalog(original_url: str, final_url: str) -> tuple[bool, str]:
+    if not original_url or not final_url:
+        return False, ""
+
+    orig_clean = original_url.strip().rstrip("/")
+    final_clean = final_url.strip().rstrip("/")
+    if orig_clean.lower() == final_clean.lower():
+        return False, ""
+
+    orig_lower = orig_clean.lower()
+    final_lower = final_clean.lower()
+    final_path = final_lower.split("?")[0].split("#")[0].rstrip("/")
+
+    # Microsoft Careers
+    if "careers.microsoft.com" in orig_lower:
+        if ("apply.careers.microsoft.com/careers" in final_lower and "/job/" not in final_lower) or final_path.endswith("/careers") or final_lower.endswith("/careers"):
+            return True, "Redirected to Microsoft general careers search (Job Expired)"
+
+    # Amazon Jobs
+    if "amazon.jobs" in orig_lower and "/jobs/" in orig_lower:
+        if "/jobs/" not in final_lower or "amazon.jobs/en/search" in final_lower or final_path.endswith("amazon.jobs/en"):
+            return True, "Redirected away from Amazon job requisition to search portal (Job Closed)"
+
+    # Workday
+    if "myworkdayjobs.com" in orig_lower and "/job/" in orig_lower:
+        if "/job/" not in final_lower or final_path.endswith("/careers") or final_path.endswith("/search") or final_lower.endswith("/careers") or final_lower.endswith("/search"):
+            return True, "Redirected away from Workday requisition to careers catalog (Job Closed)"
+
+    # Greenhouse
+    if "greenhouse.io" in orig_lower and "/jobs/" in orig_lower:
+        if "/jobs/" not in final_lower:
+            return True, "Redirected away from Greenhouse job board (Job Closed)"
+
+    # Lever
+    if "jobs.lever.co" in orig_lower:
+        orig_match = re.search(r"jobs\.lever\.co/([^/?#]+)/([^/?#]+)", orig_lower)
+        if orig_match:
+            final_match = re.search(r"jobs\.lever\.co/([^/?#]+)/([^/?#]+)", final_lower)
+            if not final_match or "jobs.lever.co" not in final_lower:
+                return True, "Redirected away from Lever job posting (Job Closed)"
+
+    # Generic ATS Requisition Drop
+    if re.search(r"/(?:job|jobs|requisition|posting)/[a-zA-Z0-9_\-]+", orig_lower):
+        if re.search(r"/(?:careers|search|jobs|home|portal)$", final_path) or re.search(r"/(?:careers|search|jobs|home|portal)$", final_lower):
+            return True, "Redirected from specific requisition to generic portal (Job Closed)"
+
+    return False, ""
 
 def load_json(path, default=None):
     if not os.path.exists(path):
@@ -87,9 +151,20 @@ def check_single_link(opp):
 
     try:
         req = urllib.request.Request(url, headers=headers)
-        with urllib.request.urlopen(req, timeout=8, context=ctx) as resp:
-            # Read first 16KB of response
-            content = resp.read(16384).decode("utf-8", errors="ignore").lower()
+        with urllib.request.urlopen(req, timeout=10, context=ctx) as resp:
+            final_url = resp.geturl() if hasattr(resp, "geturl") else url
+            if final_url:
+                is_redirected, red_reason = is_ats_redirected_to_catalog(url, final_url)
+                if is_redirected:
+                    return opp, False, red_reason
+
+            # Read first 32KB of response
+            raw = resp.read(32768)
+            if isinstance(raw, bytes):
+                content = raw.decode("utf-8", errors="ignore").lower()
+            else:
+                content = str(raw).lower()
+
             for kw in CLOSED_KEYWORDS:
                 if kw in content:
                     return opp, False, f"ATS Closed Message: '{kw}'"
