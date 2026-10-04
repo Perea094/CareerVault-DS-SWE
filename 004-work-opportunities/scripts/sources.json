@@ -101,7 +101,8 @@
     "url": "https://raw.githubusercontent.com/Proyecto-Nutria/MX-Internships/master/README.md",
     "parser": "speedyapply",
     "category": "Mexico / Tech Internships",
-    "enabled": true
+    "enabled": false,
+    "note": "Disabled: Upstream repository was created for the Summer 2024 cycle and has been abandoned by maintainers. Contains expired job requisitions."
   },
   {
     "id": "zshah101-automated-2027",

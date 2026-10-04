@@ -380,6 +380,28 @@ def fetch_content(url):
         return resp.read().decode("utf-8", errors="ignore")
 
 
+def is_stale_upstream_feed(content: str, current_year: int = 2026) -> tuple[bool, str]:
+    if not content:
+        return False, ""
+
+    lines = content.splitlines()[:15]
+    header_text = "\n".join(lines)
+
+    has_active_cycle = bool(re.search(r"\b(202[5-9]|203[0-9])\b", header_text))
+
+    past_match = re.search(r"\b(202[0-4])\b", header_text)
+    if past_match and not has_active_cycle:
+        past_year = past_match.group(1)
+        return True, f"Upstream feed header specifies expired {past_year} cycle without active 2026+ updates."
+
+    abandoned_patterns = [r"\babandoned\b", r"\barchived\b", r"\bdeprecated\b", r"\bno longer maintained\b"]
+    is_abandoned = any(re.search(pat, header_text, re.IGNORECASE) for pat in abandoned_patterns)
+    if is_abandoned and not has_active_cycle:
+        return True, "Upstream feed is explicitly marked as abandoned or archived by maintainers."
+
+    return False, ""
+
+
 def main():
     parser = argparse.ArgumentParser(description="Unified Opportunities Scanner with Dynamic Worldwide Location & Constraints Engine.")
     parser.add_argument("--days", type=int, default=7, help="Maximum age of job postings in days (default: 7)")
@@ -395,7 +417,7 @@ def main():
     print(f"Home Location: {profile.raw_location} -> {profile.home_display}")
     print(f"US Authorization: {profile.work_authorization} (US Authorized: {profile.is_us_authorized})")
     print(f"Disallowed Industries: {', '.join(profile.disallowed_industries)}")
-    print("=======================================================\n")
+    print("=======================================================")
 
     sources = load_sources()
     if args.source:
@@ -422,6 +444,10 @@ def main():
         print(f"Fetching {src['name']} ({src['parser']})...")
         try:
             content = fetch_content(src["url"])
+            stale, reason = is_stale_upstream_feed(content)
+            if stale:
+                print(f"[SKIP] Skipping stale source '{src['id']}': {reason}", file=sys.stderr)
+                continue
             postings = p_func(content, src)
             print(f"  Parsed {len(postings)} total rows.")
         except Exception as e:

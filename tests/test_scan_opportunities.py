@@ -262,6 +262,33 @@ class TestScanOpportunities(unittest.TestCase):
             if os.path.exists(tmp_path):
                 os.remove(tmp_path)
 
+    def test_sources_json_proyecto_nutria_is_disabled(self):
+        sources_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "004-work-opportunities", "scripts", "sources.json"))
+        with open(sources_path, "r", encoding="utf-8") as f:
+            sources = json.load(f)
+        nutria = next((s for s in sources if s.get("id") == "proyecto-nutria-mx"), None)
+        self.assertIsNotNone(nutria)
+        self.assertFalse(nutria.get("enabled", True))
+        self.assertIn("2024", nutria.get("note", ""))
+
+    def test_detect_stale_upstream_feed_header(self):
+        stale_content = (
+            "# Summer 2024 Tech Internships by Proyecto Nutria\n"
+            "This repository was created for the 2024 cycle and has been abandoned by its maintainers."
+        )
+        is_stale, reason = scan_opportunities.is_stale_upstream_feed(stale_content, current_year=2026)
+        self.assertTrue(is_stale)
+        self.assertIn("2024", reason)
+
+        active_content = (
+            "# Summer 2027 Tech Internships\n"
+            "Active community list for 2026 / 2027 internships."
+        )
+        is_stale, reason = scan_opportunities.is_stale_upstream_feed(active_content, current_year=2026)
+        self.assertFalse(is_stale)
+        self.assertEqual(reason, "")
+
 
 if __name__ == "__main__":
     unittest.main()
+
