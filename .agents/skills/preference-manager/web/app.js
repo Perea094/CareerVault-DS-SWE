@@ -924,10 +924,35 @@ function setupTagInputHandlers() {
 // Sync UI with State
 // ============================================================================
 
+function updateCandidateHeader() {
+  const cand = state.candidate || {};
+  const acad = state.academic_context || {};
+  const name = cand.name || 'Candidate';
+  const school = cand.school || cand.university || acad.university || 'University';
+
+  const badgeEl = document.getElementById('header-candidate-badge');
+  const nameEl = document.getElementById('header-candidate-name');
+  const schoolEl = document.getElementById('header-candidate-school');
+
+  if (nameEl) nameEl.textContent = name;
+  if (schoolEl) schoolEl.textContent = school;
+
+  if (badgeEl && name && name !== 'Candidate') {
+    badgeEl.title = `Active Candidate: ${name} (${school})`;
+  }
+
+  const titleEl = document.getElementById('header-vault-title');
+  if (titleEl && name && name !== 'Candidate') {
+    titleEl.textContent = `⚡ Career Vault — ${name}`;
+  }
+}
+
 function syncFormFieldsFromState() {
   // Last Updated
   const updatedDate = state.updated || (state.metadata && state.metadata.updated) || new Date().toISOString().slice(0, 10);
   document.getElementById('last-updated-display').textContent = `Updated: ${updatedDate}`;
+
+  const cand = state.candidate || {};
 
   // Availability calendar targets & notes
   const cal = state.availability_calendar || {};
@@ -944,23 +969,46 @@ function syncFormFieldsFromState() {
 
   // Location & Visa
   const loc = state.location_visa || {};
-  document.getElementById('current-location').value = loc.current_location || 'City, Country';
-  document.getElementById('us-work-auth').value = loc.us_work_authorization || 'None';
+  const isDefaultLoc = !loc.current_location || loc.current_location === 'City, Country';
+  document.getElementById('current-location').value = (isDefaultLoc && cand.location)
+    ? cand.location
+    : (loc.current_location || cand.location || 'City, Country');
+
+  const isDefaultWorkAuth = !loc.us_work_authorization || loc.us_work_authorization === 'None';
+  document.getElementById('us-work-auth').value = (isDefaultWorkAuth && cand.work_authorization && cand.work_authorization.includes('Citizen'))
+    ? 'Citizen / Green Card'
+    : (loc.us_work_authorization || (cand.work_authorization && cand.work_authorization.includes('Citizen') ? 'Citizen / Green Card' : 'None'));
+
   document.getElementById('relocation-willingness').value = loc.relocation_willingness || 'Remote preferred; open to international relocation if visa sponsored';
   document.getElementById('travel-willingness').checked = loc.travel_willingness !== false;
 
   // Compensation
   const comp = state.compensation_benefits || {};
-  document.getElementById('minimum-hourly').value = comp.minimum_hourly || 20;
+  document.getElementById('minimum-hourly').value = comp.minimum_hourly || comp.minimum_hourly_usd || 20;
   document.getElementById('equity-importance').value = comp.equity_importance || "Don't care";
   document.getElementById('negotiation-flexibility').value = comp.negotiation_flexibility || "Flexible";
 
   // Academic Context
   const acad = state.academic_context || {};
-  document.getElementById('academic-university').value = acad.university || 'University';
-  document.getElementById('academic-degree').value = acad.program || acad.degree || 'B.S. in Computer Science / Data Science';
-  document.getElementById('academic-semester').value = acad.term || acad.current_semester || 'Junior';
-  document.getElementById('academic-graduation').value = acad.expected_graduation || 'May 2027';
+  const isDefaultUniv = !acad.university || acad.university === 'University';
+  document.getElementById('academic-university').value = (isDefaultUniv && (cand.school || cand.university))
+    ? (cand.school || cand.university)
+    : (acad.university || cand.school || cand.university || 'University');
+
+  const isDefaultProg = !acad.program || acad.program === 'B.S. in Computer Science / Data Science';
+  document.getElementById('academic-degree').value = (isDefaultProg && (acad.degree || cand.degree))
+    ? (acad.degree || cand.degree)
+    : (acad.program || acad.degree || cand.degree || 'B.S. in Computer Science / Data Science');
+
+  const isDefaultTerm = !acad.term || acad.term === 'Junior';
+  document.getElementById('academic-semester').value = (isDefaultTerm && (acad.current_semester || cand.current_semester))
+    ? (acad.current_semester || cand.current_semester)
+    : (acad.term || acad.current_semester || cand.current_semester || 'Junior');
+
+  const isDefaultGrad = !acad.expected_graduation || acad.expected_graduation === 'May 2027';
+  document.getElementById('academic-graduation').value = (isDefaultGrad && (cand.graduation || cand.expected_graduation))
+    ? (cand.graduation || cand.expected_graduation)
+    : (acad.expected_graduation || cand.graduation || cand.expected_graduation || 'May 2027');
 
   // Learning & Growth
   const learn = state.learning_growth || {};
@@ -970,6 +1018,9 @@ function syncFormFieldsFromState() {
   // Role Responsibilities
   const role = state.role_responsibilities || {};
   document.getElementById('role-focus-ic').value = role.ic_vs_lead || 'IC preferred (not ready for lead)';
+
+  // Update header candidate display
+  updateCandidateHeader();
 
   // Render dynamic collections
   renderAvailabilityGrid();
@@ -1002,6 +1053,7 @@ function syncStateFromFormFields() {
 
   // Compensation
   state.compensation_benefits.minimum_hourly = parseFloat(document.getElementById('minimum-hourly').value) || 20;
+  state.compensation_benefits.minimum_hourly_usd = state.compensation_benefits.minimum_hourly;
   state.compensation_benefits.equity_importance = document.getElementById('equity-importance').value;
   state.compensation_benefits.negotiation_flexibility = document.getElementById('negotiation-flexibility').value;
 
@@ -1019,16 +1071,23 @@ function syncStateFromFormFields() {
   state.role_responsibilities.ic_vs_lead = document.getElementById('role-focus-ic').value;
 
   // Candidate mirror
-  state.candidate.name = state.candidate?.name || "Candidate";
-  state.candidate.university = state.academic_context.university;
-  state.candidate.degree = state.academic_context.program;
-  state.candidate.current_semester = state.academic_context.term;
-  state.candidate.expected_graduation = state.academic_context.expected_graduation;
+  state.candidate = Object.assign({}, state.candidate, {
+    name: state.candidate?.name || 'Candidate',
+    university: state.academic_context.university,
+    school: state.academic_context.university,
+    degree: state.academic_context.program,
+    current_semester: state.academic_context.term,
+    expected_graduation: state.academic_context.expected_graduation,
+    location: state.location_visa.current_location,
+    work_authorization: state.location_visa.work_authorization || state.candidate?.work_authorization
+  });
 
   const today = new Date().toISOString().slice(0, 10);
   state.updated = today;
   if (!state.metadata) state.metadata = {};
   state.metadata.updated = today;
+
+  updateCandidateHeader();
 }
 
 // ============================================================================

@@ -112,6 +112,76 @@ class TestSetupVault(unittest.TestCase):
             self.assertEqual(saved["schedule"]["custom_rule"], "keep_intact")
             self.assertEqual(saved["modality"]["ranking"], ["onsite", "hybrid", "remote"])
 
+    def test_configure_vault_populates_canonical_schema(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            vault_path = Path(tmpdir)
+            bg_dir = vault_path / "001-background"
+            bg_dir.mkdir()
+            prefs_json = bg_dir / "preferences.json"
+
+            existing_prefs = {
+                "deal_breakers": {
+                    "hard_constraints": ["Custom hard constraint"]
+                },
+                "schedule": {"custom_rule": "keep_me"}
+            }
+            with open(prefs_json, "w", encoding="utf-8") as f:
+                json.dump(existing_prefs, f)
+
+            profile_input = {
+                "name": "Jane Doe",
+                "school": "Stanford University",
+                "degree": "B.S. in Symbolic Systems",
+                "graduation": "June 2027",
+                "location": "Palo Alto, CA",
+                "work_authorization": "US Citizen",
+                "email": "jane@stanford.edu",
+                "phone": "+1 650 555 0199",
+                "linkedin": "https://linkedin.com/in/janedoe",
+                "github": "https://github.com/janedoe",
+                "minimum_hourly_usd": 45.0,
+                "target_domains": ["Computer Vision", "Robotics"]
+            }
+
+            result = setup_vault.configure_vault(vault_dir=vault_path, profile=profile_input)
+            self.assertTrue(result["success"])
+
+            with open(prefs_json, "r", encoding="utf-8") as f:
+                saved = json.load(f)
+
+            # populates academic_context (university, program, expected_graduation)
+            self.assertIn("academic_context", saved)
+            self.assertEqual(saved["academic_context"]["university"], "Stanford University")
+            self.assertEqual(saved["academic_context"]["program"], "B.S. in Symbolic Systems")
+            self.assertEqual(saved["academic_context"]["expected_graduation"], "June 2027")
+
+            # populates location_visa (current_location, work_authorization)
+            self.assertIn("location_visa", saved)
+            self.assertEqual(saved["location_visa"]["current_location"], "Palo Alto, CA")
+            self.assertEqual(saved["location_visa"]["work_authorization"], "US Citizen")
+
+            # populates compensation_benefits (minimum_hourly)
+            self.assertIn("compensation_benefits", saved)
+            self.assertEqual(saved["compensation_benefits"]["minimum_hourly"], 45.0)
+
+            # populates candidate with email, phone, linkedin, github, school, university, degree, expected_graduation
+            self.assertIn("candidate", saved)
+            cand = saved["candidate"]
+            self.assertEqual(cand["email"], "jane@stanford.edu")
+            self.assertEqual(cand["phone"], "+1 650 555 0199")
+            self.assertEqual(cand["linkedin"], "https://linkedin.com/in/janedoe")
+            self.assertEqual(cand["github"], "https://github.com/janedoe")
+            self.assertEqual(cand["school"], "Stanford University")
+            self.assertEqual(cand["university"], "Stanford University")
+            self.assertEqual(cand["degree"], "B.S. in Symbolic Systems")
+            self.assertEqual(cand["expected_graduation"], "June 2027")
+
+            # preserves existing data when present
+            self.assertIn("deal_breakers", saved)
+            self.assertEqual(saved["deal_breakers"]["hard_constraints"], ["Custom hard constraint"])
+            self.assertIn("schedule", saved)
+            self.assertEqual(saved["schedule"]["custom_rule"], "keep_me")
+
     def test_check_missing_dependencies(self):
         def fake_import(name, *args, **kwargs):
             if name == "pypdfium2":

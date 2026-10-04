@@ -11,6 +11,7 @@ import json
 import re
 import argparse
 import subprocess
+import copy
 from pathlib import Path
 from typing import Dict, Any
 
@@ -19,10 +20,20 @@ CV_SCRIPTS_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "002-cv
 if CV_SCRIPTS_DIR not in sys.path:
     sys.path.insert(0, CV_SCRIPTS_DIR)
 
+# Ensure preference-manager scripts is in path
+PREF_SCRIPTS_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".agents", "skills", "preference-manager", "scripts"))
+if PREF_SCRIPTS_DIR not in sys.path:
+    sys.path.insert(0, PREF_SCRIPTS_DIR)
+
 try:
     import generate_resume_tex
 except ImportError:
     generate_resume_tex = None
+
+try:
+    import preference_models
+except ImportError:
+    preference_models = None
 
 DEFAULT_AVAILABILITY_DAYS = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
 DEFAULT_SLOTS = [
@@ -81,6 +92,111 @@ def _fallback_generate_resume(template_path: Path, output_path: Path, profile: D
         f.write(rendered)
     return output_path
 
+DEFAULT_PREFERENCES_FALLBACK = {
+    "version": "1.1",
+    "updated": "2026-10-02",
+    "status": "active",
+    "candidate": {
+        "name": "Candidate",
+        "university": "University",
+        "school": "University",
+        "degree": "B.S. in Computer Science / Data Science",
+        "current_semester": "Junior",
+        "expected_graduation": "May 2027",
+        "location": "City, Country",
+        "work_authorization": "Needs Sponsorship / International",
+        "email_contact": "candidate@example.com",
+        "email": "candidate@example.com",
+        "phone": "+1 555 0100",
+        "linkedin": "https://linkedin.com/in/username",
+        "github": "https://github.com/username",
+    },
+    "metadata": {
+        "created": "2026-10-02",
+        "updated": "2026-10-02",
+        "type": "preferences",
+        "tags": ["background", "preferences", "constraints"],
+        "status": "active",
+        "version": "1.1",
+        "source": "Career Vault Onboarding / Preference Manager",
+        "privacy": "Configure with your personal preferences",
+    },
+    "academic_context": {
+        "university": "University",
+        "program": "B.S. in Computer Science / Data Science",
+        "term": "Junior",
+        "expected_graduation": "May 2027",
+        "class_schedule_status": "Coursework in progress",
+        "focus_areas": ["Machine Learning", "Software Engineering", "Data Systems"],
+    },
+    "availability_calendar": {
+        "time_slots": [],
+        "weekly_grid": {},
+        "target_weekly_hours_min": 20,
+        "target_weekly_hours_max": 30,
+        "max_manageable_hours": 40,
+        "schedule_notes": "Available weekday afternoons and evenings.",
+    },
+    "work_arrangement": {
+        "preference_rank": ["Remote", "Hybrid", "Onsite"],
+        "hours_per_week": "20-30 (40 manageable but not preferred)",
+        "hours_flexibility": True,
+        "timezone_overlap": "Flexible; prefers morning availability for classes",
+        "communication_style": "Both async and sync acceptable",
+        "scheduling_constraints": "Morning classes likely; schedule TBD",
+    },
+    "location_visa": {
+        "current_location": "City, Country",
+        "work_authorization": "Needs Sponsorship / International",
+        "us_work_authorization": "None",
+        "relocation_willingness": "Remote preferred; open to international relocation if visa sponsored",
+        "travel_willingness": True,
+    },
+    "compensation_benefits": {
+        "minimum_hourly": 20,
+        "minimum_hourly_usd": 20,
+        "equity_importance": "Don't care",
+        "benefits_priorities": [
+            "PTO",
+            "Health insurance",
+            "Learning budget",
+            "Hardware stipend",
+            "401k / Retirement plan",
+        ],
+        "negotiation_flexibility": "Flexible",
+    },
+    "industry_domain": {
+        "target_industries": ["Any (no strong preference)"],
+        "domains_of_interest": ["GenAI/LLMs", "RL", "Computer Vision", "NLP", "MLOps", "Research", "Applied ML"],
+        "industries_to_avoid": ["Crypto"],
+    },
+    "learning_growth": {
+        "mentorship": "Nice to have",
+        "tech_depth_vs_breadth": "No preference",
+        "conference_training_budget_expectation": "None",
+        "career_trajectory": "Open",
+        "skills_to_develop": ["Cloud ML", "LLM fine-tuning"],
+    },
+    "deal_breakers": {
+        "hard_constraints": [
+            "No onsite 5 days/week",
+            "No unpaid overtime culture",
+            "Must sponsor visa for relocation",
+        ],
+        "toxic_signals": ["Vague equity promises", "Hero culture"],
+        "automatic_disqualifiers": [
+            "Full-time only (no part-time/internship)",
+            "Onsite required",
+            "No remote option",
+        ],
+    },
+    "role_responsibilities": {
+        "ic_vs_lead": "IC preferred (not ready for lead)",
+        "research_vs_engineering": "No preference",
+        "team_size": "No preference",
+    },
+}
+
 def configure_vault(vault_dir: Path, profile: Dict[str, Any], dry_run: bool = False) -> Dict[str, Any]:
     """Configures the vault preferences, Markdown sync, and starter LaTeX CV."""
     vault_dir = Path(vault_dir)
@@ -98,44 +214,126 @@ def configure_vault(vault_dir: Path, profile: Dict[str, Any], dry_run: bool = Fa
                 existing_data = json.load(f)
         except Exception:
             existing_data = {}
-            
-    candidate_data = {
-        "name": profile.get("name", "Candidate"),
-        "school": profile.get("school", "University"),
-        "degree": profile.get("degree", "B.S. in Computer Science / Data Science"),
-        "graduation": profile.get("graduation", "May 2027"),
-        "location": profile.get("location", "City, Country"),
-        "work_authorization": profile.get("work_authorization", "Needs Sponsorship / International"),
-        "email": profile.get("email", "candidate@example.com"),
-        "phone": profile.get("phone", "+1 555 0100"),
-        "linkedin": profile.get("linkedin", "https://linkedin.com/in/username"),
-        "github": profile.get("github", "https://github.com/username")
-    }
-    
-    target_domains = profile.get("target_domains", ["Software Engineering", "Machine Learning", "Data Systems"])
-    comp_floor = float(profile.get("minimum_hourly_usd", 20.0))
-    
-    prefs_payload = {
-        "candidate": candidate_data,
-        "modality": existing_data.get("modality", {
+
+    # Initialize base payload from canonical schema
+    if preference_models is not None and hasattr(preference_models, "DEFAULT_PREFERENCES"):
+        canonical_base = copy.deepcopy(preference_models.DEFAULT_PREFERENCES)
+    else:
+        canonical_base = copy.deepcopy(DEFAULT_PREFERENCES_FALLBACK)
+        canonical_base["availability_calendar"]["weekly_grid"] = build_default_schedule()
+
+    prefs_payload = copy.deepcopy(canonical_base)
+
+    # Preserve all existing data sections
+    for k, v in existing_data.items():
+        if k in prefs_payload and isinstance(prefs_payload[k], dict) and isinstance(v, dict):
+            prefs_payload[k].update(v)
+        else:
+            prefs_payload[k] = v
+
+    # Extract candidate values from profile with fallbacks
+    cand = prefs_payload.get("candidate", {})
+    name = profile.get("name") or cand.get("name") or "Candidate"
+    school = profile.get("school") or profile.get("university") or cand.get("school") or cand.get("university") or "University"
+    degree = profile.get("degree") or profile.get("program") or cand.get("degree") or "B.S. in Computer Science / Data Science"
+    graduation = profile.get("graduation") or profile.get("expected_graduation") or cand.get("graduation") or "May 2027"
+    current_semester = profile.get("current_semester") or profile.get("term") or cand.get("current_semester") or "Junior"
+    location = profile.get("location") or cand.get("location") or "City, Country"
+    work_auth = profile.get("work_authorization") or cand.get("work_authorization") or "Needs Sponsorship / International"
+    email = profile.get("email") or profile.get("email_contact") or cand.get("email") or "candidate@example.com"
+    phone = profile.get("phone") or cand.get("phone") or "+1 555 0100"
+    linkedin = profile.get("linkedin") or cand.get("linkedin") or "https://linkedin.com/in/username"
+    github = profile.get("github") or cand.get("github") or "https://github.com/username"
+    target_domains = profile.get("target_domains", prefs_payload.get("industry_domain", {}).get("domains_of_interest", ["Software Engineering", "Machine Learning", "Data Systems"]))
+    comp_floor = float(profile.get("minimum_hourly_usd", profile.get("minimum_hourly", prefs_payload.get("compensation_benefits", {}).get("minimum_hourly", 20.0))))
+
+    # Update candidate section
+    candidate_data = dict(cand)
+    candidate_data.update({
+        "name": name,
+        "school": school,
+        "university": school,
+        "degree": degree,
+        "graduation": graduation,
+        "expected_graduation": graduation,
+        "current_semester": current_semester,
+        "location": location,
+        "work_authorization": work_auth,
+        "email": email,
+        "email_contact": email,
+        "phone": phone,
+        "linkedin": linkedin,
+        "github": github,
+    })
+    prefs_payload["candidate"] = candidate_data
+
+    # Update academic_context
+    acad = prefs_payload.get("academic_context", {})
+    acad["university"] = school
+    acad["program"] = degree
+    acad["term"] = current_semester
+    acad["expected_graduation"] = graduation
+    if "target_domains" in profile:
+        acad["focus_areas"] = target_domains
+    prefs_payload["academic_context"] = acad
+
+    # Update location_visa
+    loc_v = prefs_payload.get("location_visa", {})
+    loc_v["current_location"] = location
+    loc_v["work_authorization"] = work_auth
+    if "citizen" in work_auth.lower():
+        loc_v["us_work_authorization"] = "Citizen / Green Card"
+    prefs_payload["location_visa"] = loc_v
+
+    # Update compensation_benefits
+    comp_b = prefs_payload.get("compensation_benefits", {})
+    comp_b["minimum_hourly"] = comp_floor
+    comp_b["minimum_hourly_usd"] = comp_floor
+    prefs_payload["compensation_benefits"] = comp_b
+
+    # Update industry_domain
+    ind = prefs_payload.get("industry_domain", {})
+    if "target_domains" in profile:
+        ind["domains_of_interest"] = target_domains
+    prefs_payload["industry_domain"] = ind
+
+    # Backward-compatible top-level keys
+    if "modality" in existing_data and isinstance(existing_data["modality"], dict):
+        prefs_payload["modality"] = existing_data["modality"]
+    else:
+        prefs_payload["modality"] = {
             "ranking": ["remote", "hybrid", "onsite"],
             "remote_preference": "highest"
-        }),
-        "schedule": existing_data.get("schedule", {
-            "weekly_availability_grid": build_default_schedule(),
-            "target_weekly_hours": 20,
-            "max_weekly_hours": 30
-        }),
-        "compensation": {
+        }
+
+    if "schedule" in existing_data and isinstance(existing_data["schedule"], dict):
+        prefs_payload["schedule"] = existing_data["schedule"]
+    else:
+        prefs_payload["schedule"] = {
+            "weekly_availability_grid": prefs_payload.get("availability_calendar", {}).get("weekly_grid", build_default_schedule()),
+            "target_weekly_hours": prefs_payload.get("availability_calendar", {}).get("target_weekly_hours_min", 20),
+            "max_weekly_hours": prefs_payload.get("availability_calendar", {}).get("target_weekly_hours_max", 30)
+        }
+
+    if "compensation" in existing_data and isinstance(existing_data["compensation"], dict):
+        prefs_payload["compensation"] = dict(existing_data["compensation"])
+        prefs_payload["compensation"]["minimum_hourly_usd"] = comp_floor
+    else:
+        prefs_payload["compensation"] = {
             "minimum_hourly_usd": comp_floor,
             "currency": "USD"
-        },
-        "career_goals": {
+        }
+
+    if "career_goals" in existing_data and isinstance(existing_data["career_goals"], dict):
+        prefs_payload["career_goals"] = dict(existing_data["career_goals"])
+        if "target_domains" in profile:
+            prefs_payload["career_goals"]["target_domains"] = target_domains
+    else:
+        prefs_payload["career_goals"] = {
             "target_domains": target_domains,
             "disallowed_industries": ["Crypto", "Gambling"]
         }
-    }
-    
+
     bg_dir.mkdir(parents=True, exist_ok=True)
     with open(prefs_file, "w", encoding="utf-8") as f:
         json.dump(prefs_payload, f, indent=2, ensure_ascii=False)
@@ -146,7 +344,10 @@ def configure_vault(vault_dir: Path, profile: Dict[str, Any], dry_run: bool = Fa
         if pref_scripts.exists():
             if str(pref_scripts) not in sys.path:
                 sys.path.insert(0, str(pref_scripts))
-            import preference_models
+            import preference_models as pm
+            md_file = bg_dir / "preferences.md"
+            pm.sync_to_markdown(prefs_payload, str(md_file))
+        elif preference_models is not None:
             md_file = bg_dir / "preferences.md"
             preference_models.sync_to_markdown(prefs_payload, str(md_file))
     except Exception:

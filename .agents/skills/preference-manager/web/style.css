@@ -214,6 +214,19 @@ body {
   border: 1px solid var(--border-subtle);
 }
 
+.candidate-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: rgba(142, 68, 173, 0.15);
+  border: 1px solid rgba(142, 68, 173, 0.4);
+  color: #d1b8f0;
+  font-size: 0.82rem;
+  font-weight: 500;
+  padding: 0.35rem 0.85rem;
+  border-radius: var(--radius-pill);
+}
+
 /* Sections Layout */
 .section-grid {
   display: flex;
