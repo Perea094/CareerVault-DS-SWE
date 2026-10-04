@@ -253,7 +253,7 @@ def fetch_page_content(url: str, timeout: int = 10) -> tuple[str, int, str]:
     with urllib.request.urlopen(req, timeout=timeout, context=ctx) as resp:
         code = resp.getcode()
         final_url = resp.geturl() if hasattr(resp, "geturl") else url
-        raw = resp.read()
+        raw = resp.read(2097152)
         content = raw.decode("utf-8", errors="ignore") if isinstance(raw, bytes) else str(raw)
         return content, code, final_url
 
@@ -305,11 +305,22 @@ def inspect_job_page(url: str, reference_date: datetime | None = None, timeout: 
                 "deadline": None,
                 "is_expired": True,
             }
+        elif e.code in [401, 403]:
+            return {
+                "url": url,
+                "resolved_url": url,
+                "is_active": True,
+                "reason": f"Protected ATS (HTTP {e.code})",
+                "position_type": "Unspecified",
+                "hours_per_week": "Unspecified",
+                "deadline": None,
+                "is_expired": False,
+            }
         return {
             "url": url,
             "resolved_url": url,
             "is_active": True,
-            "reason": f"Protected ATS (HTTP {e.code})",
+            "reason": f"HTTP Error {e.code}",
             "position_type": "Unspecified",
             "hours_per_week": "Unspecified",
             "deadline": None,
@@ -334,10 +345,24 @@ def inspect_job_page(url: str, reference_date: datetime | None = None, timeout: 
         try:
             sub_content, _, _ = fetch_page_content(resolved_url, timeout=timeout)
             working_content = sub_content
+        except urllib.error.HTTPError as e:
+            if e.code in [404, 410]:
+                return {
+                    "url": url,
+                    "resolved_url": resolved_url,
+                    "is_active": False,
+                    "reason": f"Dead Link in ATS Subdocument (HTTP {e.code})",
+                    "position_type": "Unspecified",
+                    "hours_per_week": "Unspecified",
+                    "deadline": None,
+                    "is_expired": True,
+                }
         except Exception:
             pass
 
     json_ld = extract_json_ld(working_content)
+    if not json_ld and working_content != content:
+        json_ld = extract_json_ld(content)
     pos_type, hours = parse_position_type(working_content, json_ld=json_ld)
     deadline_dt, is_expired, expired_reason = parse_closing_deadline(
         working_content, json_ld=json_ld, reference_date=reference_date

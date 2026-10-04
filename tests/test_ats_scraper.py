@@ -260,3 +260,70 @@ def test_inspect_job_page_network_exception():
         assert info["is_active"] is True
         assert "Network skip" in info["reason"]
 
+
+def test_inspect_job_page_subdocument_404_inactive():
+    import urllib.error
+    parent_html = '<html><body><iframe src="https://careers-example.icims.com/jobs/123/job?in_iframe=1"></iframe></body></html>'
+
+    def mock_fetch(url, timeout=10):
+        if "in_iframe=1" in url:
+            raise urllib.error.HTTPError(url, 404, "Not Found", {}, None)
+        return parent_html, 200, url
+
+    with patch("ats_scraper.fetch_page_content", side_effect=mock_fetch):
+        info = inspect_job_page("https://careers-example.icims.com/jobs/123/job")
+        assert info["is_active"] is False
+        assert "Dead Link in ATS Subdocument (HTTP 404)" in info["reason"]
+        assert info["is_expired"] is True
+
+
+def test_inspect_job_page_http_500():
+    import urllib.error
+    with patch("ats_scraper.fetch_page_content", side_effect=urllib.error.HTTPError("https://example.com/job/500", 500, "Internal Server Error", {}, None)):
+        info = inspect_job_page("https://example.com/job/500")
+        assert info["is_active"] is True
+        assert "HTTP Error 500" in info["reason"]
+        assert info["is_expired"] is False
+
+
+def test_inspect_job_page_fallback_to_parent_json_ld():
+    parent_html = '''
+    <html>
+      <head>
+        <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "JobPosting",
+          "title": "Machine Learning Engineer",
+          "employmentType": "FULL_TIME",
+          "validThrough": "2026-12-31T23:59:59Z"
+        }
+        </script>
+      </head>
+      <body>
+        <iframe src="https://careers-example.icims.com/jobs/456/job?in_iframe=1"></iframe>
+      </body>
+    </html>
+    '''
+    sub_html = '''
+    <html>
+      <body>
+        <div>Description without JSON-LD</div>
+      </body>
+    </html>
+    '''
+    ref_date = datetime(2026, 10, 4)
+
+    def mock_fetch(url, timeout=10):
+        if "in_iframe=1" in url:
+            return sub_html, 200, url
+        return parent_html, 200, url
+
+    with patch("ats_scraper.fetch_page_content", side_effect=mock_fetch):
+        info = inspect_job_page("https://careers-example.icims.com/jobs/456/job", reference_date=ref_date)
+        assert info["is_active"] is True
+        assert info["position_type"] == "Full-Time"
+        assert info["hours_per_week"] == "Full-Time (40 hrs/week)"
+        assert info["deadline"] == datetime(2026, 12, 31, 23, 59, 59)
+        assert info["is_expired"] is False
+
