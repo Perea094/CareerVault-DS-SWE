@@ -13,7 +13,7 @@ import json
 import re
 import sys
 from pathlib import Path
-from typing import Dict, Any, List, Union
+from typing import Dict, Any, List, Union, Optional
 
 try:
     import pdfplumber
@@ -22,6 +22,31 @@ except ImportError:
 
 
 CORE_SECTIONS = ["education", "experience", "projects", "skills"]
+
+ABSTRACT_PLACEHOLDER_PATTERNS = [
+    re.compile(r"<<[A-Za-z0-9_]+>>"),
+    re.compile(r"\[Action Verb\]", re.IGNORECASE),
+    re.compile(r"\[(?:Previous\s+)?Company[^\]]*\]", re.IGNORECASE),
+    re.compile(r"\[Role[^\]]*\]", re.IGNORECASE),
+    re.compile(r"\[Job Title[^\]]*\]", re.IGNORECASE),
+    re.compile(r"\[Key Technical Project[^\]]*\]", re.IGNORECASE),
+    re.compile(r"\[Project Title[^\]]*\]", re.IGNORECASE),
+    re.compile(r"\[Start Month[^\]]*\]", re.IGNORECASE),
+    re.compile(r"\[End Month[^\]]*\]", re.IGNORECASE),
+    re.compile(r"\[Dates[^\]]*\]", re.IGNORECASE),
+    re.compile(r"\[City[^\]]*\]", re.IGNORECASE),
+    re.compile(r"\[tech stack\]", re.IGNORECASE),
+    re.compile(r"\[quantified[^\]]*\]", re.IGNORECASE),
+    re.compile(r"\[(?:[^\]]*\b)?X%(?:[^\]]*)?\]", re.IGNORECASE),
+    re.compile(r"\[Languages:[^\]]*\]", re.IGNORECASE),
+    re.compile(r"\[Frameworks[^\]]*\]", re.IGNORECASE),
+    re.compile(r"\[Infrastructure:[^\]]*\]", re.IGNORECASE),
+    re.compile(r"\[Honors\s*/?\s*Scholarships[^\]]*\]", re.IGNORECASE),
+    re.compile(r"\[Relevant Core Coursework[^\]]*\]", re.IGNORECASE),
+    re.compile(r"\[Student Organization[^\]]*\]", re.IGNORECASE),
+    re.compile(r"\[Academic Mentorship[^\]]*\]", re.IGNORECASE),
+    re.compile(r"\[Core Tech Stack[^\]]*\]", re.IGNORECASE),
+]
 
 # Multilingual regex support for section header detection (English and Spanish)
 SECTION_PATTERNS = {
@@ -72,6 +97,70 @@ def detect_contact_info(text: str) -> Dict[str, bool]:
     }
 
 
+def detect_placeholders(text: str) -> List[str]:
+    """Detects abstract template placeholders and unreplaced macros in resume text."""
+    matches_with_pos = []
+    for pattern in ABSTRACT_PLACEHOLDER_PATTERNS:
+        for match in pattern.finditer(text):
+            token = match.group(0).strip()
+            if token:
+                matches_with_pos.append((match.start(), token))
+
+    matches_with_pos.sort(key=lambda x: x[0])
+    seen = set()
+    unique_placeholders = []
+    for _, token in matches_with_pos:
+        if token not in seen:
+            seen.add(token)
+            unique_placeholders.append(token)
+    return unique_placeholders
+
+
+def check_vault_background(vault_root: Optional[Path] = None) -> Dict[str, Any]:
+    """
+    Checks the candidate background repository (001-background) for verified
+    experience, project, and education markdown records.
+    """
+    if vault_root is None:
+        cwd = Path.cwd()
+        if (cwd / "001-background").is_dir():
+            vault_root = cwd
+        else:
+            repo_root = Path(__file__).resolve().parents[2]
+            if (repo_root / "001-background").is_dir():
+                vault_root = repo_root
+            else:
+                vault_root = cwd
+    else:
+        vault_root = Path(vault_root)
+
+    bg_dir = vault_root / "001-background"
+
+    def count_md_files(subdir_name: str) -> int:
+        subdir = bg_dir / subdir_name
+        if not subdir.is_dir():
+            return 0
+        return sum(
+            1 for p in subdir.rglob("*.md")
+            if p.is_file() and p.name != ".gitkeep" and not p.name.startswith(".")
+        )
+
+    exp_count = count_md_files("experiences")
+    proj_count = count_md_files("projects")
+    edu_count = count_md_files("education")
+    is_empty = (exp_count == 0 and proj_count == 0)
+
+    return {
+        "experiences_count": exp_count,
+        "projects_count": proj_count,
+        "education_count": edu_count,
+        "experiences": exp_count,
+        "projects": proj_count,
+        "education": edu_count,
+        "is_background_empty": is_empty,
+    }
+
+
 def calculate_ats_score(is_single_page: bool, sections_found: List[str], has_contact_info: Dict[str, bool]) -> int:
     """
     Calculates ATS score (0-100):
@@ -119,7 +208,7 @@ def strip_resume_markup(text: str) -> str:
     return re.sub(r'\s+', ' ', text).strip()
 
 
-def scan_text_for_ats(text: str, file_path: str = "") -> Dict[str, Any]:
+def scan_text_for_ats(text: str, file_path: str = "", vault_root: Optional[Path] = None) -> Dict[str, Any]:
     """
     Scans plain text, Markdown, or LaTeX resume source for ATS metrics,
     sections, contact info, and estimated single-page budget.
@@ -137,7 +226,28 @@ def scan_text_for_ats(text: str, file_path: str = "") -> Dict[str, Any]:
     sections_missing = [sec for sec in CORE_SECTIONS if sec not in sections_found]
     has_contact_info = detect_contact_info(text)
 
+    detected_placeholders = detect_placeholders(text)
+    placeholders_detected = len(detected_placeholders) > 0
+    background_status = check_vault_background(vault_root)
+
     warnings = []
+    if placeholders_detected:
+        ats_score = 0
+        is_ready_for_application = False
+        warnings.append(
+            f"Abstract template placeholders detected ({', '.join(detected_placeholders[:4])}). "
+            "Verified candidate background has not been ingested yet. "
+            "Action required: Use 'add-experience-curriculum' or import past CV into 001-background/."
+        )
+    else:
+        ats_score = calculate_ats_score(is_single_page, sections_found, has_contact_info)
+        is_ready_for_application = (ats_score >= 70)
+
+    if background_status.get("is_background_empty", False):
+        warnings.append(
+            "001-background/ has 0 verified experience or project notes. Candidate background is completely unpopulated."
+        )
+
     if not is_single_page:
         warnings.append(
             f"Resume content word count ({word_count} words) likely exceeds 1 page. "
@@ -157,8 +267,6 @@ def scan_text_for_ats(text: str, file_path: str = "") -> Dict[str, Any]:
     elif is_single_page and word_count > 750:
         warnings.append(f"High word count ({word_count} words). Layout may be overly dense for 1 page.")
 
-    ats_score = calculate_ats_score(is_single_page, sections_found, has_contact_info)
-
     density_metrics = {
         "word_count": word_count,
         "char_count": char_count,
@@ -174,13 +282,17 @@ def scan_text_for_ats(text: str, file_path: str = "") -> Dict[str, Any]:
         "sections_found": sections_found,
         "sections_missing": sections_missing,
         "has_contact_info": has_contact_info,
+        "placeholders_detected": placeholders_detected,
+        "detected_placeholders": detected_placeholders,
+        "background_status": background_status,
+        "is_ready_for_application": is_ready_for_application,
         "density_metrics": density_metrics,
         "warnings": warnings,
         "ats_score": ats_score,
     }
 
 
-def scan_pdf_for_ats(pdf_path: Union[str, Path]) -> Dict[str, Any]:
+def scan_pdf_for_ats(pdf_path: Union[str, Path], vault_root: Optional[Path] = None) -> Dict[str, Any]:
     """
     Scans a PDF resume using pdfplumber to evaluate ATS parseability,
     page count, section headers, contact information, and text density.
@@ -208,7 +320,28 @@ def scan_pdf_for_ats(pdf_path: Union[str, Path]) -> Dict[str, Any]:
         sections_missing = [sec for sec in CORE_SECTIONS if sec not in sections_found]
         has_contact_info = detect_contact_info(full_text)
 
+        detected_placeholders = detect_placeholders(full_text)
+        placeholders_detected = len(detected_placeholders) > 0
+        background_status = check_vault_background(vault_root)
+
         warnings = []
+        if placeholders_detected:
+            ats_score = 0
+            is_ready_for_application = False
+            warnings.append(
+                f"Abstract template placeholders detected ({', '.join(detected_placeholders[:4])}). "
+                "Verified candidate background has not been ingested yet. "
+                "Action required: Use 'add-experience-curriculum' or import past CV into 001-background/."
+            )
+        else:
+            ats_score = calculate_ats_score(is_single_page, sections_found, has_contact_info)
+            is_ready_for_application = (ats_score >= 70)
+
+        if background_status.get("is_background_empty", False):
+            warnings.append(
+                "001-background/ has 0 verified experience or project notes. Candidate background is completely unpopulated."
+            )
+
         if not is_single_page:
             warnings.append(
                 f"Resume exceeds 1 page (found {page_count} pages). "
@@ -228,8 +361,6 @@ def scan_pdf_for_ats(pdf_path: Union[str, Path]) -> Dict[str, Any]:
         elif is_single_page and word_count > 800:
             warnings.append(f"High word count ({word_count} words on 1 page). Layout may be overly dense.")
 
-        ats_score = calculate_ats_score(is_single_page, sections_found, has_contact_info)
-
         density_metrics = {
             "word_count": word_count,
             "char_count": char_count,
@@ -245,6 +376,10 @@ def scan_pdf_for_ats(pdf_path: Union[str, Path]) -> Dict[str, Any]:
             "sections_found": sections_found,
             "sections_missing": sections_missing,
             "has_contact_info": has_contact_info,
+            "placeholders_detected": placeholders_detected,
+            "detected_placeholders": detected_placeholders,
+            "background_status": background_status,
+            "is_ready_for_application": is_ready_for_application,
             "density_metrics": density_metrics,
             "warnings": warnings,
             "ats_score": ats_score,
@@ -257,7 +392,7 @@ def scan_pdf_for_ats(pdf_path: Union[str, Path]) -> Dict[str, Any]:
                 pass
 
 
-def scan_resume(file_path: Union[str, Path]) -> Dict[str, Any]:
+def scan_resume(file_path: Union[str, Path], vault_root: Optional[Path] = None) -> Dict[str, Any]:
     """
     Universal scanner that dispatches to PDF scanner or text/markdown/tex scanner
     based on the file extension.
@@ -268,19 +403,35 @@ def scan_resume(file_path: Union[str, Path]) -> Dict[str, Any]:
 
     ext = path.suffix.lower()
     if ext == ".pdf":
-        return scan_pdf_for_ats(path)
+        return scan_pdf_for_ats(path, vault_root=vault_root)
     else:
         text_content = path.read_text(encoding="utf-8", errors="replace")
-        return scan_text_for_ats(text_content, file_path=str(path))
+        return scan_text_for_ats(text_content, file_path=str(path), vault_root=vault_root)
 
 
 def format_text_report(result: Dict[str, Any]) -> str:
     """Formats ATS scan result into a readable terminal report."""
+    is_blocked = result.get("placeholders_detected", False)
+    if is_blocked:
+        score_display = "0/100 (BLOCKED - UNPOPULATED TEMPLATE)"
+    else:
+        score_display = f"{result['ats_score']}/100 ({'PASS' if result['ats_score'] >= 70 else 'FAIL'})"
+
     lines = [
         "=" * 60,
         f"ATS RESUME SCAN REPORT: {result['file_path']}",
         "=" * 60,
-        f"ATS Score:        {result['ats_score']}/100 ({'PASS' if result['ats_score'] >= 70 else 'FAIL'})",
+        f"ATS Score:        {score_display}",
+    ]
+
+    if is_blocked:
+        bg = result.get("background_status", {})
+        exp_count = bg.get("experiences_count", 0)
+        proj_count = bg.get("projects_count", 0)
+        lines.append("Template Status:  ABSTRACT PLACEHOLDERS DETECTED (Background Ingestion Required)")
+        lines.append(f"Verified Records: {exp_count} experiences, {proj_count} projects in 001-background/")
+
+    lines.extend([
         f"Page Count:       {result['page_count']} (Single Page: {'YES' if result['is_single_page'] else 'NO'})",
         f"Word Count:       {result['word_count']} words",
         f"Density Status:   {result['density_metrics']['density_status'].upper()}",
@@ -291,11 +442,14 @@ def format_text_report(result: Dict[str, Any]) -> str:
         f"  - Phone:    {'[OK]' if result['has_contact_info']['phone'] else '[MISSING]'}",
         f"  - GitHub:   {'[OK]' if result['has_contact_info']['github'] else '[NOT FOUND]'}",
         f"  - LinkedIn: {'[OK]' if result['has_contact_info']['linkedin'] else '[NOT FOUND]'}",
-    ]
-    if result["warnings"]:
+    ])
+
+    if result.get("warnings") or is_blocked:
         lines.append("-" * 60)
         lines.append("Warnings & Action Items:")
-        for w in result["warnings"]:
+        if is_blocked:
+            lines.append("  • [MANDATORY NEXT STEP] Ingest your verified background into 001-background/ using the 'add-experience-curriculum' skill before tailoring CVs.")
+        for w in result.get("warnings", []):
             lines.append(f"  • [!] {w}")
     lines.append("=" * 60)
     return "\n".join(lines)
@@ -355,7 +509,8 @@ def main():
     else:
         print(output_content)
 
-    sys.exit(0 if result["ats_score"] >= 70 else 1)
+    is_ready = result.get("is_ready_for_application", False)
+    sys.exit(0 if (result["ats_score"] >= 70 and is_ready) else 1)
 
 
 if __name__ == "__main__":
