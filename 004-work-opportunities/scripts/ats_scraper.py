@@ -1,5 +1,10 @@
+from __future__ import annotations
+
 import re
 import json
+import urllib.request
+import urllib.error
+import ssl
 from datetime import datetime, date
 from urllib.parse import urljoin
 
@@ -19,14 +24,13 @@ MONTH_MAP = {
 }
 _MON_PAT = '|'.join(sorted(MONTH_MAP.keys(), key=len, reverse=True))
 
-_RE_ICIMS_IFRAME = re.compile(r'<iframe[^>]+src=["\']([^"\']+\?in_iframe=1[^"\']*)["\']', re.IGNORECASE)
 _RE_ANY_IFRAME = re.compile(r'<iframe[^>]+src=["\']([^"\']+)["\']', re.IGNORECASE)
 
 _RE_POS_TYPE_ICIMS = re.compile(
     r'<dt[^>]*class=["\'][^"\']*iCIMS_JobHeaderField[^"\']*["\'][^>]*>\s*Position Type\s*</dt>\s*<dd[^>]*class=["\'][^"\']*iCIMS_JobHeaderData[^"\']*["\'][^>]*>\s*<span[^>]*>([^<]+)</span>',
     re.IGNORECASE
 )
-_RE_POS_TYPE_GENERIC = re.compile(r'Position Type\s*[:\s-]+\s*([a-zA-Z\-]+(?:\s+[a-zA-Z\-]+)?)', re.IGNORECASE)
+_RE_POS_TYPE_GENERIC = re.compile(r'Position Type\s*[:\s-]+\s*([a-zA-Z_\-]+(?:\s+[a-zA-Z_\-]+)?)', re.IGNORECASE)
 _RE_HOURS_PER_WEEK = re.compile(r'(\d{1,2}(?:\s*-\s*\d{1,2})?)\s*(?:hrs?|hours?)(?:/|\s*per\s*)week', re.IGNORECASE)
 _RE_NOT_EXCEED_HOURS = re.compile(r'not\s+exceed\s+(\d{1,2})\s*(?:hrs?|hours?)(?:/|\s*per\s*)week', re.IGNORECASE)
 
@@ -236,3 +240,129 @@ def parse_closing_deadline(html: str, json_ld: dict | None = None, reference_dat
         return target_dt, False, ""
 
     return None, False, ""
+
+
+def fetch_page_content(url: str, timeout: int = 10) -> tuple[str, int, str]:
+    """Fetches raw HTML, HTTP status code, and final URL for a given ATS web page."""
+    ctx = ssl.create_default_context()
+    ctx.check_hostname = False
+    ctx.verify_mode = ssl.CERT_NONE
+    headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"}
+
+    req = urllib.request.Request(url, headers=headers)
+    with urllib.request.urlopen(req, timeout=timeout, context=ctx) as resp:
+        code = resp.getcode()
+        final_url = resp.geturl() if hasattr(resp, "geturl") else url
+        raw = resp.read()
+        content = raw.decode("utf-8", errors="ignore") if isinstance(raw, bytes) else str(raw)
+        return content, code, final_url
+
+
+def inspect_job_page(url: str, reference_date: datetime | None = None, timeout: int = 10) -> dict:
+    """
+    Performs deep inspection of an ATS job page:
+    1. Fetches top-level HTML.
+    2. Resolves embedded iframes (e.g., iCIMS ?in_iframe=1).
+    3. Parses position type (Full-Time vs Part-Time) and hours.
+    4. Evaluates application closing deadlines against reference_date.
+    Returns:
+      {
+        "url": str,
+        "resolved_url": str,
+        "is_active": bool,
+        "reason": str,
+        "position_type": str,
+        "hours_per_week": str,
+        "deadline": datetime | None,
+        "is_expired": bool
+      }
+    """
+    if not url or not isinstance(url, str) or not url.strip():
+        return {
+            "url": url,
+            "resolved_url": url,
+            "is_active": False,
+            "reason": "Missing URL",
+            "position_type": "Unspecified",
+            "hours_per_week": "Unspecified",
+            "deadline": None,
+            "is_expired": False,
+        }
+
+    url = url.strip()
+
+    try:
+        content, code, final_url = fetch_page_content(url, timeout=timeout)
+    except urllib.error.HTTPError as e:
+        if e.code in [404, 410]:
+            return {
+                "url": url,
+                "resolved_url": url,
+                "is_active": False,
+                "reason": f"Dead Link (HTTP {e.code})",
+                "position_type": "Unspecified",
+                "hours_per_week": "Unspecified",
+                "deadline": None,
+                "is_expired": True,
+            }
+        return {
+            "url": url,
+            "resolved_url": url,
+            "is_active": True,
+            "reason": f"Protected ATS (HTTP {e.code})",
+            "position_type": "Unspecified",
+            "hours_per_week": "Unspecified",
+            "deadline": None,
+            "is_expired": False,
+        }
+    except Exception as exc:
+        return {
+            "url": url,
+            "resolved_url": url,
+            "is_active": True,
+            "reason": f"Network skip: {exc}",
+            "position_type": "Unspecified",
+            "hours_per_week": "Unspecified",
+            "deadline": None,
+            "is_expired": False,
+        }
+
+    # Unwrap iframes if applicable
+    resolved_url = resolve_ats_subdocument_url(final_url, content)
+    working_content = content
+    if resolved_url != final_url:
+        try:
+            sub_content, _, _ = fetch_page_content(resolved_url, timeout=timeout)
+            working_content = sub_content
+        except Exception:
+            pass
+
+    json_ld = extract_json_ld(working_content)
+    pos_type, hours = parse_position_type(working_content, json_ld=json_ld)
+    deadline_dt, is_expired, expired_reason = parse_closing_deadline(
+        working_content, json_ld=json_ld, reference_date=reference_date
+    )
+
+    if is_expired:
+        return {
+            "url": url,
+            "resolved_url": resolved_url,
+            "is_active": False,
+            "reason": expired_reason,
+            "position_type": pos_type,
+            "hours_per_week": hours,
+            "deadline": deadline_dt,
+            "is_expired": True,
+        }
+
+    return {
+        "url": url,
+        "resolved_url": resolved_url,
+        "is_active": True,
+        "reason": "Active (200 OK)",
+        "position_type": pos_type,
+        "hours_per_week": hours,
+        "deadline": deadline_dt,
+        "is_expired": False,
+    }
+

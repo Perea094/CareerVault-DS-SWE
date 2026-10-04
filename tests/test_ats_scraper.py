@@ -1,5 +1,6 @@
 import pytest
 from datetime import datetime
+from unittest.mock import patch
 
 import sys
 import os
@@ -9,7 +10,9 @@ from ats_scraper import (
     resolve_ats_subdocument_url,
     extract_json_ld,
     parse_position_type,
-    parse_closing_deadline
+    parse_closing_deadline,
+    fetch_page_content,
+    inspect_job_page,
 )
 
 
@@ -177,3 +180,83 @@ def test_parse_closing_deadline_year_first_and_ordinal():
     assert deadline_dt2 == datetime(2026, 7, 18)
     assert is_expired2 is True
     assert "closed on 2026-07-18" in reason2
+
+
+def test_inspect_job_page_full_flow_icims_expired():
+    parent_html = '''<html><body><iframe src="https://careers-cotiviti.icims.com/jobs/19531/job?in_iframe=1"></iframe></body></html>'''
+    iframe_html = '''
+    <html>
+      <div class="iCIMS_JobHeaderTag">
+        <dt class="iCIMS_JobHeaderField">Position Type</dt>
+        <dd class="iCIMS_JobHeaderData"><span>Full-Time</span></dd>
+      </div>
+      <div>
+        <p>Date of posting: 6/18/2026</p>
+        <p>We anticipate that the application window will close on 7/18/2026.</p>
+      </div>
+    </html>
+    '''
+    ref_date = datetime(2026, 10, 4)
+
+    def mock_fetch(url, timeout=10):
+        if "in_iframe=1" in url:
+            return iframe_html, 200, url
+        return parent_html, 200, url
+
+    with patch("ats_scraper.fetch_page_content", side_effect=mock_fetch):
+        info = inspect_job_page("https://careers-cotiviti.icims.com/jobs/19531/job", reference_date=ref_date)
+        assert info["is_active"] is False
+        assert "closed on 2026-07-18" in info["reason"].lower()
+        assert info["position_type"] == "Full-Time"
+        assert info["hours_per_week"] == "Full-Time (40 hrs/week)"
+
+
+def test_inspect_job_page_active_part_time():
+    html = '''
+    <html>
+      <p>Position Type: Part-Time</p>
+      <p>Schedule will not exceed 29hrs/week.</p>
+      <p>We anticipate that the application window will close on 12/01/2026.</p>
+    </html>
+    '''
+    ref_date = datetime(2026, 10, 4)
+
+    def mock_fetch(url, timeout=10):
+        return html, 200, url
+
+    with patch("ats_scraper.fetch_page_content", side_effect=mock_fetch):
+        info = inspect_job_page("https://example.com/job/123", reference_date=ref_date)
+        assert info["is_active"] is True
+        assert info["position_type"] == "Part-Time"
+        assert "29" in info["hours_per_week"] or "Part-Time" in info["hours_per_week"]
+
+
+def test_inspect_job_page_missing_url():
+    info = inspect_job_page("")
+    assert info["is_active"] is False
+    assert info["reason"] == "Missing URL"
+
+
+def test_inspect_job_page_http_error_404():
+    import urllib.error
+    with patch("ats_scraper.fetch_page_content", side_effect=urllib.error.HTTPError("https://example.com/job/404", 404, "Not Found", {}, None)):
+        info = inspect_job_page("https://example.com/job/404")
+        assert info["is_active"] is False
+        assert "Dead Link (HTTP 404)" in info["reason"]
+        assert info["is_expired"] is True
+
+
+def test_inspect_job_page_http_error_403_protected():
+    import urllib.error
+    with patch("ats_scraper.fetch_page_content", side_effect=urllib.error.HTTPError("https://example.com/job/403", 403, "Forbidden", {}, None)):
+        info = inspect_job_page("https://example.com/job/403")
+        assert info["is_active"] is True
+        assert "Protected ATS (HTTP 403)" in info["reason"]
+
+
+def test_inspect_job_page_network_exception():
+    with patch("ats_scraper.fetch_page_content", side_effect=Exception("Connection timed out")):
+        info = inspect_job_page("https://example.com/job/timeout")
+        assert info["is_active"] is True
+        assert "Network skip" in info["reason"]
+
