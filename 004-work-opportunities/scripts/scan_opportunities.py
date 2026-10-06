@@ -542,6 +542,9 @@ def select_verified_candidates(
     if not candidates:
         return []
 
+    if max_per_source is not None and max_per_source <= 0:
+        return []
+
     target_limit = len(candidates) if limit is None else limit
     if target_limit <= 0:
         return []
@@ -552,7 +555,7 @@ def select_verified_candidates(
         selected = []
         source_counts = {}
         for opp in candidates:
-            src = opp.get("source_id", "unknown")
+            src = opp.get("source_id") or "unknown"
             if source_counts.get(src, 0) < max_per_source:
                 source_counts[src] = source_counts.get(src, 0) + 1
                 selected.append(opp)
@@ -566,9 +569,15 @@ def select_verified_candidates(
     step = max(1, batch_size)
     for i in range(0, len(candidates), step):
         chunk = candidates[i:i + step]
-        active_chunk = filter_candidate_links(chunk, checker_func=checker_func)
+        candidate_chunk = [
+            c for c in chunk
+            if max_per_source is None or source_counts.get(c.get("source_id") or "unknown", 0) < max_per_source
+        ]
+        if not candidate_chunk:
+            continue
+        active_chunk = filter_candidate_links(candidate_chunk, checker_func=checker_func)
         for opp in active_chunk:
-            src = opp.get("source_id", "unknown")
+            src = opp.get("source_id") or "unknown"
             if max_per_source is not None and source_counts.get(src, 0) >= max_per_source:
                 continue
             source_counts[src] = source_counts.get(src, 0) + 1

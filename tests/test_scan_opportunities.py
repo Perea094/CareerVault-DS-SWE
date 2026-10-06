@@ -488,6 +488,81 @@ class TestScanOpportunities(unittest.TestCase):
         self.assertEqual(a_count, 2)
         self.assertEqual(b_count, 2)
 
+    def test_select_verified_candidates_source_diversity_cap_with_verification(self):
+        # 4 from source-a, 2 from source-b
+        candidates = [
+            {"company": "A0", "role": "SWE", "source_id": "source-a", "apply_url": "http://a0"},  # dead
+            {"company": "A1", "role": "SWE", "source_id": "source-a", "apply_url": "http://a1"},  # active
+            {"company": "A2", "role": "SWE", "source_id": "source-a", "apply_url": "http://a2"},  # active -> source-a hits cap 2
+            {"company": "B0", "role": "SWE", "source_id": "source-b", "apply_url": "http://b0"},  # active
+            {"company": "A3", "role": "SWE", "source_id": "source-a", "apply_url": "http://a3"},  # should NOT be probed (source-a exhausted)
+            {"company": "B1", "role": "SWE", "source_id": "source-b", "apply_url": "http://b1"},  # active -> source-b hits cap 2
+        ]
+
+        probed_urls = []
+
+        def mock_checker(opp):
+            url = opp.get("apply_url")
+            probed_urls.append(url)
+            if url == "http://a0":
+                return opp, False, "Dead Link (404)"
+            return opp, True, "Active (200 OK)"
+
+        selected = scan_opportunities.select_verified_candidates(
+            candidates,
+            limit=4,
+            verify_links=True,
+            checker_func=mock_checker,
+            max_per_source=2,
+            batch_size=2
+        )
+
+        self.assertEqual(len(selected), 4)
+        self.assertEqual([c["company"] for c in selected], ["A1", "A2", "B0", "B1"])
+
+        # Dead link A0 was probed, but didn't consume source quota
+        self.assertIn("http://a0", probed_urls)
+
+        # A3 was skipped entirely because source-a had already reached max_per_source=2 before chunk 3
+        self.assertNotIn("http://a3", probed_urls)
+
+    def test_select_verified_candidates_non_positive_max_per_source_early_return(self):
+        called = False
+        def mock_checker(opp):
+            nonlocal called
+            called = True
+            return opp, True, "Active (200 OK)"
+
+        candidates = [
+            {"company": "A", "role": "SWE", "source_id": "src1", "apply_url": "http://a"},
+            {"company": "B", "role": "SWE", "source_id": None, "apply_url": "http://b"},
+        ]
+
+        # max_per_source=0
+        res_zero = scan_opportunities.select_verified_candidates(
+            candidates, limit=5, verify_links=True, checker_func=mock_checker, max_per_source=0
+        )
+        self.assertEqual(res_zero, [])
+        self.assertFalse(called)
+
+        # max_per_source=-1
+        res_neg = scan_opportunities.select_verified_candidates(
+            candidates, limit=5, verify_links=False, max_per_source=-1
+        )
+        self.assertEqual(res_neg, [])
+
+    def test_select_verified_candidates_source_id_none_coalesces_to_unknown(self):
+        candidates = [
+            {"company": "A", "role": "SWE", "source_id": None},
+            {"company": "B", "role": "SWE", "source_id": None},
+            {"company": "C", "role": "SWE", "source_id": None},
+        ]
+        # max_per_source=2 with source_id=None should cap at 2 under 'unknown'
+        selected = scan_opportunities.select_verified_candidates(
+            candidates, limit=5, verify_links=False, max_per_source=2
+        )
+        self.assertEqual(len(selected), 2)
+
 
 if __name__ == "__main__":
     unittest.main()
