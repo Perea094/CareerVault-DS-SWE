@@ -135,8 +135,9 @@ def save_json(path, data):
     with open(path, "w", encoding="utf-8") as f:
         json.dump(data, f, indent=2, ensure_ascii=False)
 
-def sync_csv(opportunities):
-    with open(CSV_PATH, "w", encoding="utf-8", newline="") as f:
+def sync_csv(opportunities, csv_path=None):
+    target_path = csv_path or CSV_PATH
+    with open(target_path, "w", encoding="utf-8", newline="") as f:
         writer = csv.DictWriter(f, fieldnames=CSV_FIELDS, lineterminator="\n")
         writer.writeheader()
         for o in opportunities:
