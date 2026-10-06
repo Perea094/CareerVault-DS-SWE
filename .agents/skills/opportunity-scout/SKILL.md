@@ -22,9 +22,19 @@ Automates the ingestion, multi-source deduplication, and senior technical recrui
 ## The 4-Step Execution Workflow
 
 ### Step 1: Run Ingestion & Pre-Filtering
-Execute the multi-source scanner from the terminal:
+For daily monitoring:
 ```powershell
-python 004-work-opportunities/scripts/scan_opportunities.py
+python 004-work-opportunities/scripts/scan_opportunities.py --verify-links
+```
+
+For domain-specific scoping (e.g. Data Science):
+```powershell
+python 004-work-opportunities/scripts/scan_opportunities.py --role "data scientist, machine learning" --verify-links
+```
+
+For initial vault onboarding / first audit:
+```powershell
+python 004-work-opportunities/scripts/scan_opportunities.py --audit-mode
 ```
 This queries 19 active feeds across SpeedyApply, SimplifyJobs, Jobright, Vanshb03, Proyecto Nutria (Mexico), zshah101, SuryaHarikrishnan, Negarprh (Canada), DereC4 (Trendshift #99924), and Mehek/Litos, deduplicates against `opportunities.json`, filters out hard deal-breakers (crypto, strict PhD gates, US citizenship required), and exports the top priority batch to `004-work-opportunities/database/pending_scan.json`.
 

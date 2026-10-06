@@ -83,6 +83,12 @@ python 004-work-opportunities/scripts/scan_opportunities.py --all
 
 Outputs are automatically deduplicated against [`004-work-opportunities/database/opportunities.json`](../database/opportunities.json) and exported to [`004-work-opportunities/database/pending_scan.json`](../database/pending_scan.json).
 
+### Advanced CLI Flags
+- `--role "data scientist, machine learning"`: Filter roles by case-insensitive keyword (supports comma-separated queries).
+- `--audit-mode`: Comprehensive initial triage mode (`--days 90`, `--limit 100`, `--verify-links`).
+- `--max-per-source 5`: Cap admissions per feed to guarantee diversity across sources.
+- `--verify-links`: Live probe application URLs, streaming and backfilling dead links until the requested limit is filled.
+
 ---
 
 ## 5. Pruning & Archival Engine (`prune_opportunities.py`)
