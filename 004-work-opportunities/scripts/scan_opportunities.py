@@ -512,11 +512,26 @@ def filter_candidate_links(candidates: list, checker_func=None, max_workers: int
     return verified
 
 
+def matches_role_filter(role_title: str, role_query: str | None) -> bool:
+    """
+    Checks if a role title matches any keyword in a comma-separated query string.
+    Case-insensitive. Returns True if role_query is None or empty.
+    """
+    if not role_query or not str(role_query).strip():
+        return True
+    title_lower = (role_title or "").lower()
+    keywords = [k.strip().lower() for k in str(role_query).split(",") if k.strip()]
+    if not keywords:
+        return True
+    return any(k in title_lower for k in keywords)
+
+
 def main():
     parser = argparse.ArgumentParser(description="Unified Opportunities Scanner with Dynamic Worldwide Location & Constraints Engine.")
     parser.add_argument("--days", type=int, default=7, help="Maximum age of job postings in days (default: 7)")
     parser.add_argument("--limit", type=int, default=10, help="Maximum candidates to export to pending_scan.json (default: 10)")
     parser.add_argument("--source", type=str, default=None, help="Filter to run only a specific source ID")
+    parser.add_argument("--role", type=str, default=None, help="Filter job postings by role keyword (comma-separated, case-insensitive, e.g. 'data scientist, machine learning')")
     parser.add_argument("--all", action="store_true", help="Include all candidates without limiting batch size")
     parser.add_argument("--verify-links", action="store_true", help="Probe candidate apply_url to drop 404s and corporate ATS redirects before export.")
     args = parser.parse_args()
@@ -566,6 +581,9 @@ def main():
             continue
 
         for p in postings:
+            if not matches_role_filter(p.get("role", ""), args.role):
+                continue
+
             # Check age
             if p["age_days"] > args.days:
                 continue

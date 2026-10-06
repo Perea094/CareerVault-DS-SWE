@@ -411,6 +411,21 @@ class TestScanOpportunities(unittest.TestCase):
             self.assertEqual(verified[0]["position_type"], "Full-Time")
             self.assertEqual(verified[0]["hours_per_week"], "Full-Time (40 hrs/week)")
 
+    def test_matches_role_filter_single_keyword(self):
+        self.assertTrue(scan_opportunities.matches_role_filter("Data Scientist Intern", "data scientist"))
+        self.assertTrue(scan_opportunities.matches_role_filter("Senior Machine Learning Engineer", "machine learning"))
+        self.assertFalse(scan_opportunities.matches_role_filter("Frontend Software Engineer", "data scientist"))
+
+    def test_matches_role_filter_comma_separated_keywords(self):
+        query = "data scientist, machine learning, ai/ml"
+        self.assertTrue(scan_opportunities.matches_role_filter("AI/ML Research Intern", query))
+        self.assertTrue(scan_opportunities.matches_role_filter("Data Scientist - Analytics", query))
+        self.assertFalse(scan_opportunities.matches_role_filter("Fullstack Developer", query))
+
+    def test_matches_role_filter_empty_or_none(self):
+        self.assertTrue(scan_opportunities.matches_role_filter("Any Role", None))
+        self.assertTrue(scan_opportunities.matches_role_filter("Any Role", ""))
+
 
 if __name__ == "__main__":
     unittest.main()
