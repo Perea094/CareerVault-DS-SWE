@@ -2,59 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "Career Vault Archived Opportunities Registry",
   "description": "Archived, closed, expired, or passed opportunities retained for deduplication and audit history.",
-  "last_updated": "2026-10-06",
-  "total_archived": 1,
-  "opportunities": [
-    {
-      "id": "opp-56-keysight-technologies-data-scientist-intern",
-      "numeric_id": 56,
-      "company": "Keysight Technologies",
-      "role": "Data Scientist Intern",
-      "tier": "Tier 3: Elite Target Hubs (Visa Sponsorship Track)",
-      "location": "Santa Rosa, CA",
-      "work_arrangement": "Internship / Co-op",
-      "hours_per_week": "20-40 hrs/week (Flexible/Term-dependent)",
-      "compensation": "$35 - $65 / hr (Est. Market Rate)",
-      "realistic_success_ratio": "15% - 30%",
-      "success_ratio_min": 0.15,
-      "success_ratio_max": 0.3,
-      "success_ratio_justification": "US domestic role with unspecified visa sponsorship; potential barrier if company does not sponsor international student visas.",
-      "urgency": "⚠️ URGENT (Posted < 24-48h)",
-      "strategic_action": "Verify Visa Sponsorship Policy Before Applying",
-      "source_repo": "SuryaHarikrishnan 2027 Internship Tracker",
-      "apply_url": "https://jobs.keysight.com/jobs/54570?icims=1",
-      "file_reference": "",
-      "vault_note": "004-work-opportunities/eligible/opp-56-keysight-technologies-data-scientist-intern.md",
-      "status": "archived",
-      "application_status": "closed",
-      "key_points_to_highlight": [
-        "Align core data science competencies: Python (NumPy, pandas, Scikit-Learn), exploratory data analysis, and predictive modeling.",
-        "Highlight mathematical and statistical rigor: hypothesis testing, regression analysis, and evaluation metrics (AUC-ROC, F1, RMSE).",
-        "[ACTION REQUIRED] Document verified projects in 001-background/projects/ to provide concrete metric evidence."
-      ],
-      "key_considerations": [
-        "Work style: Santa Rosa, CA",
-        "Candidate status: Junior standing, B.S. in Computer Science / Data Science (Graduation: May 2027)",
-        "Legal constraint: Requires visa sponsorship for international relocation or remote contractor / local entity arrangement."
-      ],
-      "pros": [
-        "Strong domain focus: Data Scientist Intern",
-        "High-signal technical exposure and portfolio acceleration",
-        "Discovered via verified upstream feed: SuryaHarikrishnan 2027 Internship Tracker"
-      ],
-      "cons": [
-        "Requires in-person presence in US hub without confirmed international visa sponsorship policy."
-      ],
-      "missing_or_bridge_skills": [
-        "Production MLOps / Cloud Deployment (AWS SageMaker / GCP Vertex AI / Docker)",
-        "Distributed Computing / Big Data pipelines (PySpark / SQL at scale)",
-        "Experimentation platforms (A/B testing, causal inference in production)"
-      ],
-      "date_identified": "2026-10-05",
-      "last_audited": "2026-10-05",
-      "original_application_status": "wishlist",
-      "archived_date": "2026-10-06",
-      "archive_reason": "Explicit ID match: opp-82-keysight-technologies-data-scientist-intern"
-    }
-  ]
+  "last_updated": "2026-10-02",
+  "total_archived": 0,
+  "opportunities": []
 }
