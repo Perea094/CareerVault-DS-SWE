@@ -381,11 +381,11 @@ def score_and_tier(item, profile: CandidateProfile = None):
             return 35, "Tier 3: US Sponsor (Sponsorship Warning)"
         return 65, "Tier 3: Elite Target Hubs (Visa Sponsorship Track)"
 
-    # 6. General US Roles
+    # 6. General US Roles (Domestic in-person without verified top sponsor status)
     if any(k in loc for k in ["united states", "usa"]) or re.search(r'\b(us|u\.s\.)\b', loc) or "usa" in item.get("source_id", ""):
         if profile.is_us_authorized:
             return 90, "Tier 1: United States (Direct Legal Match)"
-        return 45, "Tier 3: General US Opportunity"
+        return 45, "Tier 5: General Domestic (Unverified Sponsorship)"
 
     # 7. General International Roles
     return 35, "Tier 4: International Opportunity"

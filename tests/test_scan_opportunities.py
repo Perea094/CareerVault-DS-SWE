@@ -82,6 +82,22 @@ class TestScanOpportunities(unittest.TestCase):
         self.assertEqual(score, 65)
         self.assertIn("Tier 3", tier)
 
+    def test_general_us_role_assigned_tier_5(self):
+        profile = CandidateProfile(
+            name="Diego Perea",
+            location="Querétaro, Mexico",
+            work_authorization="None"
+        )
+        opp_us_general = {
+            "company": "The New York Mets",
+            "role": "Intern - Data Science",
+            "location": "Citi Field, Queens, NY, United States",
+            "apply_url": "https://example.com/mets"
+        }
+        score, tier = score_and_tier(opp_us_general, profile)
+        self.assertEqual(score, 45)
+        self.assertEqual(tier, "Tier 5: General Domestic (Unverified Sponsorship)")
+
     def test_canada_candidate_dynamic_tiering(self):
         profile = CandidateProfile(
             name="Alex Chen",
