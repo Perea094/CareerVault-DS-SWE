@@ -543,6 +543,8 @@ def select_verified_candidates(
         return []
 
     target_limit = len(candidates) if limit is None else limit
+    if target_limit <= 0:
+        return []
 
     if not verify_links:
         return candidates[:target_limit]
@@ -550,8 +552,9 @@ def select_verified_candidates(
     verified = []
     source_counts = {}
 
-    for i in range(0, len(candidates), batch_size):
-        chunk = candidates[i:i + batch_size]
+    step = max(1, batch_size)
+    for i in range(0, len(candidates), step):
+        chunk = candidates[i:i + step]
         active_chunk = filter_candidate_links(chunk, checker_func=checker_func)
         for opp in active_chunk:
             src = opp.get("source_id", "unknown")

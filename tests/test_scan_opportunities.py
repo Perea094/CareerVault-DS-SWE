@@ -457,6 +457,19 @@ class TestScanOpportunities(unittest.TestCase):
         selected = scan_opportunities.select_verified_candidates(candidates, limit=None, verify_links=False)
         self.assertEqual(len(selected), 10)
 
+    def test_select_verified_candidates_zero_limit_returns_empty(self):
+        called = False
+        def mock_checker(opp):
+            nonlocal called
+            called = True
+            return opp, True, "Active (200 OK)"
+        candidates = [{"company": "Co", "role": "SWE", "apply_url": "https://example.com"}]
+        selected = scan_opportunities.select_verified_candidates(
+            candidates, limit=0, verify_links=True, checker_func=mock_checker
+        )
+        self.assertEqual(selected, [])
+        self.assertFalse(called)
+
 
 if __name__ == "__main__":
     unittest.main()
