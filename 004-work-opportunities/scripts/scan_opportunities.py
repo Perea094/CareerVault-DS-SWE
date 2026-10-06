@@ -547,7 +547,18 @@ def select_verified_candidates(
         return []
 
     if not verify_links:
-        return candidates[:target_limit]
+        if max_per_source is None:
+            return candidates[:target_limit]
+        selected = []
+        source_counts = {}
+        for opp in candidates:
+            src = opp.get("source_id", "unknown")
+            if source_counts.get(src, 0) < max_per_source:
+                source_counts[src] = source_counts.get(src, 0) + 1
+                selected.append(opp)
+                if len(selected) >= target_limit:
+                    break
+        return selected
 
     verified = []
     source_counts = {}
@@ -576,6 +587,7 @@ def main():
     parser.add_argument("--role", type=str, default=None, help="Filter job postings by role keyword (comma-separated, case-insensitive, e.g. 'data scientist, machine learning')")
     parser.add_argument("--all", action="store_true", help="Include all candidates without limiting batch size")
     parser.add_argument("--verify-links", action="store_true", help="Probe candidate apply_url to drop 404s and corporate ATS redirects before export.")
+    parser.add_argument("--max-per-source", type=int, default=None, help="Maximum candidates to admit from any single upstream feed")
     args = parser.parse_args()
 
     profile = load_candidate_profile()
@@ -660,6 +672,7 @@ def main():
         all_candidates,
         limit=target_limit,
         verify_links=getattr(args, "verify_links", False),
+        max_per_source=getattr(args, "max_per_source", None),
         batch_size=15
     )
 

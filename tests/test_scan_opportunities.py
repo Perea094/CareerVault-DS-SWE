@@ -470,6 +470,24 @@ class TestScanOpportunities(unittest.TestCase):
         self.assertEqual(selected, [])
         self.assertFalse(called)
 
+    def test_select_verified_candidates_source_diversity_cap(self):
+        # 8 candidates from Source A, 4 candidates from Source B
+        candidates = []
+        for i in range(8):
+            candidates.append({"company": f"A-Corp {i}", "role": "SWE", "source_id": "source-a"})
+        for i in range(4):
+            candidates.append({"company": f"B-Corp {i}", "role": "SWE", "source_id": "source-b"})
+
+        # With max_per_source=2 and limit=4, Source A can take at most 2 slots
+        selected = scan_opportunities.select_verified_candidates(
+            candidates, limit=4, verify_links=False, max_per_source=2
+        )
+        self.assertEqual(len(selected), 4)
+        a_count = sum(1 for c in selected if c["source_id"] == "source-a")
+        b_count = sum(1 for c in selected if c["source_id"] == "source-b")
+        self.assertEqual(a_count, 2)
+        self.assertEqual(b_count, 2)
+
 
 if __name__ == "__main__":
     unittest.main()
