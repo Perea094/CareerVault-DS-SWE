@@ -426,6 +426,37 @@ class TestScanOpportunities(unittest.TestCase):
         self.assertTrue(scan_opportunities.matches_role_filter("Any Role", None))
         self.assertTrue(scan_opportunities.matches_role_filter("Any Role", ""))
 
+    def test_select_verified_candidates_backfills_dead_links(self):
+        candidates = [
+            {"company": f"Company {i}", "role": "SWE Intern", "apply_url": f"https://example.com/job/{i}"}
+            for i in range(1, 11)
+        ]
+        # Simulate: jobs 1, 2, 3 are 404 dead links, jobs 4-10 are active
+        def mock_checker(opp):
+            job_num = int(opp["apply_url"].split("/")[-1])
+            if job_num in [1, 2, 3]:
+                return opp, False, "Dead Link (HTTP 404)"
+            return opp, True, "Active (200 OK)"
+
+        # We request limit=3 with verify_links=True
+        # It should skip jobs 1-3, and return jobs 4, 5, 6
+        selected = scan_opportunities.select_verified_candidates(
+            candidates, limit=3, verify_links=True, checker_func=mock_checker, batch_size=2
+        )
+        self.assertEqual(len(selected), 3)
+        self.assertEqual([c["company"] for c in selected], ["Company 4", "Company 5", "Company 6"])
+
+    def test_select_verified_candidates_without_verification_slices_directly(self):
+        candidates = [{"company": f"Company {i}", "role": "SWE"} for i in range(10)]
+        selected = scan_opportunities.select_verified_candidates(candidates, limit=4, verify_links=False)
+        self.assertEqual(len(selected), 4)
+        self.assertEqual(selected[0]["company"], "Company 0")
+
+    def test_select_verified_candidates_respects_all_flag(self):
+        candidates = [{"company": f"Company {i}", "role": "SWE"} for i in range(10)]
+        selected = scan_opportunities.select_verified_candidates(candidates, limit=None, verify_links=False)
+        self.assertEqual(len(selected), 10)
+
 
 if __name__ == "__main__":
     unittest.main()

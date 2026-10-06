@@ -526,6 +526,45 @@ def matches_role_filter(role_title: str, role_query: str | None) -> bool:
     return any(k in title_lower for k in keywords)
 
 
+def select_verified_candidates(
+    candidates: list,
+    limit: int | None = 10,
+    verify_links: bool = False,
+    checker_func=None,
+    max_per_source: int | None = None,
+    batch_size: int = 15
+) -> list:
+    """
+    Selects top viable candidates. When verify_links=True, batches candidates
+    and probes live application URLs until `limit` verified active opportunities
+    are collected (backfilling dead links) or candidates are exhausted.
+    """
+    if not candidates:
+        return []
+
+    target_limit = len(candidates) if limit is None else limit
+
+    if not verify_links:
+        return candidates[:target_limit]
+
+    verified = []
+    source_counts = {}
+
+    for i in range(0, len(candidates), batch_size):
+        chunk = candidates[i:i + batch_size]
+        active_chunk = filter_candidate_links(chunk, checker_func=checker_func)
+        for opp in active_chunk:
+            src = opp.get("source_id", "unknown")
+            if max_per_source is not None and source_counts.get(src, 0) >= max_per_source:
+                continue
+            source_counts[src] = source_counts.get(src, 0) + 1
+            verified.append(opp)
+            if len(verified) >= target_limit:
+                return verified
+
+    return verified
+
+
 def main():
     parser = argparse.ArgumentParser(description="Unified Opportunities Scanner with Dynamic Worldwide Location & Constraints Engine.")
     parser.add_argument("--days", type=int, default=7, help="Maximum age of job postings in days (default: 7)")
@@ -613,13 +652,13 @@ def main():
     # Sort candidates by viability score (descending), then age (ascending)
     all_candidates.sort(key=lambda x: (-x["viability_score"], x["age_days"]))
 
-    limit = len(all_candidates) if args.all else args.limit
-    selected = all_candidates[:limit]
-
-    if getattr(args, "verify_links", False):
-        print(f"\nVerifying live links for top {len(selected)} candidate roles...")
-        selected = filter_candidate_links(selected)
-        print(f"Retained {len(selected)} verified active opportunities.")
+    target_limit = None if args.all else args.limit
+    selected = select_verified_candidates(
+        all_candidates,
+        limit=target_limit,
+        verify_links=getattr(args, "verify_links", False),
+        batch_size=15
+    )
 
     print(f"\n=======================================================")
     print(f"Scan Finished: Found {len(all_candidates)} viable new postings (Age <= {args.days}d).")
