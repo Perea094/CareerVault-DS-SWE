@@ -576,6 +576,7 @@ status: active
         f"- **Audit Cycle**: {month_title} (`cycle-{month_str}`).",
         f"- **Candidate Profile**: {getattr(profile, 'name', 'Candidate')} ({getattr(profile, 'raw_location', 'Global')}).",
         f"- **Total Verified Opportunities**: **{total_count} active roles** cataloged in database.",
+        f"- **Stratified Distribution**: {total_count} opportunities across 5 tiers (Tier 1: {len(t1_opps)}, Tier 2: {len(t2_opps)}, Tier 3: {len(t3_opps)}, Tier 4: {len(t4_opps)}, Tier 5: {len(t5_opps)}).",
         "- **Candidate Ground Truth Status**: Triaged against active constraints in [`001-background/preferences.md`](../001-background/preferences.md).",
         "",
         "---",

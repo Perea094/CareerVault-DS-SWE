@@ -303,7 +303,9 @@ def main():
             reasons = []
 
             # Filter by ID
-            if args.id and (oid == args.id or num_id == args.id):
+            clean_arg_id = re.sub(r"^opp-\d+-", "", str(args.id).lower()) if args.id else ""
+            clean_oid = re.sub(r"^opp-\d+-", "", str(oid).lower()) if oid else ""
+            if args.id and (oid == args.id or num_id == args.id or (clean_arg_id and clean_arg_id == clean_oid)):
                 reasons.append(f"Explicit ID match: {args.id}")
 
             # Filter by link check
