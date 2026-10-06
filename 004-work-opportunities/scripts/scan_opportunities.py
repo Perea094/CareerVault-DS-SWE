@@ -393,11 +393,6 @@ def score_and_tier(item, profile: CandidateProfile = None):
     return 35, "Tier 4: International Opportunity"
 
 
-# Import after CandidateProfile, load_candidate_profile, and score_and_tier
-# to prevent circular dependency
-import sync_opportunities
-
-
 def fetch_content(url):
     headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"}
     req = urllib.request.Request(url, headers=headers)
@@ -763,6 +758,7 @@ def main():
         print()
 
     if getattr(args, "sync", False):
+        import sync_opportunities
         added = sync_opportunities.sync_database(selected, DB_PATH, CSV_PATH, profile, verify_links=False)
         print(f"[SUCCESS] Native sync complete: {added} new opportunities added to database.")
         audit_note = os.path.join(BASE_DIR, f"opportunities-audit-{datetime.now().strftime('%Y-%m')}.md")

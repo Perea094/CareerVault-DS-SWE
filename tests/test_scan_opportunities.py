@@ -603,8 +603,12 @@ class TestScanOpportunities(unittest.TestCase):
     def test_scan_opportunities_sync_flag(self, mock_audit, mock_sync):
         mock_sync.return_value = 5
         test_args = ["scan_opportunities.py", "--limit", "1", "--sync"]
-        with patch.object(sys, "argv", test_args):
-            with patch("scan_opportunities.fetch_all_sources", return_value=[{"company": "Test", "role": "Intern", "location": "Remote", "apply_url": "https://example.com/test"}]):
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            temp_output = os.path.join(tmp_dir, "pending_scan.json")
+            with patch("scan_opportunities.OUTPUT_PATH", temp_output), \
+                 patch.object(sys, "argv", test_args), \
+                 patch("sys.stdout"), \
+                 patch("scan_opportunities.fetch_all_sources", return_value=[{"company": "Test", "role": "Intern", "location": "Remote", "apply_url": "https://example.com/test"}]):
                 scan_opportunities.main()
         mock_sync.assert_called_once()
         mock_audit.assert_called_once()
