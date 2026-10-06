@@ -436,7 +436,13 @@ def sync_database(
         return 0
 
     # Max existing numeric ID
-    max_id = max([o.get("numeric_id", 0) for o in db_data["opportunities"]] or [0])
+    existing_ids = []
+    for o in db_data["opportunities"]:
+        try:
+            existing_ids.append(int(o.get("numeric_id") or 0))
+        except (ValueError, TypeError):
+            existing_ids.append(0)
+    max_id = max(existing_ids or [0])
 
     for cand in valid_new:
         max_id += 1
@@ -593,10 +599,11 @@ status: active
         "| :--- | :--- | :--- | :--- | :--- | :---: | :---: | :--- |"
     ]
 
-    matrix_rows = opps[:25] if len(opps) > 25 else opps
+    sorted_opps = sorted(opps, key=lambda o: _parse_tier_number(o.get("tier")))
+    matrix_rows = sorted_opps[:25] if len(sorted_opps) > 25 else sorted_opps
     for idx, o in enumerate(matrix_rows, 1):
-        comp = o.get("company", "Unknown")
-        role = o.get("role", "Opportunity")
+        comp = str(o.get("company", "Unknown")).replace("|", "-").strip()
+        role = str(o.get("role", "Opportunity")).replace("|", "-").strip()
         tier_str = str(o.get("tier", "Tier 2"))
 
         short_tier = f"Tier {_parse_tier_number(tier_str)}"
@@ -611,9 +618,9 @@ status: active
         elif "tier 5" in tier_str.lower():
             short_tier = "Tier 5 (General US)"
 
-        loc = o.get("location", "Unspecified")
-        ratio = o.get("realistic_success_ratio", "50% - 65%")
-        urg = o.get("urgency", "Standard")
+        loc = str(o.get("location", "Unspecified")).replace("|", "-").strip()
+        ratio = str(o.get("realistic_success_ratio", "50% - 65%")).replace("|", "-").strip()
+        urg = str(o.get("urgency", "Standard")).replace("|", "-").strip()
         url = o.get("apply_url", "")
         portal_label = f"{comp} Portal"
         link_md = f"[{portal_label}]({url})" if url else "Direct Application"

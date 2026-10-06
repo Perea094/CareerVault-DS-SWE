@@ -13,6 +13,7 @@ if SCRIPTS_DIR not in sys.path:
 
 import scan_opportunities
 from scan_opportunities import CandidateProfile, score_and_tier, load_candidate_profile, filter_candidate_links
+import sync_opportunities
 
 
 class TestScanOpportunities(unittest.TestCase):
@@ -596,6 +597,17 @@ class TestScanOpportunities(unittest.TestCase):
         self.assertEqual(resolved_days, 14)
         self.assertEqual(resolved_limit, 25)
         self.assertTrue(resolved_verify)
+
+    @patch("sync_opportunities.sync_database")
+    @patch("sync_opportunities.generate_monthly_audit")
+    def test_scan_opportunities_sync_flag(self, mock_audit, mock_sync):
+        mock_sync.return_value = 5
+        test_args = ["scan_opportunities.py", "--limit", "1", "--sync"]
+        with patch.object(sys, "argv", test_args):
+            with patch("scan_opportunities.fetch_all_sources", return_value=[{"company": "Test", "role": "Intern", "location": "Remote", "apply_url": "https://example.com/test"}]):
+                scan_opportunities.main()
+        mock_sync.assert_called_once()
+        mock_audit.assert_called_once()
 
 
 if __name__ == "__main__":

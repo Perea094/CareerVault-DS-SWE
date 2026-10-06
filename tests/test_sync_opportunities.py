@@ -514,6 +514,97 @@ class TestSyncOpportunities(unittest.TestCase):
             self.assertTrue(os.path.exists(csv_path))
             self.assertTrue(os.path.exists(audit_path))
 
+    def test_sync_database_defensive_numeric_id(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            db_path = os.path.join(tmpdir, "opportunities.json")
+            csv_path = os.path.join(tmpdir, "opportunities.csv")
+
+            existing_db = {
+                "total_records": 2,
+                "opportunities": [
+                    {
+                        "id": "opp-01-a",
+                        "numeric_id": None,
+                        "company": "Company A",
+                        "role": "Role A",
+                        "apply_url": "https://a.com"
+                    },
+                    {
+                        "id": "opp-02-b",
+                        "numeric_id": "5",
+                        "company": "Company B",
+                        "role": "Role B",
+                        "apply_url": "https://b.com"
+                    }
+                ]
+            }
+            with open(db_path, "w", encoding="utf-8") as f:
+                json.dump(existing_db, f)
+
+            new_cands = [
+                {
+                    "company": "Company C",
+                    "role": "Role C",
+                    "apply_url": "https://c.com"
+                }
+            ]
+
+            added = sync_database(new_cands, db_path, csv_path, self.profile, verify_links=False)
+            self.assertEqual(added, 1)
+
+            with open(db_path, "r", encoding="utf-8") as f:
+                data = json.load(f)
+
+            opp_c = data["opportunities"][-1]
+            self.assertEqual(opp_c["numeric_id"], 6)
+            self.assertEqual(opp_c["id"], "opp-06-company-c-role-c")
+
+    def test_generate_monthly_audit_matrix_tier_priority_and_pipe_sanitization(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            audit_path = os.path.join(tmpdir, "audit.md")
+
+            # Create 30 opportunities:
+            # 28 Tier 5 items followed by 2 Tier 1 items with pipes in names
+            opps = []
+            for i in range(1, 29):
+                opps.append({
+                    "id": f"opp-{i}",
+                    "numeric_id": i,
+                    "company": f"T5 Corp {i}",
+                    "role": f"T5 Role {i}",
+                    "tier": "Tier 5: General Domestic",
+                    "location": "US",
+                    "apply_url": f"https://example.com/t5/{i}"
+                })
+
+            opps.append({
+                "id": "opp-29",
+                "numeric_id": 29,
+                "company": "Priority | Tech MX",
+                "role": "AI | Data Intern",
+                "tier": "Tier 1: Mexico & Domestic Market",
+                "location": "Querétaro, Mexico",
+                "apply_url": "https://example.com/t1"
+            })
+
+            content = generate_monthly_audit(opps, audit_path, self.profile, month_str="2026-10")
+
+            # 1. Tier 1 item must appear in top matrix (first row) despite being appended late
+            self.assertIn("**Priority - Tech MX**", content)
+            self.assertIn("AI - Data Intern", content)
+            # Pipes in company/role should be sanitized to '-'
+            self.assertNotIn("Priority | Tech MX", content)
+            self.assertNotIn("AI | Data Intern", content)
+
+            # Check that first row of table is Tier 1
+            matrix_start = content.find("## 3. High-Priority Curated Matrix")
+            matrix_section = content[matrix_start:content.find("## 4. Deep-Dive")]
+            first_row_idx = matrix_section.find("| 1 |")
+            self.assertTrue(first_row_idx != -1)
+            first_row = matrix_section[first_row_idx:matrix_section.find("\n", first_row_idx)]
+            self.assertIn("Priority - Tech MX", first_row)
+            self.assertIn("Tier 1", first_row)
+
 
 if __name__ == "__main__":
     unittest.main()

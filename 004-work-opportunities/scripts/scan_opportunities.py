@@ -6,6 +6,7 @@ import json
 import urllib.request
 import argparse
 import re
+from datetime import datetime
 from concurrent.futures import ThreadPoolExecutor
 
 SCRIPTS_DIR = os.path.dirname(__file__)
@@ -28,6 +29,7 @@ from adapters import get_parser
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 CONFIG_PATH = os.path.join(os.path.dirname(__file__), "sources.json")
 DB_PATH = os.path.join(BASE_DIR, "database", "opportunities.json")
+CSV_PATH = os.path.join(BASE_DIR, "database", "opportunities.csv")
 ARCHIVE_PATH = os.path.join(BASE_DIR, "database", "archived_opportunities.json")
 OUTPUT_PATH = os.path.join(BASE_DIR, "database", "pending_scan.json")
 PREFERENCES_JSON_PATH = os.path.abspath(os.path.join(BASE_DIR, "..", "001-background", "preferences.json"))
@@ -391,6 +393,11 @@ def score_and_tier(item, profile: CandidateProfile = None):
     return 35, "Tier 4: International Opportunity"
 
 
+# Import after CandidateProfile, load_candidate_profile, and score_and_tier
+# to prevent circular dependency
+import sync_opportunities
+
+
 def fetch_content(url):
     headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"}
     req = urllib.request.Request(url, headers=headers)
@@ -588,6 +595,85 @@ def select_verified_candidates(
     return verified
 
 
+def fetch_all_sources(
+    sources: list | None = None,
+    days: int = 7,
+    role: str | None = None,
+    profile: CandidateProfile | None = None,
+    existing_urls: set | None = None,
+    existing_titles: set | None = None,
+) -> list:
+    if sources is None:
+        sources = load_sources()
+    if profile is None:
+        profile = load_candidate_profile()
+    if existing_urls is None or existing_titles is None:
+        ex_urls, ex_titles = load_existing()
+        if existing_urls is None:
+            existing_urls = ex_urls
+        if existing_titles is None:
+            existing_titles = ex_titles
+
+    all_candidates = []
+    seen = set()
+
+    for src in sources:
+        if not src.get("enabled", True):
+            continue
+
+        p_func = get_parser(src.get("parser"))
+        if not p_func:
+            print(f"[WARN] Unknown parser '{src.get('parser')}' for source {src['id']}", file=sys.stderr)
+            continue
+
+        print(f"Fetching {src['name']} ({src['parser']})...")
+        try:
+            content = fetch_content(src["url"])
+            stale, reason = is_stale_upstream_feed(content)
+            if stale:
+                print(f"  [SKIP] Skipping stale source '{src['id']}': {reason}", file=sys.stderr)
+                continue
+            postings = p_func(content, src)
+            print(f"  Parsed {len(postings)} total rows.")
+        except Exception as e:
+            print(f"  [FAIL] Failed fetching {src['name']}: {e}", file=sys.stderr)
+            continue
+
+        for p in postings:
+            if not matches_role_filter(p.get("role", ""), role):
+                continue
+
+            # Check age
+            if p["age_days"] > days:
+                continue
+
+            # Check deduplication
+            u = p.get("apply_url")
+            key = (p["company"].lower(), p["role"].lower())
+
+            if u and u in existing_urls:
+                continue
+            if key in existing_titles or key in seen:
+                continue
+
+            # Require a valid application URL
+            if not u:
+                continue
+
+            seen.add(key)
+            seen.add(u)
+
+            score, tier = score_and_tier(p, profile)
+            if score > 0:
+                p["viability_score"] = score
+                p["tier_category"] = tier
+                all_candidates.append(p)
+
+    # Sort candidates by viability score (descending), then age (ascending)
+    all_candidates.sort(key=lambda x: (-x["viability_score"], x["age_days"]))
+    return all_candidates
+
+
 def build_argument_parser():
     parser = argparse.ArgumentParser(description="Unified Opportunities Scanner with Dynamic Worldwide Location & Constraints Engine.")
     parser.add_argument("--days", type=int, default=None, help="Maximum age of job postings in days (default: 7, or 90 in audit mode)")
@@ -598,6 +684,7 @@ def build_argument_parser():
     parser.add_argument("--all", action="store_true", help="Include all candidates without limiting batch size")
     parser.add_argument("--verify-links", action="store_true", help="Probe candidate apply_url to drop 404s and corporate ATS redirects before export.")
     parser.add_argument("--audit-mode", action="store_true", help="Comprehensive audit mode for initial triage (defaults to --days 90, --limit 100, --verify-links)")
+    parser.add_argument("--sync", action="store_true", help="Automatically enrich and synchronize verified candidates directly into opportunities.json, opportunities.csv, and the monthly audit note.")
     return parser
 
 
@@ -637,63 +724,14 @@ def main():
     existing_urls, existing_titles = load_existing()
     print(f"Loaded database: {len(existing_titles)} registered opportunities ({len(existing_urls)} URLs).")
 
-    all_candidates = []
-    seen = set()
-
-    for src in sources:
-        if not src.get("enabled", True):
-            continue
-
-        p_func = get_parser(src.get("parser"))
-        if not p_func:
-            print(f"[WARN] Unknown parser '{src.get('parser')}' for source {src['id']}", file=sys.stderr)
-            continue
-
-        print(f"Fetching {src['name']} ({src['parser']})...")
-        try:
-            content = fetch_content(src["url"])
-            stale, reason = is_stale_upstream_feed(content)
-            if stale:
-                print(f"  [SKIP] Skipping stale source '{src['id']}': {reason}", file=sys.stderr)
-                continue
-            postings = p_func(content, src)
-            print(f"  Parsed {len(postings)} total rows.")
-        except Exception as e:
-            print(f"  [FAIL] Failed fetching {src['name']}: {e}", file=sys.stderr)
-            continue
-
-        for p in postings:
-            if not matches_role_filter(p.get("role", ""), args.role):
-                continue
-
-            # Check age
-            if p["age_days"] > days:
-                continue
-
-            # Check deduplication
-            u = p.get("apply_url")
-            key = (p["company"].lower(), p["role"].lower())
-
-            if u and u in existing_urls:
-                continue
-            if key in existing_titles or key in seen:
-                continue
-
-            # Require a valid application URL
-            if not u:
-                continue
-
-            seen.add(key)
-            seen.add(u)
-
-            score, tier = score_and_tier(p, profile)
-            if score > 0:
-                p["viability_score"] = score
-                p["tier_category"] = tier
-                all_candidates.append(p)
-
-    # Sort candidates by viability score (descending), then age (ascending)
-    all_candidates.sort(key=lambda x: (-x["viability_score"], x["age_days"]))
+    all_candidates = fetch_all_sources(
+        sources=sources,
+        days=days,
+        role=args.role,
+        profile=profile,
+        existing_urls=existing_urls,
+        existing_titles=existing_titles,
+    )
 
     selected = select_verified_candidates(
         all_candidates,
@@ -723,6 +761,13 @@ def main():
         if c.get("sponsorship_notes"):
             print(f"   Notes: {safe_str(c.get('sponsorship_notes'))}")
         print()
+
+    if getattr(args, "sync", False):
+        added = sync_opportunities.sync_database(selected, DB_PATH, CSV_PATH, profile, verify_links=False)
+        print(f"[SUCCESS] Native sync complete: {added} new opportunities added to database.")
+        audit_note = os.path.join(BASE_DIR, f"opportunities-audit-{datetime.now().strftime('%Y-%m')}.md")
+        sync_opportunities.generate_monthly_audit(DB_PATH, audit_note, profile)
+        print(f"[SUCCESS] Monthly audit report updated at: {audit_note}")
 
 
 if __name__ == "__main__":
