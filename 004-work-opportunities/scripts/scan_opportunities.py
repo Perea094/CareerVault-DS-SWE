@@ -588,16 +588,35 @@ def select_verified_candidates(
     return verified
 
 
-def main():
+def build_argument_parser():
     parser = argparse.ArgumentParser(description="Unified Opportunities Scanner with Dynamic Worldwide Location & Constraints Engine.")
-    parser.add_argument("--days", type=int, default=7, help="Maximum age of job postings in days (default: 7)")
-    parser.add_argument("--limit", type=int, default=10, help="Maximum candidates to export to pending_scan.json (default: 10)")
+    parser.add_argument("--days", type=int, default=None, help="Maximum age of job postings in days (default: 7, or 90 in audit mode)")
+    parser.add_argument("--limit", type=int, default=None, help="Maximum candidates to export to pending_scan.json (default: 10, or 100 in audit mode)")
     parser.add_argument("--source", type=str, default=None, help="Filter to run only a specific source ID")
     parser.add_argument("--role", type=str, default=None, help="Filter job postings by role keyword (comma-separated, case-insensitive, e.g. 'data scientist, machine learning')")
+    parser.add_argument("--max-per-source", type=int, default=None, help="Maximum candidates to admit from any single upstream feed")
     parser.add_argument("--all", action="store_true", help="Include all candidates without limiting batch size")
     parser.add_argument("--verify-links", action="store_true", help="Probe candidate apply_url to drop 404s and corporate ATS redirects before export.")
-    parser.add_argument("--max-per-source", type=int, default=None, help="Maximum candidates to admit from any single upstream feed")
+    parser.add_argument("--audit-mode", action="store_true", help="Comprehensive audit mode for initial triage (defaults to --days 90, --limit 100, --verify-links)")
+    return parser
+
+
+def resolve_runtime_parameters(args) -> tuple[int, int | None, bool]:
+    is_audit = getattr(args, "audit_mode", False)
+    default_days = 90 if is_audit else 7
+    default_limit = 100 if is_audit else 10
+    default_verify = True if is_audit else False
+
+    days = args.days if getattr(args, "days", None) is not None else default_days
+    limit = None if getattr(args, "all", False) else (args.limit if getattr(args, "limit", None) is not None else default_limit)
+    verify = True if (getattr(args, "verify_links", False) or default_verify) else False
+    return days, limit, verify
+
+
+def main():
+    parser = build_argument_parser()
     args = parser.parse_args()
+    days, limit, verify_links = resolve_runtime_parameters(args)
 
     profile = load_candidate_profile()
     print("=======================================================")
@@ -648,7 +667,7 @@ def main():
                 continue
 
             # Check age
-            if p["age_days"] > args.days:
+            if p["age_days"] > days:
                 continue
 
             # Check deduplication
@@ -676,17 +695,16 @@ def main():
     # Sort candidates by viability score (descending), then age (ascending)
     all_candidates.sort(key=lambda x: (-x["viability_score"], x["age_days"]))
 
-    target_limit = None if args.all else args.limit
     selected = select_verified_candidates(
         all_candidates,
-        limit=target_limit,
-        verify_links=getattr(args, "verify_links", False),
+        limit=limit,
+        verify_links=verify_links,
         max_per_source=getattr(args, "max_per_source", None),
         batch_size=15
     )
 
     print(f"\n=======================================================")
-    print(f"Scan Finished: Found {len(all_candidates)} viable new postings (Age <= {args.days}d).")
+    print(f"Scan Finished: Found {len(all_candidates)} viable new postings (Age <= {days}d).")
     print(f"Selected top {len(selected)} priority roles for audit.")
     print(f"=======================================================")
 

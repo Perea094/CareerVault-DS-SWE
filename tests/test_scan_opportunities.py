@@ -563,6 +563,24 @@ class TestScanOpportunities(unittest.TestCase):
         )
         self.assertEqual(len(selected), 2)
 
+    def test_audit_mode_expands_defaults(self):
+        parser = scan_opportunities.build_argument_parser()
+        args = parser.parse_args(["--audit-mode"])
+        self.assertTrue(args.audit_mode)
+        # Verify resolved defaults in scan_opportunities: 90 days, 100 candidates, live link verification enabled
+        resolved_days, resolved_limit, resolved_verify = scan_opportunities.resolve_runtime_parameters(args)
+        self.assertEqual(resolved_days, 90)
+        self.assertEqual(resolved_limit, 100)
+        self.assertTrue(resolved_verify)
+
+    def test_explicit_flags_override_audit_mode_defaults(self):
+        parser = scan_opportunities.build_argument_parser()
+        args = parser.parse_args(["--audit-mode", "--days", "14", "--limit", "25"])
+        resolved_days, resolved_limit, resolved_verify = scan_opportunities.resolve_runtime_parameters(args)
+        self.assertEqual(resolved_days, 14)
+        self.assertEqual(resolved_limit, 25)
+        self.assertTrue(resolved_verify)
+
 
 if __name__ == "__main__":
     unittest.main()
